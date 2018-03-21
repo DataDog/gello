@@ -1,0 +1,8 @@
+Flask
+Celery
+gunicorn
+py-trello
+PyGithub
+flake8
+autoflake
+python-dotenv
