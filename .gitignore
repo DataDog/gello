@@ -91,3 +91,6 @@ ENV/
 .ropeproject
 
 TODOS.org
+
+# SQLite databases
+*.sqlite

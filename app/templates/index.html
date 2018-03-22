@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Gello{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    {% if current_user.is_authenticated() %}
+      <h1>Hello, {{ current_user.username }}.</h1>
+    {% else %}
+      <h1>Please <a href="">login</a>.</h1>
+    {% endif %}
+  </div>
+
+  {% if current_user.is_authenticated() %}
+    <div class="repo-tabs">
+      <ul class="nav nav-tabs">
+          <p>Repos</p>
+      </ul>
+    </div>
+    {% include '_repos.html' %}
+  {% endif %}
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}
