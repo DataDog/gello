@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""TrelloService
+"""trello_service.py
+
+Service-helpers for interacting with the Trello API.
 """
 
 from ..api_clients import TrelloAPIClient

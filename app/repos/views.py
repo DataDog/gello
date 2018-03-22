@@ -9,7 +9,7 @@ from flask import render_template, redirect, url_for, abort, flash, request,\
     current_app
 from flask.ext.login import login_required, current_user
 from . import repo
-from .forms import RepoForm
+from .forms import RepoForm, RefreshForm
 from .. import db
 from ..models import Repo
 from ..services import GitHubService
@@ -18,6 +18,27 @@ from ..services import GitHubService
 @repo.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    """Updates the repositories saved on POST request."""
+
+    form = RefreshForm()
+    if form.validate_on_submit():
+        github_service = GitHubService()
+
+        # Add all the repositories to the Database for the organization
+        for r in github_service.repos():
+            _r = Repo(
+                name=r.name,
+                url=r.url,
+            )
+            # Add repository to database
+            db.session.add(_r)
+
+        # persist the repositories
+        db.session.commit()
+        flash('The repos have been updated.')
+
+        return redirect(url_for('.index'))
+
     page = request.args.get('page', 1, type=int)
     query = Repo.query
     pagination = query.order_by(Repo.timestamp.desc()).paginate(
@@ -29,6 +50,7 @@ def index():
     return render_template(
         'repos.html',
         repos=repos,
+        form=form,
         pagination=pagination
     )
 

@@ -88,3 +88,16 @@ Gello was named because it bridges the gap between the GitHub API and the Trello
 - someone from the team would triage it (come up with slash command /schedule)
 - open a card based on that
 - noisy enough they get attention, but not noisy enough they get ignored
+
+
+## Development Setup
+
+```
+# In one terminal
+pyenv activate v-3.6.4
+celery worker -A celery_worker.celery --loglevel=info
+
+# In another terminal
+pyenv activate v-3.6.4
+python manage.py runserver
+```

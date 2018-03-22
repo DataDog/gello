@@ -15,3 +15,8 @@ class RepoForm(Form):
     """"""
     body = PageDownField("What's on your mind?", validators=[Required()])
     submit = SubmitField('Submit')
+
+
+class RefreshForm(Form):
+    """"""
+    submit = SubmitField('Refresh repositories')
