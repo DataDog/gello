@@ -5,4 +5,6 @@
 API Clients for APIs called.
 """
 
-from . import APIClient, GitHubAPIClient, TrelloAPIClient
+from .api_client import APIClient
+from .github_api_client import GitHubAPIClient
+from .trello_api_client import TrelloAPIClient

@@ -8,7 +8,6 @@ Concrete class representing GitHub API Client.
 from os import environ
 from github import Github
 from . import APIClient
-from ..decorators import memoized
 
 
 class GitHubAPIClient(APIClient):
@@ -17,6 +16,8 @@ class GitHubAPIClient(APIClient):
     client to interact with the GitHub API.
     """
 
-    @memoized
+    def __init__(self):
+        self._client = Github(environ.get('GITHUB_API_TOKEN'))
+
     def client(self):
-        return Github(environ.get('GITHUB_API_TOKEN'))
+        return self._client

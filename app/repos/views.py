@@ -12,14 +12,12 @@ from . import repo
 from .forms import RepoForm
 from .. import db
 from ..models import Repo
+from ..services import GitHubService
 
 
 @repo.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    """
-    TODO: remove the repo form, have them only part of the edit views.
-    """
     page = request.args.get('page', 1, type=int)
     query = Repo.query
     pagination = query.order_by(Repo.timestamp.desc()).paginate(

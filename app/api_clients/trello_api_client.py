@@ -9,7 +9,6 @@ from os import environ
 
 from trello import TrelloClient
 from . import APIClient
-from ..decorators import memoized
 
 
 class TrelloAPIClient(APIClient):
@@ -18,11 +17,13 @@ class TrelloAPIClient(APIClient):
     client to interact with the Trello API.
     """
 
-    @memoized
-    def client(self):
-        return TrelloClient(
+    def __init__(self):
+        self._client = TrelloClient(
             api_key=environ.get('TRELLO_API_KEY'),
             api_secret=environ.get('TRELLO_API_SECRET'),
             token=environ.get('TRELLO_API_TOKEN'),
             token_secret=environ.get('TRELLO_API_SECRET')
         )
+
+    def client(self):
+        return self._client
