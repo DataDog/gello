@@ -54,17 +54,14 @@ def load_user(user_id):
 class Repo(db.Model):
     __tablename__ = 'repos'
 
+    # Attributes
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     url = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-    # TODO: do a foreign key on the Issue model, to symbol the association between
-    # Something like: repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))
-    # author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    # TODO: add issues, and make this relationship
-    # issues = db.relationship('Issue', backref='repo', lazy='dynamic')
+    # Associations
+    issues = db.relationship('Issue', backref='repo', lazy='dynamic')
 
     def to_json(self):
         json_repo = {
@@ -81,6 +78,37 @@ class Repo(db.Model):
         url = json_repo.get('url')
 
         return Repo(
+            name=name,
+            url=url
+        )
+
+
+class Issue(db.Model):
+    __tablename__ = 'issues'
+
+    # Attributes
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    url = db.Column(db.String(64), unique=True)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    # Associations
+    repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))
+
+    def to_json(self):
+        json_issue = {
+            'url': self.url,
+            'name': self.name,
+            'timestamp': self.timestamp,
+        }
+        return json_issue
+
+    @staticmethod
+    def from_json(json_issue):
+        name = json_issue.get('name')
+        url = json_issue.get('url')
+
+        return Issue(
             name=name,
             url=url
         )
