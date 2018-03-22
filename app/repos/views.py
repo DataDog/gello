@@ -19,7 +19,6 @@ from ..services import GitHubService
 @login_required
 def index():
     """Updates the repositories saved on POST request."""
-
     form = RefreshForm()
     if form.validate_on_submit():
         github_service = GitHubService()
@@ -28,7 +27,7 @@ def index():
         for r in github_service.repos():
             _r = Repo(
                 name=r.name,
-                url=r.url,
+                url=r.html_url,
             )
             # Add repository to database
             db.session.add(_r)

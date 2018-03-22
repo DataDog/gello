@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """forms.py
+
+Repository-related forms.
 """
 
 from flask.ext.wtf import Form
