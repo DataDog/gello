@@ -20,9 +20,7 @@ class TrelloAPIClient(APIClient):
     def __init__(self):
         self._client = TrelloClient(
             api_key=environ.get('TRELLO_API_KEY'),
-            api_secret=environ.get('TRELLO_API_SECRET'),
-            token=environ.get('TRELLO_API_TOKEN'),
-            token_secret=environ.get('TRELLO_API_SECRET')
+            api_secret=environ.get('TRELLO_API_SECRET')
         )
 
     def client(self):

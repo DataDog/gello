@@ -21,6 +21,7 @@ class Repo(db.Model):
     # Associations
     issues = db.relationship('Issue', backref='repo', lazy='dynamic')
     pull_requests = db.relationship('PullRequest', backref='repo', lazy='dynamic')
+    # TODO: repo should belong_to a trello `Board` model
 
     def to_json(self):
         json_repo = {

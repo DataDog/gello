@@ -25,7 +25,7 @@ class CreateTrelloCard(Task):
     def _format_card_body(self):
         """Helper method.
 
-        Internal helper to format the trello card body, based on the data passed
-        in.
+        Internal helper to format the trello card body, based on the data
+        passed in.
         """
         pass

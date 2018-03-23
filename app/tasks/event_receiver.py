@@ -7,6 +7,7 @@ celery task, which is enqueued in the receivers task queue.
 """
 
 from celery.task import Task
+from . import CreateTrelloCard
 
 
 class GitHubReceiver(Task):
@@ -33,9 +34,9 @@ class GitHubReceiver(Task):
             raise ValueError('Unsupported event action.')
 
     def _create_trello_issue_card(self):
-        """"""
-        pass
+        """Creates a task to create a trello card."""
+        CreateTrelloCard.delay("name", "board")
 
     def _create_trello_pull_request_card(self):
-        """"""
-        pass
+        """Creates a task to create a trello card."""
+        CreateTrelloCard.delay("name", "board")
