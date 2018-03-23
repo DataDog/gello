@@ -28,6 +28,12 @@ login_manager.login_view = 'auth.login'
 
 
 def create_app(config_name):
+    """Initializes a modular flask application:
+
+        - Initializes all the Flask extensions
+        - Configures Celery Task queue
+        - Hooks up all the blueprints
+    """
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
