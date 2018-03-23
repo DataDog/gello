@@ -10,9 +10,9 @@ from flask import render_template, redirect, url_for, abort, flash, request,\
 from flask.ext.login import login_required, current_user
 from . import repo
 from .forms import RepoForm, RefreshForm
-from .. import db
-from ..models import Repo
-from ..services import GitHubService
+from ... import db
+from ...models import Repo
+from ...services import GitHubService
 
 
 @repo.route('/', methods=['GET', 'POST'])

@@ -10,9 +10,9 @@ from flask import render_template, redirect, url_for, flash, request,\
 from flask.ext.login import login_required
 from . import board
 from .forms import RefreshForm
-from .. import db
-from ..models import Board
-from ..services import TrelloService
+from ... import db
+from ...models import Board
+from ...services import TrelloService
 
 
 @board.route('/', methods=['GET', 'POST'])

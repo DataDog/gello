@@ -44,24 +44,22 @@ def create_app(config_name):
         from flask.ext.sslify import SSLify
         sslify = SSLify(app)
 
-    from .main import main as main_blueprint
+    from .controllers.main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    from .auth import auth as auth_blueprint
+    from .controllers.auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
-    from .repos import repo as repo_blueprint
+    from .controllers.repos import repo as repo_blueprint
     app.register_blueprint(repo_blueprint, url_prefix='/repos')
 
-    from .issues import issue as issue_blueprint
+    from .controllers.issues import issue as issue_blueprint
     app.register_blueprint(issue_blueprint, url_prefix='/repos/issues')
 
-    from .boards import board as board_blueprint
+    from .controllers.boards import board as board_blueprint
     app.register_blueprint(board_blueprint, url_prefix='/boards')
 
-    from .pull_requests import pull_request as pull_request_blueprint
-    app.register_blueprint(
-        pull_request_blueprint, url_prefix='/repos/pull_requests'
-    )
+    from .controllers.pull_requests import pull_request as pr_blueprint
+    app.register_blueprint(pr_blueprint, url_prefix='/repos/pull_requests')
 
     return app

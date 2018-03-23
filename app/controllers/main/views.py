@@ -8,7 +8,7 @@ repos-related routes and view-specific logic.
 from flask import render_template, current_app
 
 from . import main
-from ..tasks import GitHubReceiver
+from ...tasks import GitHubReceiver
 
 
 @main.route('/', methods=['GET', 'POST'])

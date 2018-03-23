@@ -8,7 +8,7 @@ pull request related routes and view-specific logic.
 from flask import render_template, request, current_app
 from flask.ext.login import login_required
 from . import pull_request
-from ..models import Repo, PullRequest
+from ...models import Repo, PullRequest
 
 
 @pull_request.route('/<int:id>', methods=['GET'])
