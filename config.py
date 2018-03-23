@@ -11,8 +11,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    CELERY_BROKER_URL = os.environ.get('REDIS_URL') or \
+        'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL') or \
+        'redis://localhost:6379/0'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'bad_secret_key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
@@ -21,6 +23,7 @@ class Config:
     @staticmethod
     def init_app(app):
         pass
+
 
 class DevelopmentConfig(Config):
     """Configuration for development environment."""
