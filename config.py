@@ -15,6 +15,7 @@ class Config:
         'redis://localhost:6379/0'
     CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL') or \
         'redis://localhost:6379/0'
+    DATABASE_USERNAME = os.environ.get('DATABASE_USERNAME')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'bad_secret_key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
@@ -29,21 +30,21 @@ class DevelopmentConfig(Config):
     """Configuration for development environment."""
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+        f'postgresql://{os.environ.get("DATABASE_USERNAME")}@localhost/gello-dev'
 
 
 class TestingConfig(Config):
     """Configuration for testing environment."""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+        f'postgresql://{os.environ.get("DATABASE_USERNAME")}@localhost/gello-test'
     WTF_CSRF_ENABLED = False
 
 
 class ProductionConfig(Config):
     """Configuration for testing production."""
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL') or \
+        f'postgresql://{os.environ.get("DATABASE_USERNAME")}@localhost/gello-prod'
 
     @classmethod
     def init_app(cls, app):

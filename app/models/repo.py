@@ -19,9 +19,11 @@ class Repo(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     # Associations
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     issues = db.relationship('Issue', backref='repo', lazy='dynamic')
-    pull_requests = db.relationship('PullRequest', backref='repo', lazy='dynamic')
-    # TODO: repo should belong_to a trello `Board` model
+    pull_requests = db.relationship(
+        'PullRequest', backref='repo', lazy='dynamic'
+    )
 
     def to_json(self):
         json_repo = {
