@@ -15,7 +15,7 @@ class TrelloService(object):
 
     def __init__(self):
         """Initializes a new TrelloService object."""
-        self.client = TrelloAPIClient()
+        self.client = TrelloAPIClient().client()
 
     def boards(self):
         return self.client.list_boards()

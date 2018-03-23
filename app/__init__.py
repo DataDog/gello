@@ -56,6 +56,9 @@ def create_app(config_name):
     from .issues import issue as issue_blueprint
     app.register_blueprint(issue_blueprint, url_prefix='/repos/issues')
 
+    from .boards import board as board_blueprint
+    app.register_blueprint(board_blueprint, url_prefix='/boards')
+
     from .pull_requests import pull_request as pull_request_blueprint
     app.register_blueprint(
         pull_request_blueprint, url_prefix='/repos/pull_requests'

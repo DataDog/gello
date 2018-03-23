@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Boards{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Boards</h1>
+  </div>
+
+  <table class="table table-hover boards">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>URL</th>
+        <th>Repositories</th>
+      </tr>
+    </thead>
+
+    {% for board in boards %}
+      <tr>
+        <td>{{ board.name }}</td>
+        <td>
+          <a href="{{ board.url }}">
+            {{ board.url }}
+          </a>
+        </td>
+        <td>
+          <!-- TODO: some sort of python join -->
+          {% for repo in board.repos %}
+            <a href="/repos/issues/{{ repo.id }}">{{ repo.name }}</a>
+          {% endfor %}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div>
+    {{ wtf.quick_form(form) }}
+  </div>
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}
