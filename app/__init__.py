@@ -64,7 +64,4 @@ def create_app(config_name):
         pull_request_blueprint, url_prefix='/repos/pull_requests'
     )
 
-    from .api_1_0 import api as api_1_0_blueprint
-    app.register_blueprint(api_1_0_blueprint, url_prefix='/api/v1.0')
-
     return app
