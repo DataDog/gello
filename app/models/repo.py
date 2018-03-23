@@ -20,7 +20,7 @@ class Repo(db.Model):
 
     # Associations
     issues = db.relationship('Issue', backref='repo', lazy='dynamic')
-    issues = db.relationship('PullRequest', backref='repo', lazy='dynamic')
+    pull_requests = db.relationship('PullRequest', backref='repo', lazy='dynamic')
 
     def to_json(self):
         json_repo = {

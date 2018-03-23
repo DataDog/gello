@@ -53,7 +53,9 @@ def create_app(config_name):
     from .repos import repo as repo_blueprint
     app.register_blueprint(repo_blueprint, url_prefix='/repos')
 
-    # TODO: have a issues blueprint
+    from .issues import issue as issue_blueprint
+    app.register_blueprint(issue_blueprint, url_prefix='/repos/issues')
+
     # TODO: have a pull requests blueprint
 
     from .api_1_0 import api as api_1_0_blueprint
