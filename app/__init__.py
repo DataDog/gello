@@ -68,4 +68,7 @@ def create_app(config_name):
     from .controllers.pull_requests import pull_request as pr_blueprint
     app.register_blueprint(pr_blueprint, url_prefix='/repos/pull_requests')
 
+    from .controllers.contributors import contributor as contributor_blueprint
+    app.register_blueprint(contributor_blueprint, url_prefix='/contributors')
+
     return app

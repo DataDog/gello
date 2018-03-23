@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Contributors{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Contributors</h1>
+  </div>
+
+  <table class="table table-hover contributors">
+    <thead>
+      <tr>
+        <th>Member ID</th>
+        <th>Login</th>
+      </tr>
+    </thead>
+
+    {% for contributor in contributors %}
+      <tr>
+        <td>{{ contributor.member_id }}</td>
+        <td>{{ contributor.login }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div>
+    {{ wtf.quick_form(form) }}
+  </div>
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}

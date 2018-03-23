@@ -17,7 +17,9 @@ def upgrade():
     op.create_table(
         'contributors',
         sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('login', sa.String(length=64), nullable=False),
         sa.Column('member_id', sa.Integer(), nullable=False),
+        sa.Column('timestamp', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index(
