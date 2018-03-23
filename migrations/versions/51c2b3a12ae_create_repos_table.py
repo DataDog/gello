@@ -22,7 +22,7 @@ def upgrade():
         sa.Column('timestamp', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
-    op.create_index('ix_posts_timestamp', 'repos', ['timestamp'], unique=False)
+    op.create_index('ix_repos_timestamp', 'repos', ['timestamp'], unique=False)
 
 
 def downgrade():
