@@ -9,14 +9,16 @@
     {% if current_user.is_authenticated() %}
       <h1>Hello, {{ current_user.username }}.</h1>
     {% else %}
-      <h1>Please <a href="">login</a>.</h1>
+      <h1>Please <a href="{{ url_for('auth.login') }}">login</a>.</h1>
     {% endif %}
   </div>
 
   {% if current_user.is_authenticated() %}
     <div class="repo-tabs">
       <ul class="nav nav-tabs">
-          <p>Repos</p>
+        <li>
+          <a href="{{ url_for('repo.index') }}">Repos</a>
+        </li>
       </ul>
     </div>
     {% include '_repos.html' %}
