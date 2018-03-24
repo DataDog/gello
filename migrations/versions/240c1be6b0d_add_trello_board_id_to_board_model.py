@@ -1,7 +1,7 @@
 """Add trello_board_id to Board model.
 
 Revision ID: 240c1be6b0d
-Revises: 391a5fb9ba3
+Revises: 57bc1ebd1cc
 Create Date: 2018-03-24 13:26:48.326446
 """
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 revision = '240c1be6b0d'
-down_revision = '391a5fb9ba3'
+down_revision = '57bc1ebd1cc'
 
 
 def upgrade():

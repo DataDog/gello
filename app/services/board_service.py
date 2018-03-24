@@ -36,7 +36,7 @@ class BoardService(object):
                     active=False,
                     name=trello_list.name,
                     trello_list_id=trello_list.id,
-                    board_id=board.id
+                    board_id=trello_board.id
                 )
                 db.session.add(list_model)
 

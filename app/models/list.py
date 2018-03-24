@@ -22,4 +22,4 @@ class List(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     # Associations
-    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
+    board_id = db.Column(db.String(64), db.ForeignKey('boards.trello_board_id'))
