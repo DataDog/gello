@@ -24,22 +24,3 @@ class Repo(db.Model):
     pull_requests = db.relationship(
         'PullRequest', backref='repo', lazy='dynamic'
     )
-
-    def to_json(self):
-        json_repo = {
-            'url': self.url,
-            'name': self.name,
-            'timestamp': self.timestamp,
-            # 'issues': url_for('api.get_repo_issues', id=self.id, _external=True),
-        }
-        return json_repo
-
-    @staticmethod
-    def from_json(json_repo):
-        name = json_repo.get('name')
-        url = json_repo.get('url')
-
-        return Repo(
-            name=name,
-            url=url
-        )

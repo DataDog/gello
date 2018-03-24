@@ -20,21 +20,3 @@ class Issue(db.Model):
 
     # Associations
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))
-
-    def to_json(self):
-        json_issue = {
-            'url': self.url,
-            'name': self.name,
-            'timestamp': self.timestamp,
-        }
-        return json_issue
-
-    @staticmethod
-    def from_json(json_issue):
-        name = json_issue.get('name')
-        url = json_issue.get('url')
-
-        return Issue(
-            name=name,
-            url=url
-        )

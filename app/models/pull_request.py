@@ -20,21 +20,3 @@ class PullRequest(db.Model):
 
     # Associations
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))
-
-    def to_json(self):
-        json_pull_request = {
-            'url': self.url,
-            'name': self.name,
-            'timestamp': self.timestamp,
-        }
-        return json_pull_request
-
-    @staticmethod
-    def from_json(json_pull_request):
-        name = json_pull_request.get('name')
-        url = json_pull_request.get('url')
-
-        return PullRequest(
-            name=name,
-            url=url
-        )

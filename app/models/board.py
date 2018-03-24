@@ -20,21 +20,3 @@ class Board(db.Model):
 
     # Associations
     repos = db.relationship('Repo', backref='board', lazy='dynamic')
-
-    def to_json(self):
-        json_board = {
-            'url': self.url,
-            'name': self.name,
-            'timestamp': self.timestamp,
-        }
-        return json_board
-
-    @staticmethod
-    def from_json(json_board):
-        name = json_board.get('name')
-        url = json_board.get('url')
-
-        return Board(
-            name=name,
-            url=url
-        )
