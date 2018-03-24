@@ -11,3 +11,4 @@ from .issue import Issue
 from .pull_request import PullRequest
 from .contributor import Contributor
 from .board import Board
+from .list import List

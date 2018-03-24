@@ -20,3 +20,4 @@ class Board(db.Model):
 
     # Associations
     repos = db.relationship('Repo', backref='board', lazy='dynamic')
+    lists = db.relationship('List', backref='board', lazy='dynamic')
