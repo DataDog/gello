@@ -15,6 +15,7 @@
         <th>Name</th>
         <th>URL</th>
         <th>Repositories subscribed</th>
+        <th>Board lists</th>
       </tr>
     </thead>
 
@@ -31,6 +32,11 @@
           {% for repo in board.repos %}
             <a href="/repos/issues/{{ repo.id }}">{{ repo.name }}</a>
           {% endfor %}
+        </td>
+        <td>
+          <a href="">
+            <b>({{ board.lists.count() }})</b> lists for {{ board.name }}
+          </a>
         </td>
       </tr>
     {% endfor %}

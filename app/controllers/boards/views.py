@@ -10,9 +10,10 @@ from flask import render_template, redirect, url_for, flash, request,\
 from flask.ext.login import login_required
 from . import board
 from .forms import RefreshForm
-from ... import db
-from ...models import Board, List
-from ...services import TrelloService
+from ...models import Board
+from ...services import BoardService
+
+board_service = BoardService()
 
 
 @board.route('/', methods=['GET', 'POST'])
@@ -21,25 +22,7 @@ def index():
     """Updates the boards and corresponding lists saved on POST request."""
     form = RefreshForm()
     if form.validate_on_submit():
-        trello_service = TrelloService()
-
-        # Add all the boards to the Database for the organization
-        for b in trello_service.boards():
-            _b = Board(name=b.name, url=b.url, trello_board_id=b.id)
-            db.session.add(_b)
-
-            # Add all the lists to the Database for a given board
-            for l in b.all_lists():
-                _l = List(
-                    active=False,
-                    name=l.name,
-                    trello_list_id=l.id,
-                    board_id=_b.id
-                )
-                db.session.add(_l)
-
-        # Persist the boards and lists
-        db.session.commit()
+        board_service.create_or_update_boards()
         flash('The boards have been updated.')
 
         return redirect(url_for('.index'))
