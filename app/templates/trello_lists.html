@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
 
-{% block title %}Issues{% endblock %}
+{% block title %}Trello Lists{% endblock %}
 
 {% block page_content %}
   <div class="page-header">
-    <h1>Issues for <b>{{ repo.name }}</b></h1>
+    <h1>Lists for <b>{{ board.name }}</b></h1>
   </div>
 
-  <table class="table table-hover issues">
+  <table class="table table-hover trello-lists">
     <thead>
       <tr>
         <th>Name</th>
-        <th>URL</th>
+        <th>Trello List ID</th>
+        <th>Trello Board ID</th>
+        <th>Active</th>
       </tr>
     </thead>
 
-    {% for issue in issues %}
+    {% for trello_list in lists %}
     <tr>
-      <td>{{ issue.name }}</td>
-      <td>
-        <a href="{{ issue.url }}">
-          {{ issue.url }}
-        </a>
-      </td>
+      <td>{{ trello_list.name }}</td>
+      <td>{{ trello_list.trello_list_id }}</td>
+      <td>{{ trello_list.board_id }}</td>
+      <td>{{ trello_list.active }}</td>
     </tr>
     {% endfor %}
   </table>
