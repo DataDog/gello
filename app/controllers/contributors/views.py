@@ -24,19 +24,19 @@ def index():
         github_service = GitHubService()
 
         # Add all the contributors to the Database for the organization
-        for c in github_service.contributors():
-            _c = Contributor(login=c.login, member_id=c.member_id)
+        for c in github_service.members():
+            _c = Contributor(login=c.login, member_id=c.id)
             db.session.add(_c)
 
         # persist the contributors
         db.session.commit()
-        flash('The contributors have been updated.')
+        flash('The organization contributors have been updated.')
 
         return redirect(url_for('.index'))
 
     page = request.args.get('page', 1, type=int)
     query = Contributor.query
-    pagination = query.order_by(Contributor.timestamp.desc()).paginate(
+    pagination = query.order_by(Contributor.login.asc()).paginate(
         page, per_page=10,
         error_out=False
     )
