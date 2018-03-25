@@ -38,6 +38,7 @@ class CreateTrelloCard(Task):
             name=name,
             desc=self._card_body()
         )
+        self._persist_card_to_database()
 
     def _card_body(self):
         """Abstract helper method.
@@ -45,4 +46,8 @@ class CreateTrelloCard(Task):
         Internal helper to format the trello card body, based on the data
         passed in.
         """
+        pass
+
+    def _persist_card_to_database(self):
+        # TODO: add to the database as well in the concrete classes
         pass

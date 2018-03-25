@@ -28,6 +28,7 @@ def index():
             _r = Repo(
                 name=r.name,
                 url=r.html_url,
+                github_repo_id=r.id
             )
             # Add repository to database
             db.session.add(_r)
