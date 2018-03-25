@@ -29,21 +29,21 @@ class Config:
 class DevelopmentConfig(Config):
     """Configuration for development environment."""
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         f'postgresql://{os.environ.get("DATABASE_USERNAME")}@localhost/gello-dev'
 
 
 class TestingConfig(Config):
     """Configuration for testing environment."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         f'postgresql://{os.environ.get("DATABASE_USERNAME")}@localhost/gello-test'
     WTF_CSRF_ENABLED = False
 
 
 class ProductionConfig(Config):
     """Configuration for testing production."""
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         f'postgresql://{os.environ.get("DATABASE_USERNAME")}@localhost/gello-prod'
 
     @classmethod

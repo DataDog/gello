@@ -101,3 +101,13 @@ celery worker -A celery_worker.celery --loglevel=info
 pyenv activate v-3.6.4
 python manage.py runserver
 ```
+
+
+## Deployment to heroku
+
+```
+heroku login
+heroku apps:create
+heroku addons:create heroku-redis -a your_app_name
+heroku addons:create heroku-postgresql
+```
