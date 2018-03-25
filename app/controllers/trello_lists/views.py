@@ -6,7 +6,7 @@ lists-related routes and view-specific logic.
 """
 
 from flask import render_template, request, current_app
-from flask.ext.login import login_required
+from flask_login import login_required
 from . import trello_list
 from ...models import Board, List
 

@@ -10,8 +10,8 @@ import os
 
 from app import create_app, db
 from app.models import User, Repo
-from flask.ext.script import Manager, Shell
-from flask.ext.migrate import Migrate, MigrateCommand
+from flask_script import Manager, Shell
+from flask_migrate import Migrate, MigrateCommand
 
 if os.path.exists('.env'):
     print('Importing environment from .env...')
@@ -43,7 +43,7 @@ def test():
 @manager.command
 def deploy():
     """Migrate database to latest revision"""
-    from flask.ext.migrate import upgrade
+    from flask_migrate import upgrade
     upgrade()
 
 

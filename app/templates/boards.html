@@ -30,14 +30,13 @@
           </a>
         </td>
         <td>
-          <!-- TODO: some sort of python join -->
-          {% for repo in board.repos %}
-            <a href="/repos/issues/{{ repo.id }}">{{ repo.name }}</a>
-          {% endfor %}
+          <a href="repos/{{ board.id }}">
+            <b>({{ board.repos.count() }})</b> repos subscribed
+          </a>
         </td>
         <td>
           <a href="lists/{{ board.id }}">
-            <b>({{ board.lists.count() }})</b> lists for {{ board.name }}
+            <b>({{ board.lists.count() }})</b> lists
           </a>
         </td>
       </tr>

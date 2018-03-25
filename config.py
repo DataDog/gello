@@ -19,6 +19,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'bad_secret_key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SSL_DISABLE = False
 
     @staticmethod

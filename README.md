@@ -107,7 +107,10 @@ python manage.py runserver
 
 ```
 heroku login
-heroku apps:create
+heroku apps:create --buildpack heroku/python
 heroku addons:create heroku-redis -a your_app_name
 heroku addons:create heroku-postgresql
+
+# Verify REDIS and DATABASE exist
+heroku addons
 ```

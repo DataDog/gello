@@ -6,14 +6,14 @@
 
 {% block page_content %}
   <div class="page-header">
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
       <h1>Hello, {{ current_user.username }}.</h1>
     {% else %}
       <h1>Please <a href="{{ url_for('auth.login') }}">login</a>.</h1>
     {% endif %}
   </div>
 
-  {% if current_user.is_authenticated() %}
+  {% if current_user.is_authenticated %}
     <div class="repo-tabs">
       <ul class="nav nav-tabs">
         <li>
