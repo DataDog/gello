@@ -71,7 +71,7 @@ def create_app(config_name):
     from .controllers.contributors import contributor as contributor_blueprint
     app.register_blueprint(contributor_blueprint, url_prefix='/contributors')
 
-    from .controllers.trello_lists import trello_list as list_blueprint
-    app.register_blueprint(list_blueprint, url_prefix='/boards/lists')
+    from .controllers.trello_lists import trello_list as trello_list_blueprint
+    app.register_blueprint(trello_list_blueprint, url_prefix='/boards/lists')
 
     return app

@@ -18,16 +18,10 @@ def index(id):
     Displays trello lists pertaining to a particular board.
     """
     board = Board.query.get_or_404(id)
-    page = request.args.get('page', 1, type=int)
-
-    pagination = board.lists.order_by(List.timestamp.asc()).paginate(
-        page, per_page=10, error_out=False
-    )
-    lists = pagination.items
+    lists = board.lists.order_by(List.timestamp.asc())
 
     return render_template(
         'trello_lists.html',
         board=board,
-        lists=lists,
-        pagination=pagination
+        lists=lists
     )
