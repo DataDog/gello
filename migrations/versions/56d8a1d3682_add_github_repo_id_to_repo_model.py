@@ -16,7 +16,7 @@ down_revision = '307445dfeda'
 def upgrade():
     op.add_column(
         'repos',
-        sa.Column('github_repo_id', sa.String(length=64), nullable=False)
+        sa.Column('github_repo_id', sa.Integer(), nullable=False)
     )
     op.create_index(
         'ix_repos_github_repo_id', 'repos', ['github_repo_id'], unique=True
