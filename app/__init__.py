@@ -5,6 +5,7 @@
 Create a modular flask application with database.
 """
 
+import os
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -72,3 +73,6 @@ def create_app(config_name):
     app.register_blueprint(trello_list_blueprint, url_prefix='/boards/lists')
 
     return app
+
+
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')

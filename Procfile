@@ -1,2 +1,3 @@
-web: python manage.py runserver
+web: gunicorn app:app
 worker: celery worker -A celery_worker.celery --loglevel=info
+release: python manage.py db upgrade

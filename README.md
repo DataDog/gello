@@ -105,12 +105,31 @@ python manage.py runserver
 
 ## Deployment to heroku
 
-```
+```bash
+# Login with your heroku credentials
 heroku login
+
+# Create your application
 heroku apps:create --buildpack heroku/python
+
+# Add redis for celery
 heroku addons:create heroku-redis -a your_app_name
+
+# Add postgresql for database
 heroku addons:create heroku-postgresql
 
 # Verify REDIS and DATABASE exist
 heroku addons
+
+# Push the code to heroku
+git push heroku master
+
+# Configure your environment variables
+# TODO: try to do this through the command line
+
+# Start the celery worker on a dyno
+heroku ps:scale worker=1
+
+# Open the application
+heroku open
 ```
