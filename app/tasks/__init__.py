@@ -10,7 +10,7 @@ from .. import celery
 from .create_trello_card import CreateTrelloCard
 from .create_issue_card import CreateIssueCard
 from .create_pull_request_card import CreatePullRequestCard
-from .event_receiver import GitHubReceiver
+from .github_receiver import GitHubReceiver
 
 
 def _register_tasks():

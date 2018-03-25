@@ -20,7 +20,7 @@ class TrelloService(object):
     def boards(self):
         return self.client.list_boards()
 
-    def create_card(self, board_id: str, list_id: str, name: str, desc: str):
+    def create_card(self, board_id, list_id, name, desc):
         """Creates a card on a board, and a list.
 
         Args:

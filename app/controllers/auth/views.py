@@ -17,7 +17,7 @@ from .forms import LoginForm
 def before_request():
     """"""
     if current_user.is_authenticated():
-        print("User authenticated.")
+        print('User authenticated.')
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -49,7 +49,7 @@ def create_account():
     # Create admin user
     user = User(
         username='admin',
-        name="Admin User",
+        name='Admin User',
         email=os.environ.get('ADMIN_EMAIL'),
         password=os.environ.get('ADMIN_PASSWORD')
     )

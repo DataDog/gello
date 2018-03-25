@@ -12,7 +12,7 @@ from ..services import TrelloService
 class CreateTrelloCard(Task):
     """An abstract class that creates a trello card on a board."""
 
-    def run(self, board_id: str, list_id: str, name: str, metadata: dict):
+    def run(self, board_id, list_id, name, metadata):
         """Performs validations on the event type and enqueues them.
 
         Validates the event being received is a GitHub Pull Request event or a

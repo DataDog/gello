@@ -15,7 +15,6 @@ from flask.ext.pagedown.fields import PageDownField
 
 class RepoForm(Form):
     """"""
-    body = PageDownField("What's on your mind?", validators=[Required()])
     submit = SubmitField('Submit')
 
 
