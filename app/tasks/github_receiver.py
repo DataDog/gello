@@ -9,7 +9,7 @@ celery task, which is enqueued in the receivers task queue.
 from celery.task import Task
 from . import CreateIssueCard, CreatePullRequestCard
 # from .. import db
-from ..models import Board, Repo
+from ..models import Board, Contributor, Repo
 
 
 class GitHubReceiver(Task):
@@ -24,22 +24,43 @@ class GitHubReceiver(Task):
         """
         print('Run GitHub receiver task')
         self.payload = payload
+
+        # Don't create a card if the user belongs to the organization
+        if self._user_in_organization():
+            print('The user belongs to the organization, not creating card.')
+            return
+
         self._enqueue_task()
+
+    def _user_in_organization(self):
+        """Checks if the person is in the organization.
+
+        Returns:
+            Boolean: `true` if the user belongs to the organization
+        """
+        contributor = Contributor.query.filter_by(
+            member_id=self.payload['issue']['user']['id']
+        ).first()
+
+        return contributor is not None
 
     def _enqueue_task(self):
         """Enqueues a EventAction task based on the payload parameters."""
         # if invalid repository, early return
         repo = Repo.query.filter_by(
-            github_repo_id=self.payload['repository']['id']).first()
+            github_repo_id=self.payload['repository']['id']
+        ).first()
 
         # The repository must exist
         if repo is None:
+            print('The repository does not exist in the database.')
             return
 
         board = Board.query.filter_by(trello_board_id=repo.board_id).first()
 
         # The repository must belong to a board
         if board is None:
+            print('The repository does not belong to a trello board.')
             return
 
         if self.payload['issue']:
