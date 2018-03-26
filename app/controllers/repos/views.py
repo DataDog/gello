@@ -38,5 +38,6 @@ def index():
         'repos.html',
         repos=repos,
         form=form,
-        pagination=pagination
+        pagination=pagination,
+        organization_name=current_app.config.get('GITHUB_ORG_LOGIN')
     )

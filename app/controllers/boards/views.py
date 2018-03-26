@@ -39,5 +39,6 @@ def index():
         'boards.html',
         boards=boards,
         form=form,
-        pagination=pagination
+        pagination=pagination,
+        organization_name=current_app.config.get('GITHUB_ORG_LOGIN')
     )
