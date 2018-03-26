@@ -18,8 +18,21 @@ class CreateIssueCard(CreateTrelloCard):
         Internal helper to format the trello card body, based on the data
         passed in.
         """
+        title = self.metadata['issue']['title']
+        url = self.metadata['issue']['html_url']
+        body = self.metadata['issue']['body']
+        user = self.metadata['issue']['user']['login']
+        user_url = self.metadata['issue']['user']['html_url']
+
         return textwrap.dedent(
-            """
-            ### [GitHub Issue]({self.metadata['url']})
+            f"""
+            # GitHub Issue Opened By Community Member
+            ___
+            - Issue link: [{title}]({url})
+            - Opened by: [{user}]({user_url})
+            ___
+            ### Issue Body
+            ___
+            {body}
             """
         )
