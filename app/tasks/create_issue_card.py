@@ -33,6 +33,5 @@ class CreateIssueCard(CreateTrelloCard):
             ___
             ### Issue Body
             ___
-            {body}
             """
-        )
+        ) + body

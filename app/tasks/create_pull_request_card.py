@@ -33,6 +33,5 @@ class CreatePullRequestCard(CreateTrelloCard):
             ___
             ### Pull Request Body
             ___
-            {body}
             """
-        )
+        ) + body
