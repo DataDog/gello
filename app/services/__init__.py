@@ -10,3 +10,4 @@ from .trello_service import TrelloService
 from .board_service import BoardService
 from .subscription_service import SubscriptionService
 from .repo_service import RepoService
+from .contributor_service import ContributorService
