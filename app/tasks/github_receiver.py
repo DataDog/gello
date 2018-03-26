@@ -8,8 +8,7 @@ celery task, which is enqueued in the receivers task queue.
 
 from celery.task import Task
 from . import CreateIssueCard, CreatePullRequestCard
-# from .. import db
-from ..models import Board, Contributor, Repo
+from ..models import Subscription, Contributor, Repo, Board
 
 
 class GitHubReceiver(Task):
@@ -46,7 +45,6 @@ class GitHubReceiver(Task):
 
     def _enqueue_task(self):
         """Enqueues a EventAction task based on the payload parameters."""
-        # if invalid repository, early return
         repo = Repo.query.filter_by(
             github_repo_id=self.payload['repository']['id']
         ).first()
@@ -56,17 +54,29 @@ class GitHubReceiver(Task):
             print('The repository does not exist in the database.')
             return
 
-        board = Board.query.filter_by(trello_board_id=repo.board_id).first()
+        # Get all of the subscriptions related to a repository
+        subscriptions = Subscription.query.filter_by(repo_id=repo.github_repo_id)
 
-        # The repository must belong to a board
-        if board is None:
-            print('The repository does not belong to a trello board.')
-            return
+        for subscription in subscriptions:
+            # TODO: research a better query for this
+            trello_lists = Board.query.filter_by(
+                trello_board_id=subscription.board_id).first().lists
 
+            # Only create a card on an active list
+            active_lists = filter(lambda s: s.active, trello_lists)
+
+            for trello_list in active_lists:
+                self._create_card(
+                    board_id=subscription.board_id,
+                    list_id=trello_list.trello_list_id
+                )
+
+    def _create_card(self, board_id, list_id):
+        """Determines which type of card to create based on the payload."""
         if self.payload['issue']:
-            self._create_trello_issue_card(repo.board_id, board.list_id)
+            self._create_trello_issue_card(board_id, list_id)
         elif self.payload['pull_request']:
-            self._create_trello_pull_request_card(repo.board_id, board.list_id)
+            self._create_trello_pull_request_card(board_id, list_id)
         else:
             raise ValueError('Unsupported event action.')
 
