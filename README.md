@@ -80,16 +80,6 @@ A community-opened issue on a public GitHub repository.
 belongs_to :repositories
 ```
 
-## Why _Gello_?
-Gello was named because it bridges the gap between the GitHub API and the Trello API.
-
-## Features
-- autocard, yes/no
-- someone from the team would triage it (come up with slash command /schedule)
-- open a card based on that
-- noisy enough they get attention, but not noisy enough they get ignored
-
-
 ## Development Setup
 
 ```
@@ -101,7 +91,6 @@ celery worker -A celery_worker.celery --loglevel=info
 pyenv activate v-3.6.4
 python manage.py runserver
 ```
-
 
 ## Deployment to heroku
 
@@ -139,3 +128,6 @@ heroku ps:scale worker=1
 # Open the application
 heroku open
 ```
+
+## Why _Gello_?
+Gello was named because it bridges the gap between the GitHub API and the Trello API.
