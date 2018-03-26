@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Subscriptions{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Subscriptions</h1>
+  </div>
+
+  <table class="table table-hover subscriptions">
+    <thead>
+      <tr>
+        <th>Board ID</th>
+        <th>Board Name</th>
+        <th>Repository ID</th>
+        <th>Repository Name</th>
+        <th>Autocard</th>
+      </tr>
+    </thead>
+
+    {% for subscription in subscriptions %}
+      <tr>
+        <td>{{ subscription.board_id }}</td>
+        <td></td>
+        <td>{{ subscription.repo_id }}</td>
+        <td></td>
+        <td>{{ subscription.autocard }}</td> <!-- TODO: make this a checkbox - do a form for each entry -->
+      </tr>
+    {% endfor %}
+  </table>
+
+  <hr>
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
+
+  <h3>Create New Subscription</h3>
+  <div>
+    {{ wtf.quick_form(form) }}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}

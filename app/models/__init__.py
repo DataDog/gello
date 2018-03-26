@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""models.py
+"""models/__init__.py
 
 Models-related logic.
 """

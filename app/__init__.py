@@ -72,6 +72,9 @@ def create_app(config_name):
     from .controllers.trello_lists import trello_list as trello_list_blueprint
     app.register_blueprint(trello_list_blueprint, url_prefix='/boards/lists')
 
+    from .controllers.subscriptions import subscription as subscription_blueprint
+    app.register_blueprint(subscription_blueprint, url_prefix='/subscriptions')
+
     return app
 
 
