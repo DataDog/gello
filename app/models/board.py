@@ -7,6 +7,7 @@ Board model.
 
 from datetime import datetime
 from .. import db
+from . import Subscription
 
 
 class Board(db.Model):
@@ -22,3 +23,10 @@ class Board(db.Model):
     # Associations
     repos = db.relationship('Repo', backref='board', lazy='dynamic')
     lists = db.relationship('List', backref='board', lazy='dynamic')
+    subscription = db.relationship(
+        'Subscription',
+        foreign_keys=[Subscription.board_id],
+        backref=db.backref('board_subscription', lazy='joined'),
+        lazy='dynamic',
+        cascade='all, delete-orphan'
+    )

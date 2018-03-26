@@ -7,6 +7,7 @@ Repo model.
 
 from datetime import datetime
 from .. import db
+from . import Subscription
 
 
 class Repo(db.Model):
@@ -24,4 +25,11 @@ class Repo(db.Model):
     issues = db.relationship('Issue', backref='repo', lazy='dynamic')
     pull_requests = db.relationship(
         'PullRequest', backref='repo', lazy='dynamic'
+    )
+    subscriptions = db.relationship(
+        'Subscription',
+        foreign_keys=[Subscription.repo_id],
+        backref=db.backref('repo_subscription', lazy='joined'),
+        lazy='dynamic',
+        cascade='all, delete-orphan'
     )
