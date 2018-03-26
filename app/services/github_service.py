@@ -17,10 +17,6 @@ class GitHubService(object):
         self.client = GitHubAPIClient().client()
         self.organization = self._get_organization()
 
-    def users(self):
-        """Returns a dictionary of the organization's users."""
-        pass
-
     def repos(self):
         """Returns an array of the organization's public repos."""
         return self.organization.get_repos(type='public')
@@ -30,10 +26,12 @@ class GitHubService(object):
         return self.organization.get_members()
 
     def create_github_hook(self, repository):
-        """Creates a repository webhook."""
+        """XXX: after mvp
+        Creates a repository webhook."""
         pass
 
     def _get_organization(self):
+        """XXX: handle error case where the organization does not exist"""
         orgs = self.client.get_user().get_orgs()
         return next(
             o for o in orgs if o.login == environ.get('GITHUB_ORG_LOGIN')
