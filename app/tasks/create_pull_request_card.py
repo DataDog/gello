@@ -20,6 +20,6 @@ class CreatePullRequestCard(CreateTrelloCard):
         """
         return textwrap.dedent(
             f"""
-            ### GitHub Pull Request - {self.metadata['name']}
+            ### GitHub Pull Request - {self.metadata['pull_request']['title']}
             """
         )

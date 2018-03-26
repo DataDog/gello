@@ -25,9 +25,9 @@ class GitHubReceiver(Task):
         self.payload = payload
 
         # Don't create a card if the user belongs to the organization
-        if self._user_in_organization():
-            print('The user belongs to the organization, not creating card.')
-            return
+        # if self._user_in_organization():
+        #    print('The user belongs to the organization, not creating card.')
+        #    return
 
         self._enqueue_task()
 
@@ -73,9 +73,9 @@ class GitHubReceiver(Task):
 
     def _create_card(self, board_id, list_id):
         """Determines which type of card to create based on the payload."""
-        if self.payload['issue']:
+        if 'issue' in self.payload:
             self._create_trello_issue_card(board_id, list_id)
-        elif self.payload['pull_request']:
+        elif 'pull_request' in self.payload:
             self._create_trello_pull_request_card(board_id, list_id)
         else:
             raise ValueError('Unsupported event action.')
@@ -94,6 +94,6 @@ class GitHubReceiver(Task):
         CreatePullRequestCard.delay(
             board_id=board_id,
             list_id=list_id,
-            name=self.payload['issue']['title'],
+            name=self.payload['pull_request']['title'],
             metadata=self.payload
         )

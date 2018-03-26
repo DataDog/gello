@@ -45,6 +45,6 @@ def update(board_id, list_id):
         db.session.commit()
         flash('The list has been updated')
     else:
-        flash('ERROR The list has NOT been updated.')
+        flash('ERROR The list has NOT been updated')
 
     return redirect(url_for('.index', id=board_id))
