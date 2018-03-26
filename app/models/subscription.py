@@ -14,10 +14,10 @@ class Subscription(db.Model):
 
     # Attributes
     board_id = db.Column(
-        db.Integer, db.ForeignKey('boards.id'), primary_key=True
+        db.String(64), db.ForeignKey('boards.trello_board_id'), primary_key=True
     )
     repo_id = db.Column(
-        db.Integer, db.ForeignKey('repos.id'), primary_key=True
+        db.Integer, db.ForeignKey('repos.github_repo_id'), primary_key=True
     )
     autocard = db.Column(db.Boolean, default=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

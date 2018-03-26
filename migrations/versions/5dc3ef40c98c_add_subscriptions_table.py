@@ -16,12 +16,12 @@ down_revision = '56d8a1d3682'
 def upgrade():
     op.create_table(
         'subscriptions',
-        sa.Column('board_id', sa.Integer(), nullable=False),
+        sa.Column('board_id', sa.String(length=64), nullable=False),
         sa.Column('repo_id', sa.Integer(), nullable=False),
         sa.Column('autocard', sa.Boolean(), nullable=False),
         sa.Column('timestamp', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['board_id'], ['boards.id']),
-        sa.ForeignKeyConstraint(['repo_id'], ['repos.id']),
+        sa.ForeignKeyConstraint(['board_id'], ['boards.trello_board_id']),
+        sa.ForeignKeyConstraint(['repo_id'], ['repos.github_repo_id']),
         sa.PrimaryKeyConstraint('board_id', 'repo_id')
     )
 

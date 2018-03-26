@@ -12,12 +12,13 @@ from wtforms.validators import Required, Length
 
 class NewSubscriptionForm(Form):
     """Form for creating a new subscription."""
+
     repo_id = StringField(
         'Repo ID',
         validators=[Required(), Length(1, 64)]
     )
     board_id = StringField(
-        'Repo ID',
+        'Board ID',
         validators=[Required(), Length(1, 64)]
     )
     autocard = BooleanField('Autocard')

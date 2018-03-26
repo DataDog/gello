@@ -10,15 +10,31 @@ from flask import render_template, redirect, url_for, flash, request,\
 from flask_login import login_required
 from . import subscription
 from .forms import NewSubscriptionForm
-from ... import db
 from ...models import Subscription
+from ...services import SubscriptionService
+
+subscription_service = SubscriptionService()
 
 
 @subscription.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
     """Updates the repositories saved on POST request."""
-    form = NewSubscriptionForm()
+    # Creation form logic
+    create_form = NewSubscriptionForm()
+    if create_form.validate_on_submit():
+        subscription_service.create(
+            board_id=create_form.board_id.data,
+            repo_id=int(create_form.repo_id.data), # TODO some sort of type checking before this
+            autocard=create_form.autocard.data
+        )
+        flash('Created subscription')
+        return redirect(url_for('.index'))
+
+    # delete_form = DeleteSubscriptionForm()
+    # flash('Deleted subscription')
+    # return redirect(url_for('.index'))
+
     page = request.args.get('page', 1, type=int)
     query = Subscription.query
     pagination = query.order_by(Subscription.timestamp.desc()).paginate(
@@ -30,24 +46,6 @@ def index():
     return render_template(
         'subscriptions.html',
         subscriptions=subscriptions,
-        form=form,
+        form=create_form,
         pagination=pagination
     )
-
-
-@subscription.route('/create', methods=['POST'])
-@login_required
-def create():
-    """Creates a new subscription."""
-    flash('Created subscription')
-    return redirect(url_for('.index'))
-
-
-@subscription.route('/delete/<int:id>', methods=['POST'])
-@login_required
-def delete(id):
-    """Deletes an old subscription."""
-    # id is a string "{board_id}|{repo_id}"
-    # TODO: split the string
-    flash('Deleted subscription')
-    return redirect(url_for('.index'))

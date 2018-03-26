@@ -41,17 +41,3 @@ def index():
         form=form,
         pagination=pagination
     )
-
-
-@board.route('/repos/<int:id>', methods=['GET', 'POST'])
-@login_required
-def repos(int):
-    """Lists the repositories associated with a Trello board."""
-    # TODO: add form for adding new repositories (include github id, or something)
-    # Add subscription association (repo_id, and board_id, and autocard boolean)
-    # class Subscription(db.Model):
-    #     __tablename__ = 'subscriptions'
-    #     repo_id
-    #     board_id
-    #     autocard
-    pass

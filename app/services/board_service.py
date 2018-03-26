@@ -11,7 +11,8 @@ from ..models import Board, List
 
 
 class BoardService(object):
-    """
+    """CRUD persistent storage service.
+
     A class with the single responsibility of creating/mutating Board data.
     """
 
