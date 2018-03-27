@@ -30,56 +30,6 @@ Gello lets you select what members you wish to exclude from the. By default, it 
 ### Subscribe A Repository
 - talk about setting up the webhooks URL
 
-## Architecture (i.e., _How_)
-### Webhook Receiver
-A class with the single responsibility of receiving GitHub webhooks, and enqueuing celery tasks to run based on the type of webhook received.
-
-Each instance of the receiver is it's own celery task, which performs validations (i.e., check to see if user is outside of organization) before enqueuing the event action
-
-Types of webhooks that may be received:
-
-- [Issues](https://developer.github.com/v3/activity/events/types/#issuesevent)
-- [Pull Requests](https://developer.github.com/v3/activity/events/types/#pullrequestevent)
-- [Pull Request Comments](https://developer.github.com/v3/activity/events/types/#pullrequestreviewcommentevent)
-- [Pull Request Reviews](https://developer.github.com/v3/activity/events/types/#pullrequestreviewevent)
-
-### Organization Service
-- Checks to see if the GitHub user is outside of the organization. If they are, return true
-
-### Event Actions
-Event actions are celery tasks to be enqueued and run in a queue. They follow the command design pattern. Event actions should strive be as stateless as possible
-
-### Models
-**Repository**
-
-A public GitHub repository.
-
-```python
-has_many :contributors
-
-# Issues for a repository, opened by non-contributors
-has_many :issues, dependent: :destroy
-
-# Pull Requests for a repository, opened by non-contributors
-has_many :pull_requests, dependent: :destroy
-```
-
-**Contributor**
-
-A contributor to a repository.
-
-```python
-belongs_to :repositories
-```
-
-**Issue**
-
-A community-opened issue on a public GitHub repository.
-
-```python
-belongs_to :repositories
-```
-
 ## Development Setup
 
 ```
@@ -92,7 +42,7 @@ pyenv activate v-3.6.4
 python manage.py runserver
 ```
 
-## Deployment to heroku
+## Deployment to Heroku
 
 ```bash
 # Login with your heroku credentials
