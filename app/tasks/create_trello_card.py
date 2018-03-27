@@ -31,6 +31,7 @@ class CreateTrelloCard(Task):
         """
         self.metadata = metadata
         self.board_id = board_id
+        self._repo_id = self.metadata['repository']['id']
 
         TrelloService().create_card(
             board_id=board_id,
