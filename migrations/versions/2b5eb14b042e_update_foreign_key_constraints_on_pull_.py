@@ -13,10 +13,14 @@ down_revision = '23f172a581d1'
 
 
 def upgrade():
+    op.drop_constraint('issues_repo_id_fkey', 'issues', type_='foreignkey')
     op.create_foreign_key(
         'fk_issues_repo_id_repos',
         'issues', 'repos',
         ['repo_id'], ['github_repo_id'],
+    )
+    op.drop_constraint(
+        'pull_requests_repo_id_fkey', 'pull_requests', type_='foreignkey'
     )
     op.create_foreign_key(
         'fk_pull_requests_repo_id_repos',
@@ -26,7 +30,17 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_constraint('fk_issues_repo_id_repos', 'issues', type_='foreignkey')
     op.drop_constraint(
-        'fk_pull_requests_repo_id_repos', 'issues', type_='foreignkey'
+        'fk_pull_requests_repo_id_repos', 'pull_requests', type_='foreignkey'
+    )
+    op.create_foreign_key(
+        'pull_requests_repo_id_fkey',
+        'pull_requests', 'repos',
+        ['repo_id'], ['id'],
+    )
+    op.drop_constraint('fk_issues_repo_id_repos', 'issues', type_='foreignkey')
+    op.create_foreign_key(
+        'issues_repo_id_fkey',
+        'issues', 'repos',
+        ['repo_id'], ['id'],
     )
