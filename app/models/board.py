@@ -21,7 +21,6 @@ class Board(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     # Associations
-    repos = db.relationship('Repo', backref='board', lazy='dynamic')
     lists = db.relationship('List', backref='board', lazy='dynamic')
     subscription = db.relationship(
         'Subscription',

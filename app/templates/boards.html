@@ -15,7 +15,6 @@
         <th>Trello ID</th>
         <th>Name</th>
         <th>URL</th>
-        <th>Repositories subscribed</th>
         <th>Board lists</th>
       </tr>
     </thead>
@@ -27,11 +26,6 @@
         <td>
           <a href="{{ board.url }}">
             {{ board.url }}
-          </a>
-        </td>
-        <td>
-          <a href="repos/{{ board.id }}">
-            <b>({{ board.repos.count() }})</b> repos subscribed
           </a>
         </td>
         <td>

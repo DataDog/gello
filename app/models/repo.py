@@ -21,7 +21,6 @@ class Repo(db.Model):
     github_repo_id = db.Column(db.Integer, unique=True)
 
     # Associations
-    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     issues = db.relationship('Issue', backref='repo', lazy='dynamic')
     pull_requests = db.relationship(
         'PullRequest', backref='repo', lazy='dynamic'
