@@ -21,7 +21,7 @@ class GitHubReceiver(Task):
         GitHub Issue event, and then enqueues it in the corresponding events
         queue.
         """
-        print('Run GitHub receiver task')
+        print('Run GitHub receiver task.')
         self.payload = payload
         self._enqueue_task()
 
