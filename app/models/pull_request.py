@@ -17,6 +17,7 @@ class PullRequest(db.Model):
     name = db.Column(db.String(64), unique=True)
     url = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    github_pull_request_id = db.Column(db.Integer, unique=True)
 
     # Associations
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))

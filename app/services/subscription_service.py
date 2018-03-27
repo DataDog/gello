@@ -5,11 +5,12 @@
 Service-helpers for creating and mutating subscription data.
 """
 
+from . import CRUDService
 from .. import db
 from ..models import Subscription
 
 
-class SubscriptionService(object):
+class SubscriptionService(CRUDService):
     """CRUD persistent storage service.
 
     A class with the single responsibility of creating/mutating Subscription
