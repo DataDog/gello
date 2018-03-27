@@ -50,6 +50,6 @@ class CreatePullRequestCard(CreateTrelloCard):
         self._pull_request_service.create(
             name=self._title,
             url=self._url,
-            github_issue_id=self._id,
+            github_pull_request_id=self._id,
             repo_id=self._repo_id
         )
