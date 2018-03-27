@@ -77,7 +77,7 @@ class GitHubReceiver(Task):
         elif autocard and 'pull_request' in self.payload:
             self._create_trello_pull_request_card(board_id, list_id)
         else:
-            raise ValueError('Unsupported event action.')
+            print('Unsupported event action.')
 
     def _create_manual_card(self, board_id, list_id):
         """Creates a task to create a trello card."""

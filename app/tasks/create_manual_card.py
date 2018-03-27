@@ -59,4 +59,4 @@ class CreateManualCard(CreateTrelloCard):
         elif 'pull_request' in self.metadata:
             return 'pull_request'
         else:
-            raise ValueError('Unsupported event action.')
+            print('Unsupported event action.')
