@@ -27,7 +27,7 @@
 
         <form method="POST" action="/boards/lists/{{ board.id }}/update/{{ trello_list.id }}">
           <td>{{ form.active(value=trello_list.active) }}</td>
-          <td>{{ form.submit }}</td>
+          <td>{{ form.submit(class="btn btn-primary") }}</td>
         </form>
       </tr>
     {% endfor %}

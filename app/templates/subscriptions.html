@@ -26,10 +26,10 @@
         <td>{{ subscription.repo_id }}</td>
         <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/update">
           <td>{{ update_form.autocard(value=subscription.autocard) }}</td>
-          <td>{{ update_form.submit }}</td>
+          <td>{{ update_form.submit(class="btn btn-primary") }}</td>
         </form>
         <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/delete">
-          <td>{{ delete_form.submit }}</td>
+          <td>{{ delete_form.submit(class="btn btn-danger") }}</td>
         </form>
       </tr>
     {% endfor %}
