@@ -29,8 +29,7 @@ def index():
     page = request.args.get('page', 1, type=int)
     query = Repo.query
     pagination = query.order_by(Repo.timestamp.desc()).paginate(
-        page, per_page=10,
-        error_out=False
+        page, per_page=10, error_out=False
     )
     repos = pagination.items
 
