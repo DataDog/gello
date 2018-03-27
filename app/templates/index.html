@@ -70,12 +70,12 @@
         {% endfor %}
       </table>
     </div>
-  {% endif %}
 
-  {% if pagination %}
-    <div class="pagination">
-      {{ macros.pagination_widget(pagination, '.index') }}
-    </div>
+    {% if pagination %}
+      <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.index') }}
+      </div>
+    {% endif %}
   {% endif %}
 {% endblock %}
 
