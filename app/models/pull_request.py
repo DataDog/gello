@@ -20,4 +20,4 @@ class PullRequest(db.Model):
     github_pull_request_id = db.Column(db.Integer, unique=True)
 
     # Associations
-    repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))
+    repo_id = db.Column(db.Integer, db.ForeignKey('repos.github_repo_id'))

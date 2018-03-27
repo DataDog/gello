@@ -20,4 +20,4 @@ class Issue(db.Model):
     github_issue_id = db.Column(db.Integer, unique=True)
 
     # Associations
-    repo_id = db.Column(db.Integer, db.ForeignKey('repos.id'))
+    repo_id = db.Column(db.Integer, db.ForeignKey('repos.github_repo_id'))
