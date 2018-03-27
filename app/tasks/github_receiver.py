@@ -7,7 +7,7 @@ celery task, which is enqueued in the receivers task queue.
 """
 
 from celery.task import Task
-from . import CreateIssueCard, CreatePullRequestCard
+from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard
 from ..models import Subscription, Contributor, Repo, Board
 
 
@@ -23,12 +23,6 @@ class GitHubReceiver(Task):
         """
         print('Run GitHub receiver task')
         self.payload = payload
-
-        # Don't create a card if the user belongs to the organization
-        # if self._user_in_organization():
-        #    print('The user belongs to the organization, not creating card.')
-        #    return
-
         self._enqueue_task()
 
     def _user_in_organization(self):
@@ -38,7 +32,7 @@ class GitHubReceiver(Task):
             Boolean: `true` if the user belongs to the organization
         """
         contributor = Contributor.query.filter_by(
-            member_id=self.payload['issue']['user']['id']
+            member_id=self.payload['sender']['id']
         ).first()
 
         return contributor is not None
@@ -68,20 +62,43 @@ class GitHubReceiver(Task):
             for trello_list in active_lists:
                 self._create_card(
                     board_id=subscription.board_id,
-                    list_id=trello_list.trello_list_id
+                    list_id=trello_list.trello_list_id,
+                    autocard=subscription.autocard
                 )
 
-    def _create_card(self, board_id, list_id):
+    def _create_card(self, board_id, list_id, autocard):
         """Determines which type of card to create based on the payload."""
-        if 'issue' in self.payload:
+        if not autocard and 'comment' in self.payload and \
+           self._manual_command_string in self.payload['comment']['body']:
+            self._create_manual_card(board_id, list_id)
+        elif autocard and 'issue' in self.payload:
             self._create_trello_issue_card(board_id, list_id)
-        elif 'pull_request' in self.payload:
+        elif autocard and 'pull_request' in self.payload:
             self._create_trello_pull_request_card(board_id, list_id)
         else:
             raise ValueError('Unsupported event action.')
 
+    def _create_manual_card(self, board_id, list_id):
+        """Creates a task to create a trello card."""
+        # Don't create a card if the user DOES NOT belong to the organization
+        if not self._user_in_organization():
+            print('The user does not belong to the organization.')
+            return
+
+        CreateManualCard.delay(
+            board_id=board_id,
+            list_id=list_id,
+            name=f"Manual card created by ${self.payload['sender']['login']}",
+            metadata=self.payload
+        )
+
     def _create_trello_issue_card(self, board_id, list_id):
         """Creates a task to create a trello card."""
+        # Don't create a card if the user belongs to the organization
+        if self._user_in_organization():
+            print('The user belongs to the organization, not creating card.')
+            return
+
         CreateIssueCard.delay(
             board_id=board_id,
             list_id=list_id,
@@ -91,9 +108,18 @@ class GitHubReceiver(Task):
 
     def _create_trello_pull_request_card(self, board_id, list_id):
         """Creates a task to create a trello card."""
+        # Don't create a card if the user belongs to the organization
+        if self._user_in_organization():
+            print('The user belongs to the organization, not creating card.')
+            return
+
         CreatePullRequestCard.delay(
             board_id=board_id,
             list_id=list_id,
             name=self.payload['pull_request']['title'],
             metadata=self.payload
         )
+
+    def _manual_command_string(self):
+        """The command to create a card when `autocard` is disabled."""
+        return 'gello create_card'
