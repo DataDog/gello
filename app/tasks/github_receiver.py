@@ -69,7 +69,7 @@ class GitHubReceiver(Task):
     def _create_card(self, board_id, list_id, autocard):
         """Determines which type of card to create based on the payload."""
         if not autocard and 'comment' in self.payload and \
-           self._manual_command_string in self.payload['comment']['body']:
+           self._manual_command_string() in self.payload['comment']['body']:
             self._create_manual_card(board_id, list_id)
         elif autocard and 'issue' in self.payload:
             self._create_trello_issue_card(board_id, list_id)
