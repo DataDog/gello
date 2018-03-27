@@ -16,7 +16,6 @@ class Config:
         'redis://localhost:6379/0'
     CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL') or \
         'redis://localhost:6379/0'
-    DATABASE_USERNAME = os.environ.get('DATABASE_USERNAME')
     GITHUB_ORG_LOGIN = os.environ.get('GITHUB_ORG_LOGIN')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'bad_secret_key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
