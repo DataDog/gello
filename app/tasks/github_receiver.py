@@ -69,6 +69,7 @@ class GitHubReceiver(Task):
     def _create_card(self, board_id, list_id, autocard):
         """Determines which type of card to create based on the payload."""
         if not autocard and 'comment' in self.payload and \
+           self.payload['action'] == 'created' and \
            self._manual_command_string() in self.payload['comment']['body']:
             self._create_manual_card(board_id, list_id)
         elif autocard and 'issue' in self.payload:
@@ -88,7 +89,7 @@ class GitHubReceiver(Task):
         CreateManualCard.delay(
             board_id=board_id,
             list_id=list_id,
-            name=f"Manual card created by ${self.payload['sender']['login']}",
+            name=f"Manual card created by {self.payload['sender']['login']}",
             metadata=self.payload
         )
 
