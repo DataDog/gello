@@ -12,4 +12,4 @@ from wtforms import BooleanField, SubmitField
 class ListForm(Form):
     """Form for creating a new subscription."""
     active = BooleanField('Active')
-    submit = SubmitField('Update record')
+    submit = SubmitField('Update')

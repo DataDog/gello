@@ -28,6 +28,18 @@ class SubscriptionService(object):
         # Persists the subscription
         db.session.commit()
 
+    def update(self, board_id, repo_id, autocard):
+        """Updates a persisted subscription's autocard value."""
+        subscription = Subscription.query.get([board_id, repo_id])
+        subscription.autocard = autocard
+
+        # Persist the changes
+        db.session.commit()
+
     def delete(self, board_id, repo_id):
         """Deletes an old, persisted subscription."""
-        pass
+        Subscription.query.filter_by(
+            board_id=board_id, repo_id=repo_id).delete()
+
+        # Persist the changes
+        db.session.commit()

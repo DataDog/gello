@@ -49,5 +49,8 @@ class CreateTrelloCard(Task):
         pass
 
     def _persist_card_to_database(self):
-        # TODO: add to the database as well in the concrete classes
+        """Abstract helper method.
+
+        Internal helper to save the record created to the database.
+        """
         pass

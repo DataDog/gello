@@ -13,20 +13,24 @@
     <thead>
       <tr>
         <th>Board ID</th>
-        <th>Board Name</th>
         <th>Repository ID</th>
-        <th>Repository Name</th>
         <th>Autocard</th>
+        <th>Update Subscription</th>
+        <th>Delete Subscription</th>
       </tr>
     </thead>
 
-    {% for subscription in subscriptions %}
+    {% for subscription, update_form, delete_form in subscription_forms_tuples %}
       <tr>
         <td>{{ subscription.board_id }}</td>
-        <td></td>
         <td>{{ subscription.repo_id }}</td>
-        <td></td>
-        <td>{{ subscription.autocard }}</td> <!-- TODO: make this a checkbox - do a form for each entry -->
+        <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/update">
+          <td>{{ update_form.autocard(value=subscription.autocard) }}</td>
+          <td>{{ update_form.submit }}</td>
+        </form>
+        <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/delete">
+          <td>{{ delete_form.submit }}</td>
+        </form>
       </tr>
     {% endfor %}
   </table>
@@ -41,7 +45,7 @@
 
   <h3>Create New Subscription</h3>
   <div>
-    {{ wtf.quick_form(form) }}
+    {{ wtf.quick_form(create_form) }}
   </div>
 {% endblock %}
 
