@@ -15,14 +15,16 @@
 
 {% block page_content %}
   <div class="page-header">
-    <h1>Issues for <b>{{ repo.name }}</b></h1>
+    <h1>Issue-related Trello Cards for <b>{{ repo.name }}</b></h1>
   </div>
 
   <table class="table table-hover issues">
     <thead>
       <tr>
         <th>Name</th>
-        <th>URL</th>
+        <th>GitHub URL</th>
+        <th>Trello Card URL</th>
+        <th>Trello Card ID</th>
       </tr>
     </thead>
 
@@ -34,6 +36,12 @@
           {{ issue.url }}
         </a>
       </td>
+      <td>
+        <a href="{{ issue.trello_card_url }}">
+          {{ issue.trello_card_url }}
+        </a>
+      </td>
+      <td>{{ issue.trello_card_id }}</td>
     </tr>
     {% endfor %}
   </table>

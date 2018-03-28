@@ -15,14 +15,14 @@
 Creates a card with a name and body on a given Trello board.
 """
 
-from celery.task import Task
+from . import GitHubBaseTask
 from ..services import TrelloService
 
 
-class CreateTrelloCard(Task):
+class CreateTrelloCard(GitHubBaseTask):
     """An abstract class that creates a trello card on a board."""
 
-    def run(self, board_id, list_id, name, metadata):
+    def run(self, board_id, list_id, name, payload):
         """Performs validations on the event type and enqueues them.
 
         Validates the event being received is a GitHub Pull Request event or a
@@ -33,23 +33,26 @@ class CreateTrelloCard(Task):
             board_id (str):  The id of the board the card will be created on.
             list_id (str):   The id of the list the card will be created on.
             name (str):      The name of the card.
-            metadata (dict): The card-specific data, used in the `_card_body`
+            payload (dict): The card-specific data, used in the `_card_body`
                              template method.
 
         Returns:
             None
         """
-        self.metadata = metadata
-        self.board_id = board_id
-        self._repo_id = self.metadata['repository']['id']
+        self.payload = payload
+        self.set_scope_data()
+        self._repo_id = self.payload['repository']['id']
 
-        TrelloService().create_card(
+        # Create a trello card on a given board, and list
+        card = TrelloService().create_card(
             board_id=board_id,
             list_id=list_id,
             name=name,
             desc=self._card_body()
         )
-        self._persist_card_to_database()
+
+        # Persist the card object to the database
+        self._persist_card_to_database(card=card)
 
     def _card_body(self):
         """Abstract helper method.
@@ -59,7 +62,7 @@ class CreateTrelloCard(Task):
         """
         pass
 
-    def _persist_card_to_database(self):
+    def _persist_card_to_database(self, card):
         """Abstract helper method.
 
         Internal helper to save the record created to the database.
