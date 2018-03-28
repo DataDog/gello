@@ -71,13 +71,13 @@ class GitHubReceiver(GitHubBaseTask):
             active_lists = filter(lambda s: s.active, trello_lists)
 
             for trello_list in active_lists:
-                self._create_card(
+                self._handle_card(
                     board_id=subscription.board_id,
                     list_id=trello_list.trello_list_id,
                     autocard=subscription.autocard
                 )
 
-    def _create_card(self, board_id, list_id, autocard):
+    def _handle_card(self, board_id, list_id, autocard):
         """Determines which type of card to create based on the payload."""
         scope = self.get_scope()
         action = self.payload['action']
