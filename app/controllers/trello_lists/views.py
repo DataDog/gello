@@ -15,8 +15,7 @@
 lists-related routes and view-specific logic.
 """
 
-from flask import render_template, request, current_app, flash, redirect,\
-    url_for
+from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from . import trello_list
 from .forms import ListForm
