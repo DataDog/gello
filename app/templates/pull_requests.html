@@ -23,6 +23,8 @@
       <tr>
         <th>Name</th>
         <th>URL</th>
+        <th>Trello Card URL</th>
+        <th>Trello Card ID</th>
       </tr>
     </thead>
 
@@ -34,6 +36,12 @@
           {{ pull_request.url }}
         </a>
       </td>
+      <td>
+        <a href="{{ pull_request.trello_card_url }}">
+          {{ pull_request.trello_card_url }}
+        </a>
+      </td>
+      <td>{{ pull_request.trello_card_id }}</td>
     </tr>
     {% endfor %}
   </table>

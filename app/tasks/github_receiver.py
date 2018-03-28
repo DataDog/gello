@@ -16,12 +16,13 @@ Concrete Class representing receiver from GitHub webhooks. Each receiver is a
 celery task, which is enqueued in the receivers task queue.
 """
 
-from celery.task import Task
-from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard
-from ..models import Subscription, Contributor, Repo, Board
+from . import GitHubBaseTask
+from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
+    DeleteTrelloCard
+from ..models import Subscription, Contributor, Repo, Board, Issue, PullRequest
 
 
-class GitHubReceiver(Task):
+class GitHubReceiver(GitHubBaseTask):
     """A class that receives webhooks from some the GitHub API."""
 
     def run(self, payload):
@@ -78,14 +79,20 @@ class GitHubReceiver(Task):
 
     def _create_card(self, board_id, list_id, autocard):
         """Determines which type of card to create based on the payload."""
-        if not autocard and 'comment' in self.payload and \
-           self.payload['action'] == 'created' and \
+        scope = self.get_scope()
+        action = self.payload['action']
+
+        if not autocard and 'comment' in self.payload and action == 'created' and \
            self._manual_command_string() in self.payload['comment']['body']:
             self._create_manual_card(board_id, list_id)
-        elif autocard and 'issue' in self.payload:
+        elif autocard and scope == 'issue' and action == 'opened':
             self._create_trello_issue_card(board_id, list_id)
-        elif autocard and 'pull_request' in self.payload:
+        elif autocard and scope == 'pull_request' and action == 'opened':
             self._create_trello_pull_request_card(board_id, list_id)
+        elif scope == 'issue' and action == 'closed':
+            self._delete_issue_trello_cards()
+        elif scope == 'pull_request' and action == 'closed':
+            self._delete_pull_request_trello_cards()
         else:
             print('Unsupported event action.')
 
@@ -100,7 +107,7 @@ class GitHubReceiver(Task):
             board_id=board_id,
             list_id=list_id,
             name=f"Manual card created by {self.payload['sender']['login']}",
-            metadata=self.payload
+            payload=self.payload
         )
 
     def _create_trello_issue_card(self, board_id, list_id):
@@ -114,7 +121,7 @@ class GitHubReceiver(Task):
             board_id=board_id,
             list_id=list_id,
             name=self.payload['issue']['title'],
-            metadata=self.payload
+            payload=self.payload
         )
 
     def _create_trello_pull_request_card(self, board_id, list_id):
@@ -128,8 +135,35 @@ class GitHubReceiver(Task):
             board_id=board_id,
             list_id=list_id,
             name=self.payload['pull_request']['title'],
-            metadata=self.payload
+            payload=self.payload
         )
+
+    def _delete_issue_trello_cards(self):
+        """Deletes all trello cards associated with an issue."""
+        scope = self.get_scope()
+        github_id = self.payload[scope]['id']
+        issues = Issue.query.filter_by(github_issue_id=github_id)
+
+        for issue in issues:
+            DeleteTrelloCard.delay(
+                scope=scope,
+                github_id=github_id,
+                card_id=issue.trello_card_id
+            )
+
+    def _delete_pull_request_trello_cards(self):
+        """Deletes all trello cards associated with a pull request."""
+        scope = self.get_scope()
+        github_id = self.payload[scope]['id']
+        pull_requests = PullRequest.query.filter_by(
+            github_pull_request_id=github_id)
+
+        for pull_request in pull_requests:
+            DeleteTrelloCard.delay(
+                scope=scope,
+                github_id=github_id,
+                card_id=pull_request.trello_card_id
+            )
 
     def _manual_command_string(self):
         """The command to create a card when `autocard` is disabled."""

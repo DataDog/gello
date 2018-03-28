@@ -34,14 +34,6 @@ class CreateManualCard(CreateTrelloCard):
         Internal helper to format the trello card body, based on the data
         passed in.
         """
-        scope = self._get_scope()
-        self._id = self.metadata[scope]['id']
-        self._title = self.metadata[scope]['title']
-        self._url = self.metadata[scope]['html_url']
-        self._body = self.metadata[scope]['body']
-        self._user = self.metadata[scope]['user']['login']
-        self._user_url = self.metadata[scope]['user']['html_url']
-
         return textwrap.dedent(
             f"""
             # GitHub Card Opened By Organization Member
@@ -49,24 +41,35 @@ class CreateManualCard(CreateTrelloCard):
             - Link: [{self._title}]({self._url})
             - Opened by: [{self._user}]({self._user_url})
             ___
-            ### {scope.capitalize()} Body
+            ### {self.get_scope().capitalize()} Body
             ___
             """
         ) + self._body
 
-    def _persist_card_to_database(self):
+    def _persist_card_to_database(self, card):
         """Concrete helper method.
 
         Internal helper to save the record created to the database.
         """
-        pass
+        scope = self.get_scope()
 
-    def _get_scope(self):
-        """Returns the scope of the payload (i.e., issue, pull_request)."""
-
-        if 'issue' in self.metadata:
-            return 'issue'
-        elif 'pull_request' in self.metadata:
-            return 'pull_request'
+        if scope == 'issue':
+            self._issue_service.create(
+                name=self._title,
+                url=self._url,
+                github_issue_id=self._id,
+                repo_id=self._repo_id,
+                trello_card_id=card.id,
+                trello_card_url=card.url
+            )
+        elif scope == 'pull_request':
+            self._pull_request_service.create(
+                name=self._title,
+                url=self._url,
+                github_pull_request_id=self._id,
+                repo_id=self._repo_id,
+                trello_card_id=card.id,
+                trello_card_url=card.url
+            )
         else:
-            print('Unsupported event action.')
+            print('Unsupported GitHub scope')

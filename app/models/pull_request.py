@@ -24,10 +24,12 @@ class PullRequest(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
+    name = db.Column(db.String(64), unique=False)
     url = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     github_pull_request_id = db.Column(db.Integer, unique=True)
+    trello_card_url = db.Column(db.String(64), unique=True)
+    trello_card_id = db.Column(db.String(64), unique=True)
 
     # Associations
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.github_repo_id'))

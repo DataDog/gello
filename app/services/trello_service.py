@@ -40,8 +40,12 @@ class TrelloService(object):
             desc (str):     The body of the card.
 
         Returns:
-            None
+            Card
         """
         board = self.client.get_board(board_id)
         list = board.get_list(list_id)
-        list.add_card(name=name, desc=desc)
+        return list.add_card(name=name, desc=desc)
+
+    def delete_card(self, card_id):
+        """Deletes a card for a given `card_id`."""
+        self.client.get_card(card_id=card_id).delete()

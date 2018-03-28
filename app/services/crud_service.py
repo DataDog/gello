@@ -12,7 +12,7 @@
 
 """CRUD_service.py
 
-Service-helpers for creating and data.
+Service-helpers for creating and updating data.
 """
 
 

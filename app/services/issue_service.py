@@ -27,13 +27,16 @@ class IssueService(CRUDService):
     data.
     """
 
-    def create(self, name, url, github_issue_id, repo_id):
+    def create(self, name, url, github_issue_id, repo_id, trello_card_id,
+               trello_card_url):
         """Creates and persists a new issue record to the database."""
         issue = Issue(
             name=name,
             url=url,
             github_issue_id=github_issue_id,
-            repo_id=repo_id
+            repo_id=repo_id,
+            trello_card_id=trello_card_id,
+            trello_card_url=trello_card_url
         )
         db.session.add(issue)
 

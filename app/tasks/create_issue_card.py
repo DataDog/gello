@@ -33,13 +33,6 @@ class CreateIssueCard(CreateTrelloCard):
         Internal helper to format the trello card body, based on the data
         passed in.
         """
-        self._id = self.metadata['issue']['id']
-        self._title = self.metadata['issue']['title']
-        self._url = self.metadata['issue']['html_url']
-        self._body = self.metadata['issue']['body']
-        self._user = self.metadata['issue']['user']['login']
-        self._user_url = self.metadata['issue']['user']['html_url']
-
         return textwrap.dedent(
             f"""
             # GitHub Issue Opened By Community Member
@@ -52,7 +45,7 @@ class CreateIssueCard(CreateTrelloCard):
             """
         ) + self._body
 
-    def _persist_card_to_database(self):
+    def _persist_card_to_database(self, card):
         """Concrete helper method.
 
         Internal helper to save the record created to the database.
@@ -61,5 +54,7 @@ class CreateIssueCard(CreateTrelloCard):
             name=self._title,
             url=self._url,
             github_issue_id=self._id,
-            repo_id=self._repo_id
+            repo_id=self._repo_id,
+            trello_card_id=card.id,
+            trello_card_url=card.url
         )
