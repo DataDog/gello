@@ -33,7 +33,7 @@ Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 ### Pull Requests
 
 * Fill in [the required template](PULL_REQUEST_TEMPLATE.md)
-* Follow the [Python](#python-styleguide)styleguide
+* Follow the [Python](#python-styleguide) styleguide
 * End all files with a newline
 
 ## Styleguides
@@ -46,7 +46,7 @@ All Python code must adhere to [PEP8 Standard Style](https://www.python.org/dev/
 
 ### Documentation Styleguide
 
-* Eeach file must include the following header at the top of the file:
+* Each file must include the following header at the top of the file:
 
 **For Python files**
 ```python
