@@ -15,7 +15,7 @@
 issues-related routes and view-specific logic.
 """
 
-from flask import render_template, request, current_app
+from flask import render_template, request
 from flask_login import login_required
 from . import issue
 from ...models import Repo, Issue

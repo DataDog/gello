@@ -17,8 +17,6 @@ Configuration for the Flask application.
 
 import os
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
 
 class Config:
     BROKER_POOL_LIMIT = 0
