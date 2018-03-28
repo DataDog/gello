@@ -1,0 +1,6 @@
+Component,Origin,License,Copyright
+http://flask.pocoo.org/, https://www.palletsprojects.com/, 3-Clause BSD License, Copyright (c) 2010 by the Pallets team.
+https://github.com/celery/celery, http://www.celeryproject.org/, 3-Clause BSD License, Copyright (c) 2015-2016 Ask Solem & contributors.  All rights reserved. Copyright (c) 2012-2014 GoPivotal Inc.  All rights reserved. Copyright (c) 2009-2012 Ask Solem and individual contributors. All rights reserved.
+https://github.com/zzzeek/sqlalchemy, https://www.sqlalchemy.org/, MIT, Copyright (c) 2005-2018 the SQLAlchemy authors and contributors.
+https://github.com/PyGithub/PyGithub, , GNU Lesser General Public License v3.0,
+https://github.com/sarumont/py-trello, , 3-Clause BSD License, Copyright (c) 2012 Richard Kolkovich.
