@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+
+#
+# Unless explicitly stated otherwise all files in this repository are licensed
+# under the Apache 2 License.
+#
+# This product includes software developed at Datadog
+# (https://www.datadoghq.com/).
+#
+# Copyright 2018 Datadog, Inc.
+#
+
 """Remove board_id from repos table.
 
 Revision ID: 6aa929ac04c1
