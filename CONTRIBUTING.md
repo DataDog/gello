@@ -42,12 +42,13 @@ Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 
 All Python code must adhere to [PEP8 Standard Style](https://www.python.org/dev/peps/pep-0008/).
 
-* All files, classes, and functions should have a docstring, following [Google's Docstring conventions](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
+* All files, classes, and functions should have a docstring, following [Google's Docstring conventions](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html.
 
 ### Documentation Styleguide
 
 * Eeach file must include the following header at the top of the file:
 
+**For Python files**
 ```python
 #
 # Unless explicitly stated otherwise all files in this repository are licensed
@@ -58,6 +59,19 @@ All Python code must adhere to [PEP8 Standard Style](https://www.python.org/dev/
 #
 # Copyright {year} Datadog, Inc.
 #
+```
+
+**For HTML files**
+```html
+<!--
+  Unless explicitly stated otherwise all files in this repository are licensed
+  under the Apache 2 License.
+
+  This product includes software developed at Datadog
+  (https://www.datadoghq.com/).
+
+  Copyright {year} Datadog, Inc.
+-->
 ```
 
 * Each file, class, and method should have a docstring present.
