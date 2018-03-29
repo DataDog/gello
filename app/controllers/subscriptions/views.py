@@ -38,7 +38,8 @@ def index():
         subscription_service.create(
             board_id=create_form.board_id.data,
             repo_id=create_form.repo_id.data,
-            autocard=create_form.autocard.data,
+            issue_autocard=create_form.issue_autocard.data,
+            pull_request_autocard=create_form.pull_request_autocard.data,
             list_ids=re.split("\s*,\s*", create_form.list_ids.data)
         )
 
@@ -58,8 +59,16 @@ def index():
         error_out=False
     )
     subscriptions = pagination.items
-    subscription_forms_tuples = [(s, UpdateForm(autocard=s.autocard),
-                                  DeleteForm()) for s in subscriptions]
+    subscription_forms_tuples = [
+        (
+            s,
+            UpdateForm(
+                issue_autocard=s.issue_autocard,
+                pull_request_autocard=s.pull_request_autocard
+            ),
+            DeleteForm()
+        ) for s in subscriptions
+    ]
 
     return render_template(
         'subscriptions.html',
@@ -74,11 +83,13 @@ def index():
 def update(board_id, repo_id):
     form = UpdateForm(request.form)
 
-    if form.autocard.data is not None:
+    if form.issue_autocard.data is not None or \
+       form.pull_request_autocard.data is not None:
         subscription_service.update(
             board_id=board_id,
             repo_id=repo_id,
-            autocard=form.autocard.data
+            issue_autocard=form.issue_autocard.data,
+            pull_request_autocard=form.pull_request_autocard.data
         )
         flash('Updated subscription')
     else:

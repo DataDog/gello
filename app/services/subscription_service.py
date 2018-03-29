@@ -30,12 +30,14 @@ class SubscriptionService(CRUDService):
     def __init__(self):
         self._subscribed_list_service = SubscribedListService()
 
-    def create(self, board_id, repo_id, autocard, list_ids=[]):
+    def create(self, board_id, repo_id, issue_autocard, pull_request_autocard,
+               list_ids=[]):
         """Creates and persists a new subscription record to the database."""
         subscription = Subscription(
             board_id=board_id,
             repo_id=repo_id,
-            autocard=autocard
+            issue_autocard=issue_autocard,
+            pull_request_autocard=pull_request_autocard
         )
         db.session.add(subscription)
 
@@ -50,10 +52,13 @@ class SubscriptionService(CRUDService):
         # Persists the subscription
         db.session.commit()
 
-    def update(self, board_id, repo_id, autocard):
+    def update(self, board_id, repo_id, issue_autocard, pull_request_autocard):
         """Updates a persisted subscription's autocard value."""
         subscription = Subscription.query.get([board_id, repo_id])
-        subscription.autocard = autocard
+        if issue_autocard is not None:
+            subscription.issue_autocard = issue_autocard
+        if pull_request_autocard is not None:
+            subscription.pull_request_autocard = pull_request_autocard
 
         # Persist the changes
         db.session.commit()

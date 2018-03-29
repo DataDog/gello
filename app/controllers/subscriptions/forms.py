@@ -35,7 +35,8 @@ class NewSubscriptionForm(Form):
         validators=[Required()]
     )
     list_ids = StringField('List IDs')
-    autocard = BooleanField('Autocard')
+    issue_autocard = BooleanField('Issue Autocard')
+    pull_request_autocard = BooleanField('Pull Request Autocard')
     submit = SubmitField('Create')
 
     def validate(self):
@@ -54,7 +55,8 @@ class NewSubscriptionForm(Form):
 class UpdateForm(Form):
     """Form for updating an existing subscription."""
 
-    autocard = BooleanField('Autocard')
+    issue_autocard = BooleanField('Issue Autocard')
+    pull_request_autocard = BooleanField('Pull Request Autocard')
     submit = SubmitField('Update')
 
 

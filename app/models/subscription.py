@@ -32,7 +32,8 @@ class Subscription(db.Model):
     repo_id = db.Column(
         db.Integer, db.ForeignKey('repos.github_repo_id'), primary_key=True
     )
-    autocard = db.Column(db.Boolean, default=True)
+    issue_autocard = db.Column(db.Boolean, default=True)
+    pull_request_autocard = db.Column(db.Boolean, default=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Associations
