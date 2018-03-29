@@ -15,13 +15,14 @@
 Service-helpers for creating and mutating contributor data.
 """
 
+from . import APIService
 from . import GitHubService
 from .. import db
 from ..models import Contributor
 
 
-class ContributorService(object):
-    """CRUD persistent storage service.
+class ContributorService(APIService):
+    """API persistent storage service.
 
     A class with the single responsibility of creating/mutating Contributor
     data.
@@ -32,17 +33,22 @@ class ContributorService(object):
         self.github_service = GitHubService()
 
     def fetch(self):
-        """Add all the contributors to the Database for the organization."""
+        """Add all the contributors to the database for the organization."""
         for contributor in self.github_service.members():
+            self._insert_or_update(contributor)
+
+        # Persist the contributors
+        db.session.commit()
+
+    def _insert_or_update(self, contributor):
+        """Inserts or updates the records."""
+        record = Contributor.query.filter_by(member_id=contributor.id).first()
+
+        if not record:
             contributor_model = Contributor(
                 login=contributor.login,
                 member_id=contributor.id
             )
             db.session.add(contributor_model)
-
-        # persist the contributors
-        db.session.commit()
-
-    def delete(self, board_id, contributor_id):
-        """Deletes an old, persisted contributor."""
-        pass
+        else:
+            record.login = contributor.login

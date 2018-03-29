@@ -15,13 +15,14 @@
 Service-helpers for creating and mutating repo data.
 """
 
+from . import APIService
 from . import GitHubService
 from .. import db
 from ..models import Repo
 
 
-class RepoService(object):
-    """CRUD persistent storage service.
+class RepoService(APIService):
+    """API persistent storage service.
 
     A class with the single responsibility of creating/mutating Repo
     data.
@@ -34,6 +35,16 @@ class RepoService(object):
     def fetch(self):
         """Add all the repositories to the Database for the organization."""
         for repo in self.github_service.repos():
+            self._insert_or_update(repo)
+
+        # Persist the repositories
+        db.session.commit()
+
+    def _insert_or_update(self, repo):
+        """Inserts or updates the records."""
+        record = Repo.query.filter_by(github_repo_id=repo.id).first()
+
+        if not record:
             repo_model = Repo(
                 name=repo.name,
                 url=repo.html_url,
@@ -41,10 +52,6 @@ class RepoService(object):
             )
             # Add repository to database
             db.session.add(repo_model)
-
-        # Persist the repositories
-        db.session.commit()
-
-    def delete(self, board_id, repo_id):
-        """Deletes an old, persisted repo."""
-        pass
+        else:
+            record.name = repo.name
+            record.url = repo.html_url

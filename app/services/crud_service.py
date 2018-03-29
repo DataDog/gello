@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""CRUD_service.py
+"""crud_service.py
 
 Service-helpers for creating and updating data.
 """
