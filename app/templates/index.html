@@ -11,6 +11,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
+{% import "partials/_repos.html" as _repos %}
 
 {% block title %}Gello{% endblock %}
 
@@ -44,41 +45,8 @@
 
   {% if current_user.is_authenticated %}
     <div>
-      <!-- TODO: make this intoka partial -->
       <h3>{{ organization_name }}'s Subscribed Repositories</h3>
-
-      <table class="table table-hover repos">
-        <thead>
-          <tr>
-            <th>GitHub ID</th>
-            <th>Name</th>
-            <th>URL</th>
-            <th>Issues</th>
-            <th>Pull Requests</th>
-          </tr>
-        </thead>
-        {% for repo in subscribed_repos %}
-          <tr>
-            <td>{{ repo.github_repo_id }}</td>
-            <td>{{ repo.name }}</td>
-            <td>
-              <a href="{{ repo.url }}">
-                {{ repo.url }}
-              </a>
-            </td>
-            <td>
-              <a href="{{ url_for('issue.index', id=repo.id) }}">
-                <b>({{ repo.issues.count() }})</b> issues for {{ repo.name }}
-              </a>
-            </td>
-            <td>
-              <a href="{{ url_for('pull_request.index', id=repo.id) }}">
-                <b>({{ repo.pull_requests.count() }})</b> pull requests for {{ repo.name }}
-              </a>
-            </td>
-          </tr>
-        {% endfor %}
-      </table>
+      {{ _repos.render(subscribed_repos) }}
     </div>
 
     {% if pagination %}
