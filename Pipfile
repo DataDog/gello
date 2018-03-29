@@ -42,3 +42,6 @@ gunicorn = "*"
 "psycopg2" = "*"
 pygithub = "*"
 py-trello = "*"
+
+[dev-packages]
+mock = "*"
