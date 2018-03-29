@@ -19,6 +19,7 @@ from .. import celery
 
 from .github_base_task import GitHubBaseTask
 from .delete_trello_card import DeleteTrelloCard
+from .create_github_webhook import CreateGitHubWebhook
 from .create_trello_card import CreateTrelloCard
 from .create_issue_card import CreateIssueCard
 from .create_pull_request_card import CreatePullRequestCard
@@ -34,6 +35,7 @@ def _register_tasks():
     celery.tasks.register(CreateIssueCard())
     celery.tasks.register(CreateManualCard())
     celery.tasks.register(CreatePullRequestCard())
+    celery.tasks.register(CreateGitHubWebhook())
     celery.tasks.register(GitHubReceiver())
 
 

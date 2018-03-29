@@ -21,6 +21,7 @@ from . import subscription
 from .forms import NewSubscriptionForm, UpdateForm, DeleteForm
 from ...models import Subscription
 from ...services import SubscriptionService
+from ...tasks import CreateGitHubWebhook
 
 subscription_service = SubscriptionService()
 
@@ -37,6 +38,13 @@ def index():
             repo_id=create_form.repo_id.data,
             autocard=create_form.autocard.data
         )
+
+        # Enqueue a task to create a repository webhook for the repo
+        CreateGitHubWebhook.delay(
+            url_root=request.url_root,
+            repo_id=create_form.repo_id.data,
+        )
+
         flash('Created subscription')
         return redirect(url_for('.index'))
 

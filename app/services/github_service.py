@@ -35,10 +35,19 @@ class GitHubService(object):
         """Returns an array of the organization's members."""
         return self.organization.get_members()
 
-    def create_github_hook(self, repository):
-        """XXX: after mvp
-        Creates a repository webhook."""
-        pass
+    def create_github_hook(self, url_root, repo_id):
+        """Creates a repository webhook for a given repo."""
+        config = {'url': url_root, 'content_type': 'json'}
+        events = ['issues', 'issue_comment', 'pull_request',
+                  'pull_request_review_comment']
+
+        repo = self.client.get_repo(repo_id)
+        repo.create_hook(
+            name='web',
+            config=config,
+            events=events,
+            active=True
+        )
 
     def _get_organization(self):
         """XXX: handle error case where the organization does not exist"""
