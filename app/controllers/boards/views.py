@@ -32,7 +32,7 @@ def index():
     """Updates the boards and corresponding lists saved on POST request."""
     form = RefreshForm()
     if form.validate_on_submit():
-        board_service.create_or_update_boards()
+        board_service.fetch()
         flash('The boards have been updated.')
 
         return redirect(url_for('.index'))

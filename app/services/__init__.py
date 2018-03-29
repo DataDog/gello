@@ -15,6 +15,7 @@
 Service helper classes.
 """
 
+from .api_service import APIService
 from .crud_service import CRUDService
 from .github_service import GitHubService
 from .trello_service import TrelloService
