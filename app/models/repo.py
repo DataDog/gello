@@ -25,8 +25,8 @@ class Repo(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=False)
-    url = db.Column(db.String(64), unique=True)
+    name = db.Column(db.String(100), unique=False)
+    url = db.Column(db.Text(), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     github_repo_id = db.Column(db.Integer, unique=True)
 

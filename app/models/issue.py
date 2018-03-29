@@ -24,8 +24,8 @@ class Issue(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    url = db.Column(db.String(64), unique=True)
+    name = db.Column(db.Text(), unique=True)
+    url = db.Column(db.Text(), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     github_issue_id = db.Column(db.Integer, unique=True)
     trello_card_url = db.Column(db.String(64), unique=True)

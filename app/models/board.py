@@ -25,8 +25,8 @@ class Board(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    url = db.Column(db.String(64), unique=True)
+    name = db.Column(db.Text(), unique=True)
+    url = db.Column(db.Text(), unique=True)
     trello_board_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
