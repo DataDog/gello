@@ -12,14 +12,11 @@
 
 """"""
 
-import os
-
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from . import auth
 from ...models import User
-from ... import db
 from .forms import LoginForm
 
 
@@ -52,19 +49,3 @@ def logout():
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
-
-
-@auth.route('/create', methods=['POST'])
-def create_account():
-    # Create admin user
-    user = User(
-        username='admin',
-        name='Admin User',
-        email=os.environ.get('ADMIN_EMAIL'),
-        password=os.environ.get('ADMIN_PASSWORD')
-    )
-
-    # Add admin user to the database
-    db.session.add(user)
-    db.session.commit()
-    return 'Admin user created.'

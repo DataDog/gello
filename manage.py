@@ -52,9 +52,42 @@ def test():
 
 @manager.command
 def deploy():
-    """Migrate database to latest revision"""
-    from flask_migrate import upgrade
-    upgrade()
+    """Creates the admin user if they do not exist."""
+    import textwrap
+    from app.models import User
+    from app import db
+
+    record = User.query.filter_by(
+        email=os.environ.get('ADMIN_EMAIL')).first()
+
+    if not os.environ.get('ADMIN_EMAIL') or \
+       not os.environ.get('ADMIN_PASSWORD'):
+        print(
+            textwrap.dedent(
+                f"""
+                Please configure the `ADMIN_EMAIL` and `ADMIN_PASSWORD`
+                environment variables in the Heroku app settings:
+                https://dashboard.heroku.com/apps/your-app/settings.
+
+                Then run `heroku run python manage.py deploy` to create your
+                admin user account required to login to Gello.
+                """
+            )
+        )
+    elif not record:
+        # Create admin user
+        user = User(
+            username='admin',
+            name='Admin User',
+            email=os.environ.get('ADMIN_EMAIL'),
+            password=os.environ.get('ADMIN_PASSWORD')
+        )
+
+        # Add admin user to the database
+        db.session.add(user)
+        db.session.commit()
+
+        print("Created admin user.")
 
 
 if __name__ == '__main__':
