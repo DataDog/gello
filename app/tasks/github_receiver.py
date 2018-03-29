@@ -60,7 +60,8 @@ class GitHubReceiver(GitHubBaseTask):
             return
 
         # Get all of the subscriptions related to a repository
-        subscriptions = Subscription.query.filter_by(repo_id=repo.github_repo_id)
+        subscriptions = Subscription.query.filter_by(
+            repo_id=repo.github_repo_id)
 
         for subscription in subscriptions:
             # TODO: research a better query for this

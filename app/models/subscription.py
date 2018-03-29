@@ -24,7 +24,9 @@ class Subscription(db.Model):
 
     # Attributes
     board_id = db.Column(
-        db.String(64), db.ForeignKey('boards.trello_board_id'), primary_key=True
+        db.String(64),
+        db.ForeignKey('boards.trello_board_id'),
+        primary_key=True
     )
     repo_id = db.Column(
         db.Integer, db.ForeignKey('repos.github_repo_id'), primary_key=True

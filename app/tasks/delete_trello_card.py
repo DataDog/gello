@@ -29,8 +29,7 @@ class DeleteTrelloCard(GitHubBaseTask):
         self._trello_service = TrelloService()
 
     def run(self, scope, github_id, card_id):
-        """Deletes a trello card trello card."""
-        # Deletes the card on the trello board
+        """Deletes a trello card on a trello board."""
         self._trello_service.delete_card(card_id=card_id)
 
         # Deletes the card record in the database

@@ -33,7 +33,7 @@ class CreateTrelloCard(GitHubBaseTask):
             board_id (str):  The id of the board the card will be created on.
             list_id (str):   The id of the list the card will be created on.
             name (str):      The name of the card.
-            payload (dict): The card-specific data, used in the `_card_body`
+            payload (dict):  The card-specific data, used in the `_card_body`
                              template method.
 
         Returns:
