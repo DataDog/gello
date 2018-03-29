@@ -109,5 +109,29 @@ heroku ps:scale worker=1
 heroku open
 ```
 
+## Configuring Repository Webhooks Manually
+
+_NOTE: Post-MVP, this will be automated through the web UI._
+
+1. Go to the `settings/hooks` page on a repository you would like to configure to send webhook events to _Gello_.
+
+> ex. https://github.com/DataDog/sample-app/settings/hooks
+
+2. Enter the url for your self-hosted _Gello_ application:
+
+![Webhook 1](/images/webhook1.png)
+
+3. Select the `Let me select individual events.` for `Which events would you like to trigger this webhook?`:
+
+![Webhook 2](/images/webhook2.png)
+
+4. Select the `Issues`, `Issue comments`, `Pull requests`, and `Pull request review comments`:
+
+![Webhook 3](/images/webhook3.png)
+
+5. Set the webhook to `Active` and update the webhook:
+
+![Webhook 4](/images/webhook4.png)
+
 ## Why _Gello_?
 Gello was named because it bridges the gap between the GitHub API and the Trello API.
