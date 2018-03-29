@@ -97,7 +97,6 @@ git push heroku master
 # environment variables, since they are set automatically with the addons
 heroku config:set ADMIN_EMAIL=email@email.com
 heroku config:set ADMIN_PASSWORD=some_password
-heroku config:set ADMIN_PASSWORD=some_password
 heroku config:set GITHUB_API_TOKEN=your_github_api_token
 heroku config:set GITHUB_ORG_LOGIN=the_name_of_your_organization
 heroku config:set TRELLO_API_KEY=your_trello_public_key
