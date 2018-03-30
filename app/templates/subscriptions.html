@@ -25,7 +25,8 @@
         <th>Board ID</th>
         <th>Repository ID</th>
         <th>Subscribed Lists</th>
-        <th>Autocard</th>
+        <th>Issue Autocard</th>
+        <th>Pull Request Autocard</th>
         <th>Update Subscription</th>
         <th>Delete Subscription</th>
       </tr>
@@ -41,7 +42,8 @@
           </a>
         </td>
         <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/update">
-          <td>{{ update_form.autocard(value=subscription.autocard) }}</td>
+          <td>{{ update_form.issue_autocard(checked=subscription.issue_autocard) }}</td>
+          <td>{{ update_form.pull_request_autocard(checked=subscription.pull_request_autocard) }}</td>
           <td>{{ update_form.submit(class="btn btn-primary") }}</td>
         </form>
         <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/delete">

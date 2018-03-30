@@ -68,20 +68,28 @@ class GitHubReceiver(GitHubBaseTask):
                 self._handle_card(
                     board_id=subscription.board_id,
                     list_id=trello_list.list_id,
-                    autocard=subscription.autocard
+                    issue_autocard=subscription.issue_autocard,
+                    pull_request_autocard=subscription.issue_autocard
                 )
 
-    def _handle_card(self, board_id, list_id, autocard):
+    def _handle_card(self, board_id, list_id, issue_autocard,
+                     pull_request_autocard):
         """Determines which type of card to create based on the payload."""
         scope = self.get_scope()
         action = self.payload['action']
 
-        if not autocard and 'comment' in self.payload and action == 'created' and \
+        if not issue_autocard and scope == 'issue' and \
+           'comment' in self.payload and action == 'created' and \
            self._manual_command_string() in self.payload['comment']['body']:
             self._create_manual_card(board_id, list_id)
-        elif autocard and scope == 'issue' and action == 'opened':
+        elif not pull_request_autocard and scope == 'pull_request' and \
+             'comment' in self.payload and action == 'created' and \
+             self._manual_command_string() in self.payload['comment']['body']:
+            self._create_manual_card(board_id, list_id)
+        elif issue_autocard and scope == 'issue' and action == 'opened':
             self._create_trello_issue_card(board_id, list_id)
-        elif autocard and scope == 'pull_request' and action == 'opened':
+        elif pull_request_autocard and scope == 'pull_request' and \
+             action == 'opened':
             self._create_trello_pull_request_card(board_id, list_id)
         elif scope == 'issue' and action == 'closed':
             self._delete_issue_trello_cards()
@@ -160,5 +168,5 @@ class GitHubReceiver(GitHubBaseTask):
             )
 
     def _manual_command_string(self):
-        """The command to create a card when `autocard` is disabled."""
+        """The command to create a card when an `autocard` is disabled."""
         return 'gello create_card'
