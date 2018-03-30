@@ -17,6 +17,7 @@ Subscription model.
 
 from datetime import datetime
 from .. import db
+from . import SubscribedList
 
 
 class Subscription(db.Model):
@@ -33,3 +34,15 @@ class Subscription(db.Model):
     )
     autocard = db.Column(db.Boolean, default=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Associations
+    subscribed_lists = db.relationship(
+        'SubscribedList',
+        foreign_keys=[
+            SubscribedList.subscription_board_id,
+            SubscribedList.subscription_repo_id
+        ],
+        backref=db.backref('subscription_subscribed_list', lazy='joined'),
+        lazy='dynamic',
+        cascade='all, delete-orphan'
+    )
