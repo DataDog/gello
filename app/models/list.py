@@ -17,6 +17,7 @@ List model.
 
 from datetime import datetime
 from .. import db
+from . import SubscribedList
 
 
 class List(db.Model):
@@ -26,7 +27,6 @@ class List(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    active = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(64), unique=False)
     trello_list_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -34,4 +34,11 @@ class List(db.Model):
     # Associations
     board_id = db.Column(
         db.String(64), db.ForeignKey('boards.trello_board_id')
+    )
+    subscribed_lists = db.relationship(
+        'SubscribedList',
+        foreign_keys=[SubscribedList.list_id],
+        backref=db.backref('list_subscribed_list', lazy='joined'),
+        lazy='dynamic',
+        cascade='all, delete-orphan'
     )

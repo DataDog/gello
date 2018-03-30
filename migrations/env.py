@@ -15,7 +15,6 @@
 Database configuration and migration helper functions.
 """
 
-from __future__ import with_statement
 from alembic import context
 from flask import current_app
 from sqlalchemy import engine_from_config, pool

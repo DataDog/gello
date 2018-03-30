@@ -15,9 +15,12 @@
 Subscription-related forms.
 """
 
+import re
+
 from flask_wtf import Form
 from wtforms import StringField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import Required, Length
+from ...models import List
 
 
 class NewSubscriptionForm(Form):
@@ -31,8 +34,21 @@ class NewSubscriptionForm(Form):
         'Repo ID',
         validators=[Required()]
     )
+    list_ids = StringField('List IDs')
     autocard = BooleanField('Autocard')
     submit = SubmitField('Create')
+
+    def validate(self):
+        """Validates the list_ids attribute is correct."""
+        ids = self.list_ids.data
+        ids_list = re.split("\s*,\s*", ids)
+
+        # TODO: try to do this is one query
+        return all(
+            List.query.filter_by(
+                trello_list_id=list_id, board_id=self.board_id.data
+            ) is not None for list_id in ids_list
+        )
 
 
 class UpdateForm(Form):

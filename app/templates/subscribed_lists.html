@@ -1,0 +1,54 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Subscribed Lists{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Subscribed Lists for <b>{{ subscription.board_id }}, {{ subscription.repo_id }}</b></h1>
+  </div>
+
+  <table class="table table-hover trello-lists">
+    <thead>
+      <tr>
+        <th>Subscription Board ID</th>
+        <th>Subscription Repo ID</th>
+        <th>Subscription List ID</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+
+    {% for subscribed_list, form in list_form_pairs %}
+      <tr>
+        <td>{{ subscribed_list.subscription_board_id }}</td>
+        <td>{{ subscribed_list.subscription_repo_id }}</td>
+        <td>{{ subscribed_list.list_id }}</td>
+
+        <form method="POST" action="{{ url_for('.delete', board_id=subscription.board_id, repo_id=subscription.repo_id, list_id=subscribed_list.list_id) }}">
+          <td>{{ form.submit(class="btn btn-danger") }}</td>
+        </form>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <h3>Create New Subscribed List</h3>
+  <div>
+    {{ wtf.quick_form(create_form) }}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}

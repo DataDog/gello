@@ -65,7 +65,6 @@ class BoardService(APIService):
 
         if not record:
             list_model = List(
-                active=False,
                 name=trello_list.name,
                 trello_list_id=trello_list.id,
                 board_id=board_id

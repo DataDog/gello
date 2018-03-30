@@ -10,16 +10,13 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""lists/forms.py
+"""__init__.py
 
-List-related forms.
+issues module initialization code.
 """
 
-from flask_wtf import Form
-from wtforms import BooleanField, SubmitField
+from flask import Blueprint
 
+subscribed_list = Blueprint('subscribed_list', __name__)
 
-class ListForm(Form):
-    """Form for creating a new subscription."""
-    active = BooleanField('Active')
-    submit = SubmitField('Update')
+from . import views

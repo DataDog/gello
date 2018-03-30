@@ -16,6 +16,7 @@ Models-related logic.
 """
 
 from .user import User, load_user
+from .subscribed_list import SubscribedList
 from .subscription import Subscription
 from .repo import Repo
 from .issue import Issue

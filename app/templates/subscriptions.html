@@ -24,6 +24,7 @@
       <tr>
         <th>Board ID</th>
         <th>Repository ID</th>
+        <th>Subscribed Lists</th>
         <th>Autocard</th>
         <th>Update Subscription</th>
         <th>Delete Subscription</th>
@@ -34,6 +35,11 @@
       <tr>
         <td>{{ subscription.board_id }}</td>
         <td>{{ subscription.repo_id }}</td>
+        <td>
+          <a href="{{ url_for('subscribed_list.index', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
+          {{ subscription.subscribed_lists.count() }} lists
+          </a>
+        </td>
         <form method="POST" action="/subscriptions/{{ subscription.board_id }}/{{ subscription.repo_id }}/update">
           <td>{{ update_form.autocard(value=subscription.autocard) }}</td>
           <td>{{ update_form.submit(class="btn btn-primary") }}</td>

@@ -24,21 +24,14 @@
         <th>Name</th>
         <th>Trello List ID</th>
         <th>Trello Board ID</th>
-        <th>Active</th>
-        <th>Update</th>
       </tr>
     </thead>
 
-    {% for trello_list, form in list_form_pairs %}
+    {% for trello_list in lists %}
       <tr>
         <td>{{ trello_list.name }}</td>
         <td>{{ trello_list.trello_list_id }}</td>
         <td>{{ trello_list.board_id }}</td>
-
-        <form method="POST" action="/boards/lists/{{ board.id }}/update/{{ trello_list.id }}">
-          <td>{{ form.active(value=trello_list.active) }}</td>
-          <td>{{ form.submit(class="btn btn-primary") }}</td>
-        </form>
       </tr>
     {% endfor %}
   </table>

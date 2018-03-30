@@ -15,7 +15,7 @@
 Service-helpers for creating and mutating subscription data.
 """
 
-from . import CRUDService
+from . import CRUDService, SubscribedListService
 from .. import db
 from ..models import Subscription
 
@@ -27,7 +27,10 @@ class SubscriptionService(CRUDService):
     data.
     """
 
-    def create(self, board_id, repo_id, autocard):
+    def __init__(self):
+        self._subscribed_list_service = SubscribedListService()
+
+    def create(self, board_id, repo_id, autocard, list_ids=[]):
         """Creates and persists a new subscription record to the database."""
         subscription = Subscription(
             board_id=board_id,
@@ -35,6 +38,14 @@ class SubscriptionService(CRUDService):
             autocard=autocard
         )
         db.session.add(subscription)
+
+        # Create all the subscribed lists
+        for list_id in list_ids:
+            self._subscribed_list_service.create(
+                board_id=board_id,
+                repo_id=repo_id,
+                list_id=list_id
+            )
 
         # Persists the subscription
         db.session.commit()
