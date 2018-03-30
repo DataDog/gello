@@ -1,4 +1,4 @@
-#Subs -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 #
 # Unless explicitly stated otherwise all files in this repository are licensed
@@ -12,9 +12,7 @@
 
 """subscribed_lists/views.py
 
-lists-related routes and view-specific logic.
-
-TODO: create form for adding another list to this subscription.
+subscribed_lists-related routes and view-specific logic.
 """
 
 from flask import render_template, flash, redirect, url_for

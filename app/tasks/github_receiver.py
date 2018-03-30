@@ -19,7 +19,7 @@ celery task, which is enqueued in the receivers task queue.
 from . import GitHubBaseTask
 from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
     DeleteTrelloCard
-from ..models import Subscription, Contributor, Repo, Board, Issue, PullRequest
+from ..models import Subscription, Contributor, Repo, Issue, PullRequest
 
 
 class GitHubReceiver(GitHubBaseTask):
@@ -67,7 +67,7 @@ class GitHubReceiver(GitHubBaseTask):
             for trello_list in subscription.subscribed_lists:
                 self._handle_card(
                     board_id=subscription.board_id,
-                    list_id=trello_list.trello_list_id,
+                    list_id=trello_list.list_id,
                     autocard=subscription.autocard
                 )
 

@@ -27,7 +27,6 @@ class List(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    active = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(64), unique=False)
     trello_list_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
