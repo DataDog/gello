@@ -64,14 +64,7 @@ class GitHubReceiver(GitHubBaseTask):
             repo_id=repo.github_repo_id)
 
         for subscription in subscriptions:
-            # TODO: research a better query for this
-            trello_lists = Board.query.filter_by(
-                trello_board_id=subscription.board_id).first().lists
-
-            # Only create a card on an active list
-            active_lists = filter(lambda s: s.active, trello_lists)
-
-            for trello_list in active_lists:
+            for trello_list in subscription.subscribed_lists:
                 self._handle_card(
                     board_id=subscription.board_id,
                     list_id=trello_list.trello_list_id,
