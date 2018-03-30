@@ -15,6 +15,8 @@
 subscriptions-related routes and view-specific logic.
 """
 
+import re
+
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
 from . import subscription
@@ -36,7 +38,8 @@ def index():
         subscription_service.create(
             board_id=create_form.board_id.data,
             repo_id=create_form.repo_id.data,
-            autocard=create_form.autocard.data
+            autocard=create_form.autocard.data,
+            list_ids=re.split("\s*,\s*", create_form.list_ids.data)
         )
 
         # Enqueue a task to create a repository webhook for the repo
