@@ -70,4 +70,12 @@
 {% block scripts %}
   {{ super() }}
   {{ pagedown.include_pagedown() }}
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      loadAutocompleteData('/api/boards', 'boards', 'trello_board_id', '#board_id');
+      loadAutocompleteData('/api/repos', 'repos', 'github_repo_id', '#repo_id');
+      loadAutocompleteData('/api/lists', 'lists', 'trello_list_id', '#list_ids');
+    });
+  </script>
 {% endblock %}

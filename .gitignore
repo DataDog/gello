@@ -92,5 +92,5 @@ ENV/
 
 TODOS.org
 
-# SQLite databases
-*.sqlite
+# Node modules
+node_modules/

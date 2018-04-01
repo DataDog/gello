@@ -15,6 +15,7 @@
 Repo model.
 """
 
+from flask import current_app, request, url_for
 from datetime import datetime
 from .. import db
 from . import Subscription
@@ -42,3 +43,10 @@ class Repo(db.Model):
         lazy='dynamic',
         cascade='all, delete-orphan'
     )
+
+    def to_json(self):
+        return {
+            'github_repo_id': str(self.github_repo_id),
+            'name': self.name,
+            'url': self.url
+        }

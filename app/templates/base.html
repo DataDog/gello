@@ -74,4 +74,22 @@
 {% block scripts %}
   {{ super() }}
   {{ moment.include_moment() }}
+
+  <!-- jQuery UI for autocomplete -->
+  <script
+      src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+      integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+      crossorigin="anonymous"></script>
+
+  <!-- Autocomplete helper function -->
+  <script type="text/javascript">
+    function loadAutocompleteData(endpoint, scope, attribute, input_id) {
+      var records = [];
+
+      $.getJSON(endpoint, function(data, status, xhr) {
+        records = $.map(data[scope], function(record) { return record[attribute]; });
+        $(input_id).autocomplete({source: records});
+      });
+    };
+  </script>
 {% endblock %}

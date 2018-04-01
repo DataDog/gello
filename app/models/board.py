@@ -39,3 +39,10 @@ class Board(db.Model):
         lazy='dynamic',
         cascade='all, delete-orphan'
     )
+
+    def to_json(self):
+        return {
+            'trello_board_id': self.trello_board_id,
+            'name': self.name,
+            'url': self.url
+        }
