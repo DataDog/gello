@@ -42,3 +42,9 @@ class List(db.Model):
         lazy='dynamic',
         cascade='all, delete-orphan'
     )
+
+    def to_json(self):
+        return {
+            'name': self.name,
+            'trello_list_id': self.trello_list_id
+        }
