@@ -73,8 +73,8 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      loadAutocompleteData('/api/boards', 'boards', 'trello_board_id', '#board_id');
-      loadAutocompleteData('/api/repos', 'repos', 'github_repo_id', '#repo_id');
+      loadAutocompleteData('/api/boards', 'boards', '#board_id');
+      loadAutocompleteData('/api/repos', 'repos', '#repo_id');
     });
   </script>
 {% endblock %}

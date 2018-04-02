@@ -84,12 +84,26 @@
 
   <!-- Autocomplete helper function -->
   <script type="text/javascript">
-    function loadAutocompleteData(endpoint, scope, attribute, input_id) {
-      var records = [];
-
+    function loadAutocompleteData(endpoint, scope, input_id) {
       $.getJSON(endpoint, function(data, status, xhr) {
-        records = $.map(data[scope], function(record) { return record[attribute]; });
-        $(input_id).autocomplete({source: records});
+        $(input_id).autocomplete({
+          minLength: 0,
+          source: data[scope],
+          focus: function(event, ui) {
+            $(input_id).val(ui.item['label']);
+            return false;
+          },
+          select: function(event, ui) {
+            $(input_id).val(ui.item['value']);
+            return false;
+          }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+          return $("<li></li>")
+              .data('item.autocomplete', item)
+              .append("<div><b>" + item['label'] + "</b><br><small>" + item['value'] + "</small></div>")
+              .addClass('ui-menu-item')
+              .appendTo(ul);
+        }
       });
     };
   </script>

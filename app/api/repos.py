@@ -26,7 +26,7 @@ from . import api
 def get_repos():
     repo = request.args.get('repo', 1, type=int)
 
-    pagination = Repo.query.paginate(repo, per_page=100, error_out=False)
+    pagination = Repo.query.paginate(repo, per_page=500, error_out=False)
     repos = pagination.items
 
     prev = None

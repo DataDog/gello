@@ -30,6 +30,6 @@ class TrelloMember(db.Model):
 
     def to_json(self):
         return {
-            'name': self.name,
-            'trello_member_id': self.trello_member_id
+            'label': self.name,
+            'value': self.trello_member_id
         }
