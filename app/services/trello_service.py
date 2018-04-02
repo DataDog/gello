@@ -15,6 +15,7 @@
 Service-helpers for interacting with the Trello API.
 """
 
+from os import environ
 from ..api_clients import TrelloAPIClient
 
 
@@ -26,9 +27,15 @@ class TrelloService(object):
     def __init__(self):
         """Initializes a new TrelloService object."""
         self.client = TrelloAPIClient().client()
+        self.organization = self._get_organization()
 
     def boards(self):
+        """Returns a list of objects representing trello boards."""
         return self.client.list_boards()
+
+    def members(self):
+        """Returns a list of objects representing trello members."""
+        return self.organization.get_members()
 
     def create_card(self, board_id, list_id, name, desc):
         """Creates a card on a board, and a list.
@@ -49,3 +56,10 @@ class TrelloService(object):
     def delete_card(self, card_id):
         """Deletes a card for a given `card_id`."""
         self.client.get_card(card_id=card_id).delete()
+
+    def _get_organization(self):
+        """XXX: handle error case where the organization does not exist"""
+        orgs = self.client.list_organizations()
+        return next(
+            o for o in orgs if o.name == environ.get('TRELLO_ORG_NAME')
+        )

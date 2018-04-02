@@ -10,20 +10,20 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""contributor.py
+"""TrelloMember.py
 
-Contributor model.
+TrelloMember model.
 """
 
 from datetime import datetime
 from .. import db
 
 
-class Contributor(db.Model):
-    __tablename__ = 'contributors'
+class TrelloMember(db.Model):
+    __tablename__ = 'trello_members'
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(64), unique=True)
-    member_id = db.Column(db.Integer, unique=True)
+    name = db.Column(db.Text(), unique=False)
+    trello_member_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)

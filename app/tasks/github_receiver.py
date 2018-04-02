@@ -19,7 +19,7 @@ celery task, which is enqueued in the receivers task queue.
 from . import GitHubBaseTask
 from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
     DeleteTrelloCard
-from ..models import Subscription, Contributor, Repo, Issue, PullRequest
+from ..models import Subscription, GitHubMember, Repo, Issue, PullRequest
 
 
 class GitHubReceiver(GitHubBaseTask):
@@ -42,11 +42,11 @@ class GitHubReceiver(GitHubBaseTask):
         Returns:
             Boolean: `true` if the user belongs to the organization
         """
-        contributor = Contributor.query.filter_by(
+        github_member = GitHubMember.query.filter_by(
             member_id=self.payload['sender']['id']
         ).first()
 
-        return contributor is not None
+        return github_member is not None
 
     def _enqueue_task(self):
         """Enqueues a EventAction task based on the payload parameters."""

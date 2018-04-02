@@ -79,8 +79,13 @@ def create_app(config_name):
     from .controllers.pull_requests import pull_request as pr_blueprint
     app.register_blueprint(pr_blueprint, url_prefix='/repos/pull_requests')
 
-    from .controllers.contributors import contributor as contributor_blueprint
-    app.register_blueprint(contributor_blueprint, url_prefix='/contributors')
+    from .controllers.github_members import github_member as \
+        github_member_blueprint
+    app.register_blueprint(github_member_blueprint, url_prefix='/github_members')
+
+    from .controllers.trello_members import trello_member as \
+        trello_member_blueprint
+    app.register_blueprint(trello_member_blueprint, url_prefix='/trello_members')
 
     from .controllers.trello_lists import trello_list as trello_list_blueprint
     app.register_blueprint(trello_list_blueprint, url_prefix='/boards/lists')

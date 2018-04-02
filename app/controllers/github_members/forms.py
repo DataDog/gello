@@ -10,13 +10,15 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""__init__.py
+"""forms.py
 
-contributor module initialization code.
+GitHubMember-related forms.
 """
 
-from flask import Blueprint
+from flask_wtf import Form
+from wtforms import SubmitField
 
-contributor = Blueprint('contributor', __name__)
 
-from . import views
+class RefreshForm(Form):
+    """On submitting the form, fetch and update stored github members."""
+    submit = SubmitField('Refresh GitHub Members')

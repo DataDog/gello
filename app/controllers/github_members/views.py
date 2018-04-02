@@ -10,43 +10,43 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""contributors/views.py
+"""github_members/views.py
 
-Contributors-related routes and view-specific logic.
+GitHubMembers-related routes and view-specific logic.
 """
 
 from flask import render_template, redirect, url_for, flash, request,\
     current_app
 from flask_login import login_required
-from . import contributor
+from . import github_member
 from .forms import RefreshForm
-from ...models import Contributor
-from ...services import ContributorService
+from ...models import GitHubMember
+from ...services import GitHubMemberService
 
-contributor_service = ContributorService()
+github_member_service = GitHubMemberService()
 
 
-@contributor.route('/', methods=['GET', 'POST'])
+@github_member.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    """Updates the contributors saved on POST request."""
+    """Updates the github_members saved on POST request."""
     form = RefreshForm()
     if form.validate_on_submit():
-        contributor_service.fetch()
-        flash('The organization contributors have been updated.')
+        github_member_service.fetch()
+        flash('The organization\'s GitHub members have been updated.')
         return redirect(url_for('.index'))
 
     page = request.args.get('page', 1, type=int)
-    query = Contributor.query
-    pagination = query.order_by(Contributor.login.asc()).paginate(
+    query = GitHubMember.query
+    pagination = query.order_by(GitHubMember.login.asc()).paginate(
         page, per_page=10,
         error_out=False
     )
-    contributors = pagination.items
+    github_members = pagination.items
 
     return render_template(
-        'contributors.html',
-        contributors=contributors,
+        'github_members.html',
+        members=github_members,
         form=form,
         pagination=pagination,
         organization_name=current_app.config.get('GITHUB_ORG_LOGIN')

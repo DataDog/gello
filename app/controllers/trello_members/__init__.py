@@ -10,15 +10,13 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""forms.py
+"""trello_members/__init__.py
 
-Contributor-related forms.
+Trello-member module initialization code.
 """
 
-from flask_wtf import Form
-from wtforms import SubmitField
+from flask import Blueprint
 
+trello_member = Blueprint('trello_member', __name__)
 
-class RefreshForm(Form):
-    """"""
-    submit = SubmitField('Refresh contributors')
+from . import views

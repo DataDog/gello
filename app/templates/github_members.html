@@ -1,0 +1,52 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}GitHub Members{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>{{ organization_name }}'s GitHub Members</h1>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Member ID</th>
+        <th>Login</th>
+      </tr>
+    </thead>
+
+    {% for member in members %}
+      <tr>
+        <td>{{ member.member_id }}</td>
+        <td>{{ member.login }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div>
+    {{ wtf.quick_form(form) }}
+  </div>
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}
