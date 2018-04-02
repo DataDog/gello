@@ -86,17 +86,13 @@ def index():
 def update(board_id, repo_id):
     form = UpdateForm(request.form)
 
-    if form.issue_autocard.data is not None or \
-       form.pull_request_autocard.data is not None:
-        subscription_service.update(
-            board_id=board_id,
-            repo_id=repo_id,
-            issue_autocard=form.issue_autocard.data,
-            pull_request_autocard=form.pull_request_autocard.data
-        )
-        flash('Updated subscription')
-    else:
-        flash('ERROR The subscription has NOT been updated')
+    subscription_service.update(
+        board_id=board_id,
+        repo_id=repo_id,
+        issue_autocard=form.issue_autocard.data,
+        pull_request_autocard=form.pull_request_autocard.data
+    )
+    flash('Updated subscription')
 
     return redirect(url_for('.index'))
 

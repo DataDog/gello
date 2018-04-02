@@ -25,10 +25,15 @@ from ...models import List
 
 class NewForm(Form):
     """Form for creating a subscribed_list."""
-
     list_id = StringField(
         'List ID',
-        validators=[Required(), Length(1, 64)]
+        validators=[Required(), Length(1, 64)],
+        description=textwrap.dedent(
+            """
+            The <code>id</code> of a trello list associated with the trello
+            board subscribed
+            """
+        )
     )
     trello_member_id = StringField(
         'Trello Member ID',
@@ -57,5 +62,4 @@ class NewForm(Form):
 
 class DeleteForm(Form):
     """Form for deleting an existing subscribed_list."""
-
     submit = SubmitField('Delete')

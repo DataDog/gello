@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""forms.py
+"""github_members/forms.py
 
 GitHubMember-related forms.
 """
@@ -21,4 +21,7 @@ from wtforms import SubmitField
 
 class RefreshForm(Form):
     """On submitting the form, fetch and update stored github members."""
-    submit = SubmitField('Refresh GitHub Members')
+    submit = SubmitField(
+        'Refresh GitHub Members',
+        description='Inserts or updates GitHub members from the GitHub API'
+    )

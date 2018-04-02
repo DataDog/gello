@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""forms.py
+"""auth/forms.py
 
 Authentication-related forms.
 """

@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""forms.py
+"""boards/forms.py
 
 Board-related forms.
 """
@@ -20,5 +20,8 @@ from wtforms import SubmitField
 
 
 class RefreshForm(Form):
-    """"""
-    submit = SubmitField('Refresh boards')
+    """Refreshes boards from the Trello API when submitted."""
+    submit = SubmitField(
+        'Refresh boards',
+        description='Inserts or updates Trello boards from the Trello API'
+    )

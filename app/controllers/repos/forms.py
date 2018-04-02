@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""forms.py
+"""repos/forms.py
 
 Repository-related forms.
 """
@@ -20,5 +20,8 @@ from wtforms import SubmitField
 
 
 class RefreshForm(Form):
-    """"""
-    submit = SubmitField('Refresh repositories')
+    """Refreshes repos from the GitHub API when submitted."""
+    submit = SubmitField(
+        'Refresh repositories',
+        description='Inserts or updates Trello boards from the Trello API'
+    )
