@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""GitHubMember.py
+"""github_member.py
 
 GitHubMember model.
 """

@@ -15,7 +15,7 @@
 subscribed_lists-related routes and view-specific logic.
 """
 
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
 from . import subscribed_list
 from .forms import NewForm, DeleteForm
@@ -34,13 +34,20 @@ def index(board_id, repo_id):
     # Creation form logic
     create_form = NewForm(board_id)
     if create_form.validate_on_submit():
+        member_id_field = create_form.trello_member_id.data.strip()
+        trello_member_id = member_id_field if member_id_field else None
+
         subscribed_list_service.create(
             board_id=board_id,
             repo_id=repo_id,
-            list_id=create_form.list_id.data
+            list_id=create_form.list_id.data,
+            trello_member_id=trello_member_id
         )
 
         flash('Created subscription')
+        return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
+    elif request.method == 'POST':
+        flash('Could not create subscribed list')
         return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
 
     subscription = Subscription.query.get_or_404([board_id, repo_id])

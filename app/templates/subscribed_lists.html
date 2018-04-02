@@ -25,6 +25,7 @@
         <th>Subscription Board ID</th>
         <th>Subscription Repo ID</th>
         <th>Subscription List ID</th>
+        <th>Member ID</th>
         <th>Delete</th>
       </tr>
     </thead>
@@ -34,6 +35,7 @@
         <td>{{ subscribed_list.subscription_board_id }}</td>
         <td>{{ subscribed_list.subscription_repo_id }}</td>
         <td>{{ subscribed_list.list_id }}</td>
+        <td>{{ subscribed_list.trello_member_id }}</td>
 
         <form method="POST" action="{{ url_for('.delete', board_id=subscription.board_id, repo_id=subscription.repo_id, list_id=subscribed_list.list_id) }}">
           <td>{{ form.submit(class="btn btn-danger") }}</td>
@@ -51,4 +53,10 @@
 {% block scripts %}
   {{ super() }}
   {{ pagedown.include_pagedown() }}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      loadAutocompleteData('/api/lists/{{ subscription.board_id }}', 'lists', 'trello_list_id', '#list_id');
+      loadAutocompleteData('/api/trello_members', 'trello_members', 'trello_member_id', '#trello_member_id');
+    });
+  </script>
 {% endblock %}

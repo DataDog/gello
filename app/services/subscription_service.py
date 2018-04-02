@@ -65,8 +65,8 @@ class SubscriptionService(CRUDService):
 
     def delete(self, board_id, repo_id):
         """Deletes an old, persisted subscription."""
-        Subscription.query.filter_by(
-            board_id=board_id, repo_id=repo_id).delete()
+        subscription = Subscription.query.filter_by(
+            board_id=board_id, repo_id=repo_id).first()
 
-        # Persist the changes
-        db.session.commit()
+        # Delete the record
+        db.session.delete(subscription)

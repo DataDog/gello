@@ -19,4 +19,4 @@ from flask import Blueprint
 
 api = Blueprint('api', __name__)
 
-from . import boards, lists, repos
+from . import boards, lists, repos, trello_members
