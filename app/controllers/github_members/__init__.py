@@ -10,13 +10,13 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""api/__init__.py
+"""github_members/__init__.py
 
-api controller initialization code.
+github_member module initialization code.
 """
 
 from flask import Blueprint
 
-api = Blueprint('api', __name__)
+github_member = Blueprint('github_member', __name__)
 
-from . import boards, lists, repos, trello_members
+from . import views

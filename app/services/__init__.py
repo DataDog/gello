@@ -23,6 +23,17 @@ from .board_service import BoardService
 from .subscribed_list_service import SubscribedListService
 from .subscription_service import SubscriptionService
 from .repo_service import RepoService
-from .contributor_service import ContributorService
+from .github_member_service import GitHubMemberService
+from .trello_member_service import TrelloMemberService
 from .issue_service import IssueService
 from .pull_request_service import PullRequestService
+
+
+def api_services():
+    """Returns a list of services which implement the APIService interface."""
+    return [
+        GitHubMemberService(),
+        TrelloMemberService(),
+        RepoService(),
+        BoardService()
+    ]

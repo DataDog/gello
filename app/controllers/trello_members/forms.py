@@ -10,13 +10,15 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""api/__init__.py
+"""forms.py
 
-api controller initialization code.
+Trello-member-related forms.
 """
 
-from flask import Blueprint
+from flask_wtf import Form
+from wtforms import SubmitField
 
-api = Blueprint('api', __name__)
 
-from . import boards, lists, repos, trello_members
+class RefreshForm(Form):
+    """On submitting the form, fetch and update stored trello members."""
+    submit = SubmitField('Refresh Trello Members')

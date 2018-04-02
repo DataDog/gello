@@ -12,25 +12,25 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
-{% block title %}Contributors{% endblock %}
+{% block title %}Trello Members{% endblock %}
 
 {% block page_content %}
   <div class="page-header">
-    <h1>{{ organization_name }}'s Contributors</h1>
+    <h1>{{ organization_name }}'s Trello Members</h1>
   </div>
 
-  <table class="table table-hover contributors">
+  <table class="table table-hover">
     <thead>
       <tr>
         <th>Member ID</th>
-        <th>Login</th>
+        <th>Name</th>
       </tr>
     </thead>
 
-    {% for contributor in contributors %}
+    {% for member in members %}
       <tr>
-        <td>{{ contributor.member_id }}</td>
-        <td>{{ contributor.login }}</td>
+        <td>{{ member.trello_member_id }}</td>
+        <td>{{ member.name }}</td>
       </tr>
     {% endfor %}
   </table>

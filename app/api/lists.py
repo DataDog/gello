@@ -21,12 +21,13 @@ from ..models import List
 from . import api
 
 
-@api.route('/lists/')
+@api.route('/lists/<string:board_id>')
 @login_required
-def get_lists():
+def get_lists(board_id):
     list = request.args.get('list', 1, type=int)
 
-    pagination = List.query.paginate(list, per_page=100, error_out=False)
+    pagination = List.query.filter_by(board_id=board_id).paginate(
+        list, per_page=100, error_out=False)
     lists = pagination.items
 
     prev = None

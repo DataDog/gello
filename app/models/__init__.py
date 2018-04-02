@@ -21,6 +21,7 @@ from .subscription import Subscription
 from .repo import Repo
 from .issue import Issue
 from .pull_request import PullRequest
-from .contributor import Contributor
+from .github_member import GitHubMember
+from .trello_member import TrelloMember
 from .board import Board
 from .list import List

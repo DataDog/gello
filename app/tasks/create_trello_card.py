@@ -22,7 +22,7 @@ from ..services import TrelloService
 class CreateTrelloCard(GitHubBaseTask):
     """An abstract class that creates a trello card on a board."""
 
-    def run(self, board_id, list_id, name, payload):
+    def run(self, board_id, list_id, name, payload, assignee_id=None):
         """Performs validations on the event type and enqueues them.
 
         Validates the event being received is a GitHub Pull Request event or a
@@ -30,11 +30,12 @@ class CreateTrelloCard(GitHubBaseTask):
         queue.
 
         Args:
-            board_id (str):  The id of the board the card will be created on.
-            list_id (str):   The id of the list the card will be created on.
-            name (str):      The name of the card.
-            payload (dict):  The card-specific data, used in the `_card_body`
-                             template method.
+            board_id (str):    The id of the board the card will be created on.
+            list_id (str):     The id of the list the card will be created on.
+            name (str):        The name of the card.
+            payload (dict):    The card-specific data, used in the `_card_body`
+                               template method.
+            assignee_id (str): The trello_member_id for the card assignee
 
         Returns:
             None
@@ -48,7 +49,8 @@ class CreateTrelloCard(GitHubBaseTask):
             board_id=board_id,
             list_id=list_id,
             name=name,
-            desc=self._card_body()
+            desc=self._card_body(),
+            assignee_id=assignee_id
         )
 
         # Persist the card object to the database

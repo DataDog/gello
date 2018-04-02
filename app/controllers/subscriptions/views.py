@@ -35,12 +35,15 @@ def index():
     # Creation form logic
     create_form = NewSubscriptionForm()
     if create_form.validate_on_submit():
+        ids = create_form.list_ids.data
+        list_ids = re.split("\s*,\s*", ids) if ids else []
+
         subscription_service.create(
             board_id=create_form.board_id.data,
             repo_id=create_form.repo_id.data,
             issue_autocard=create_form.issue_autocard.data,
             pull_request_autocard=create_form.pull_request_autocard.data,
-            list_ids=re.split("\s*,\s*", create_form.list_ids.data)
+            list_ids=list_ids
         )
 
         # Enqueue a task to create a repository webhook for the repo

@@ -41,7 +41,12 @@ class NewSubscriptionForm(Form):
 
     def validate(self):
         """Validates the list_ids attribute is correct."""
-        ids = self.list_ids.data
+        ids = self.list_ids.data.strip()
+
+        # if the field is empty, return `True`
+        if not ids:
+            return True
+
         ids_list = re.split("\s*,\s*", ids)
 
         # TODO: try to do this is one query

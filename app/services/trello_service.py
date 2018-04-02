@@ -15,6 +15,7 @@
 Service-helpers for interacting with the Trello API.
 """
 
+from os import environ
 from ..api_clients import TrelloAPIClient
 
 
@@ -26,26 +27,42 @@ class TrelloService(object):
     def __init__(self):
         """Initializes a new TrelloService object."""
         self.client = TrelloAPIClient().client()
+        self.organization = self._get_organization()
 
     def boards(self):
+        """Returns a list of objects representing trello boards."""
         return self.client.list_boards()
 
-    def create_card(self, board_id, list_id, name, desc):
+    def members(self):
+        """Returns a list of objects representing trello members."""
+        return self.organization.get_members()
+
+    def create_card(self, board_id, list_id, name, desc, assignee_id=None):
         """Creates a card on a board, and a list.
 
         Args:
-            board_id (str): The id of the board the card will be created on.
-            list_id (str):  The id of the list the card will be created on.
-            name (str):     The name of the card.
-            desc (str):     The body of the card.
+            board_id (str):    The id of the board the card will be created on.
+            list_id (str):     The id of the list the card will be created on.
+            name (str):        The name of the card.
+            desc (str):        The body of the card.
+            assignee_id (str): The trello_member_id for the card assignee
 
         Returns:
             Card
         """
         board = self.client.get_board(board_id)
-        list = board.get_list(list_id)
-        return list.add_card(name=name, desc=desc)
+        trello_list = board.get_list(list_id)
+        asign = [self.client.get_member(assignee_id)] if assignee_id else None
+
+        return trello_list.add_card(name=name, desc=desc, assign=asign)
 
     def delete_card(self, card_id):
         """Deletes a card for a given `card_id`."""
         self.client.get_card(card_id=card_id).delete()
+
+    def _get_organization(self):
+        """XXX: handle error case where the organization does not exist"""
+        orgs = self.client.list_organizations()
+        return next(
+            o for o in orgs if o.name == environ.get('TRELLO_ORG_NAME')
+        )

@@ -27,12 +27,13 @@ class SubscribedListService(CRUDService):
     data.
     """
 
-    def create(self, board_id, repo_id, list_id):
+    def create(self, board_id, repo_id, list_id, trello_member_id=None):
         """Creates and persists a subscribed_list record to the database."""
         subscribed_list = SubscribedList(
             subscription_board_id=board_id,
             subscription_repo_id=repo_id,
-            list_id=list_id
+            list_id=list_id,
+            trello_member_id=trello_member_id
         )
         db.session.add(subscribed_list)
 

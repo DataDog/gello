@@ -10,17 +10,17 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""contributor.py
+"""github_member.py
 
-Contributor model.
+GitHubMember model.
 """
 
 from datetime import datetime
 from .. import db
 
 
-class Contributor(db.Model):
-    __tablename__ = 'contributors'
+class GitHubMember(db.Model):
+    __tablename__ = 'github_members'
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)

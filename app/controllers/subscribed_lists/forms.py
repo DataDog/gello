@@ -15,6 +15,8 @@
 SubscribedList-related forms.
 """
 
+import textwrap
+
 from flask_wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, Length
@@ -27,6 +29,15 @@ class NewForm(Form):
     list_id = StringField(
         'List ID',
         validators=[Required(), Length(1, 64)]
+    )
+    trello_member_id = StringField(
+        'Trello Member ID',
+        description=textwrap.dedent(
+            """
+            An optional <code>id</code> for a member to be automatically
+            assigned to any trello cards created on this list
+            """
+        )
     )
     submit = SubmitField('Create')
 
@@ -41,7 +52,7 @@ class NewForm(Form):
 
         return List.query.filter_by(
             trello_list_id=list_id, board_id=self._board_id
-        ) is not None
+        ).first() is not None
 
 
 class DeleteForm(Form):

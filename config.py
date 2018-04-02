@@ -30,6 +30,7 @@ class Config:
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SSL_DISABLE = False
+    TRELLO_ORG_NAME = os.environ.get('TRELLO_ORG_NAME')
 
     @staticmethod
     def init_app(app):
