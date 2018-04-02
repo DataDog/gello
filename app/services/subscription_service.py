@@ -55,10 +55,8 @@ class SubscriptionService(CRUDService):
     def update(self, board_id, repo_id, issue_autocard, pull_request_autocard):
         """Updates a persisted subscription's autocard value."""
         subscription = Subscription.query.get([board_id, repo_id])
-        if issue_autocard is not None:
-            subscription.issue_autocard = issue_autocard
-        if pull_request_autocard is not None:
-            subscription.pull_request_autocard = pull_request_autocard
+        subscription.issue_autocard = issue_autocard
+        subscription.pull_request_autocard = pull_request_autocard
 
         # Persist the changes
         db.session.commit()

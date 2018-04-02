@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""errors.py
+"""main/errors.py
 
 Error handlers for error status codes.
 """
@@ -21,7 +21,7 @@ from . import main
 
 @main.app_errorhandler(403)
 def forbidden(e):
-    """TODO"""
+    """Redirects the user to the 403 page on a forbidden error."""
     if request.accept_mimetypes.accept_json and \
             not request.accept_mimetypes.accept_html:
         response = jsonify({'error': 'forbidden'})
@@ -32,7 +32,7 @@ def forbidden(e):
 
 @main.app_errorhandler(404)
 def page_not_found(e):
-    """TODO"""
+    """Redirects the user to the 404 page on a page_not_found error."""
     if request.accept_mimetypes.accept_json and \
             not request.accept_mimetypes.accept_html:
         response = jsonify({'error': 'not found'})
@@ -43,7 +43,7 @@ def page_not_found(e):
 
 @main.app_errorhandler(500)
 def internal_server_error(e):
-    """TODO"""
+    """Redirects the user to the 500 page on an internal_server_error."""
     if request.accept_mimetypes.accept_json and \
             not request.accept_mimetypes.accept_html:
         response = jsonify({'error': 'internal server error'})
