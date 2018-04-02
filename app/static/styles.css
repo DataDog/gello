@@ -34,17 +34,21 @@ div.pagination {
     padding: 0px;
     margin: 0px;
 }
+
 div.flask-pagedown-preview {
     margin: 10px 0px 10px 0px;
     border: 1px solid #e0e0e0;
     padding: 4px;
 }
+
 div.flask-pagedown-preview h1 {
     font-size: 140%;
 }
+
 div.flask-pagedown-preview h2 {
     font-size: 130%;
 }
+
 div.flask-pagedown-preview h3 {
     font-size: 120%;
 }
@@ -102,4 +106,24 @@ div.flask-pagedown-preview h3 {
     padding: 0;
     position: absolute;
     width: 1px;
+}
+
+/* Footer Positioning */
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    height: 100%;
+}
+
+.content {
+    flex: 1 0 auto;
+    -webkit-flex: 1 0 auto;
+    min-height: 40px;
 }

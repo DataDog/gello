@@ -17,6 +17,8 @@
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
 {% endblock %}
 
 {% block navbar %}
@@ -69,6 +71,43 @@
     {% block page_content %}
     {% endblock %}
   </div>
+
+  <div class="content"></div>
+
+  <footer class="page-footer font-small stylish-color-dark pt-4 mt-4">
+    <div class="container text-md-left">
+      <hr>
+
+      <div class="row py-3 d-flex align-items-center">
+        <div class="col-md-12">
+          <p class="text-center text-md-left">
+            Made with 💜 by <stong>Datadog Inc.</stong>
+          </p>
+        </div>
+      </div>
+
+      <div class="row py-3 d-flex align-items-center">
+        <div class="col-md-12">
+          <div class="text-center text-md-right">
+            <ul class="list-unstyled list-inline">
+              <li class="list-inline-item">
+                <a href="https://www.facebook.com/datadoghq/"><i class="fa fa-facebook"></i></a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://twitter.com/datadoghq"><i class="fa fa-twitter"></i></a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://github.com/datadog/"><i class="fa fa-github"></i></a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://www.linkedin.com/company/datadog"><i class="fa fa-linkedin"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 {% endblock %}
 
 {% block scripts %}
@@ -77,9 +116,9 @@
 
   <!-- jQuery UI for autocomplete -->
   <script
-      src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-      integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-      crossorigin="anonymous"></script>
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
 
   <!-- Autocomplete helper function -->
   <script type="text/javascript">
