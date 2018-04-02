@@ -45,6 +45,6 @@ class List(db.Model):
 
     def to_json(self):
         return {
-            'name': self.name,
-            'trello_list_id': self.trello_list_id
+            'label': self.name,
+            'value': self.trello_list_id
         }

@@ -42,7 +42,6 @@ class Board(db.Model):
 
     def to_json(self):
         return {
-            'trello_board_id': self.trello_board_id,
-            'name': self.name,
-            'url': self.url
+            'label': self.name,
+            'value': self.trello_board_id
         }

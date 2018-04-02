@@ -27,7 +27,7 @@ def get_trello_members():
     trello_member = request.args.get('trello_member', 1, type=int)
 
     pagination = TrelloMember.query.paginate(
-        trello_member, per_page=100, error_out=False
+        trello_member, per_page=1000, error_out=False
     )
     trello_members = pagination.items
 

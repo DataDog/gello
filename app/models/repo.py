@@ -46,7 +46,6 @@ class Repo(db.Model):
 
     def to_json(self):
         return {
-            'github_repo_id': str(self.github_repo_id),
-            'name': self.name,
-            'url': self.url
+            'label': self.name,
+            'value': str(self.github_repo_id)
         }
