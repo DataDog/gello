@@ -15,7 +15,6 @@
 Repo model.
 """
 
-from flask import current_app, request, url_for
 from datetime import datetime
 from .. import db
 from . import Subscription

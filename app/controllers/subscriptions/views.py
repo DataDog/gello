@@ -36,10 +36,10 @@ def index():
     create_form = NewSubscriptionForm()
     if create_form.validate_on_submit():
         ids = create_form.list_ids.data
-        list_ids = re.split("\s*,\s*", ids) if ids else []
+        list_ids = re.split("\s*,\s*", ids.strip()) if ids else []
 
         subscription_service.create(
-            board_id=create_form.board_id.data,
+            board_id=create_form.board_id.data.strip(),
             repo_id=create_form.repo_id.data,
             issue_autocard=create_form.issue_autocard.data,
             pull_request_autocard=create_form.pull_request_autocard.data,
@@ -53,6 +53,9 @@ def index():
         )
 
         flash('Created subscription')
+        return redirect(url_for('.index'))
+    elif request.method == 'POST':
+        flash('Could not create subscription')
         return redirect(url_for('.index'))
 
     page = request.args.get('page', 1, type=int)

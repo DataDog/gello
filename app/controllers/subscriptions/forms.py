@@ -21,7 +21,7 @@ import textwrap
 from flask_wtf import Form
 from wtforms import StringField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import Required, Length
-from ...models import List
+from ...models import Board, List, Repo
 
 
 class NewSubscriptionForm(Form):
@@ -80,8 +80,24 @@ class NewSubscriptionForm(Form):
     submit = SubmitField('Create')
 
     def validate(self):
-        """Validates the list_ids attribute is correct."""
+        """Performs validations of the form field values.
+
+        - Validates the `board_id `attribute belongs to a `Board`
+        - Validates the `repo_id `attribute belongs to a `Repo`
+        - Validates the `list_ids` attribute is a comma-delimited list of
+          `List.trello_list_id` belonging to the `Board` with `board_id`.
+        """
+        board_id = self.board_id.data.strip()
+        repo_id = self.repo_id.data
         ids = self.list_ids.data.strip()
+
+        board = Board.query.filter_by(trello_board_id=board_id).first()
+        if board is None:
+            return False
+
+        repo = Repo.query.filter_by(github_repo_id=repo_id).first()
+        if repo is None:
+            return False
 
         # If the field is empty, return `True`
         if not ids:
@@ -91,7 +107,7 @@ class NewSubscriptionForm(Form):
 
         return all(
             List.query.filter_by(
-                trello_list_id=list_id, board_id=self.board_id.data
+                trello_list_id=list_id, board_id=board_id
             ) is not None for list_id in ids_list
         )
 
