@@ -17,13 +17,13 @@ SubscribedList-related forms.
 
 import textwrap
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 from ...models import List, TrelloMember, SubscribedList
 
 
-class NewForm(Form):
+class NewForm(FlaskForm):
     """Form for creating a subscribed_list."""
     list_name = StringField(
         'List Name',
@@ -48,7 +48,7 @@ class NewForm(Form):
 
     def __init__(self, board_id, repo_id):
         """Sets the `board_id` for the form."""
-        Form.__init__(self)
+        FlaskForm.__init__(self)
         self._board_id = board_id
         self._repo_id = repo_id
 
@@ -123,6 +123,6 @@ class NewForm(Form):
         return self._error_message
 
 
-class DeleteForm(Form):
+class DeleteForm(FlaskForm):
     """Form for deleting an existing subscribed_list."""
     submit = SubmitField('Delete')

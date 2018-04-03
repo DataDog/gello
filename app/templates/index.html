@@ -16,47 +16,25 @@
 {% block title %}Gello{% endblock %}
 
 {% block page_content %}
-  <div class="page-header">
-    {% if current_user.is_authenticated %}
-      <h1>Hello, {{ current_user.username }}.</h1>
-    {% else %}
-      <h1>Please <a href="{{ url_for('auth.login') }}">login</a>.</h1>
-    {% endif %}
-  </div>
-
   {% if current_user.is_authenticated %}
-    <div class="repo-tabs">
-      <ul class="nav nav-tabs">
-        <li>
-          <a href="{{ url_for('board.index') }}">Boards</a>
-        </li>
-        <li>
-          <a href="{{ url_for('github_member.index') }}">GitHub Members</a>
-        </li>
-        <li>
-          <a href="{{ url_for('trello_member.index') }}">Trello Members</a>
-        </li>
-        <li>
-          <a href="{{ url_for('repo.index') }}">Repos</a>
-        </li>
-        <li>
-          <a href="{{ url_for('subscription.index') }}">Subscriptions</a>
-        </li>
-      </ul>
+    <div class="page-header">
+      <h1>{{ organization_name }}'s Subscribed Repositories</h1>
     </div>
-  {% endif %}
-
-  {% if current_user.is_authenticated %}
-    <div>
-      <h3>{{ organization_name }}'s Subscribed Repositories</h3>
-      {{ _repos.render(subscribed_repos) }}
-    </div>
+    {{ _repos.render(subscribed_repos) }}
 
     {% if pagination %}
-      <div class="pagination">
-        {{ macros.pagination_widget(pagination, '.index') }}
-      </div>
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
     {% endif %}
+
+    <div class="page-header">
+      <h1>{{ organization_name }}'s Subscriptions</h1>
+    </div>
+  {% else %}
+    <div class="page-header">
+      <h1>Please <a href="{{ url_for('auth.login') }}">login</a>.</h1>
+    </div>
   {% endif %}
 {% endblock %}
 

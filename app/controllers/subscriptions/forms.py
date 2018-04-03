@@ -18,13 +18,13 @@ Subscription-related forms.
 import re
 import textwrap
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField
 from wtforms.validators import Required, Length
 from ...models import Board, List, Repo, Subscription
 
 
-class NewSubscriptionForm(Form):
+class NewSubscriptionForm(FlaskForm):
     """Form for creating a new subscription."""
     board_name = StringField(
         'Board Name',
@@ -161,13 +161,13 @@ class NewSubscriptionForm(Form):
         return self._error_message
 
 
-class UpdateForm(Form):
+class UpdateForm(FlaskForm):
     """Form for updating an existing subscription."""
     issue_autocard = BooleanField('Issue Autocard')
     pull_request_autocard = BooleanField('Pull Request Autocard')
     submit = SubmitField('Update')
 
 
-class DeleteForm(Form):
+class DeleteForm(FlaskForm):
     """Form for deleting an existing subscription."""
     submit = SubmitField('Delete')
