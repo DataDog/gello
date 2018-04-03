@@ -16,15 +16,15 @@
 
 {% block page_content %}
   <div class="page-header">
-    <h1>Subscribed Lists for <b>{{ subscription.board_id }}, {{ subscription.repo_id }}</b></h1>
+    <h1>Subscribed Lists for <b>{{ subscription.repo.name }} | {{ subscription.board.name }}</b></h1>
   </div>
 
   <table class="table table-hover trello-lists">
     <thead>
       <tr>
-        <th>Subscription Board ID</th>
-        <th>Subscription Repo ID</th>
-        <th>Subscription List ID</th>
+        <th>Repository Name</th>
+        <th>Board Name</th>
+        <th>List Name</th>
         <th>Member ID</th>
         <th>Delete</th>
       </tr>
@@ -32,9 +32,9 @@
 
     {% for subscribed_list, form in list_form_pairs %}
       <tr>
-        <td>{{ subscribed_list.subscription_board_id }}</td>
-        <td>{{ subscribed_list.subscription_repo_id }}</td>
-        <td>{{ subscribed_list.list_id }}</td>
+        <td>{{ subscribed_list.subscription.repo.name }}</td>
+        <td>{{ subscribed_list.subscription.board.name }}</td>
+        <td>{{ subscribed_list.list.name }}</td>
         <td>{{ subscribed_list.trello_member_id }}</td>
 
         <form method="POST" action="{{ url_for('.delete', board_id=subscription.board_id, repo_id=subscription.repo_id, list_id=subscribed_list.list_id) }}">
