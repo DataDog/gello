@@ -40,3 +40,15 @@ class SubscribedList(db.Model):
         ), {}
     )
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Associations
+    list = db.relationship(
+        'List',
+        backref=db.backref('list_subscribed_list', lazy='joined'),
+        lazy='joined'
+    )
+    subscription = db.relationship(
+        'Subscription',
+        backref=db.backref('subscription_subscribed_list', lazy='joined'),
+        lazy='joined'
+    )

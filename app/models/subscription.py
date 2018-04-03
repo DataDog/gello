@@ -47,3 +47,13 @@ class Subscription(db.Model):
         lazy='dynamic',
         cascade='all, delete-orphan'
     )
+    board = db.relationship(
+        'Board',
+        backref=db.backref('subscription_board', lazy='joined'),
+        lazy='joined'
+    )
+    repo = db.relationship(
+        'Repo',
+        backref=db.backref('subscription_repo', lazy='joined'),
+        lazy='joined'
+    )

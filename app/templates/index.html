@@ -28,8 +28,24 @@
     </div>
     {% endif %}
 
-    <div class="page-header">
-      <h1>{{ organization_name }}'s Subscriptions</h1>
+    <div class="repo-tabs">
+      <ul class="nav nav-tabs">
+        <li>
+          <a href="{{ url_for('board.index') }}">Boards</a>
+        </li>
+        <li>
+          <a href="{{ url_for('github_member.index') }}">GitHub Members</a>
+        </li>
+        <li>
+          <a href="{{ url_for('trello_member.index') }}">Trello Members</a>
+        </li>
+        <li>
+          <a href="{{ url_for('repo.index') }}">Repos</a>
+        </li>
+        <li>
+          <a href="{{ url_for('subscription.index') }}">Subscriptions</a>
+        </li>
+      </ul>
     </div>
   {% else %}
     <div class="page-header">

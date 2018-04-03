@@ -22,8 +22,8 @@
   <table class="table table-hover subscriptions">
     <thead>
       <tr>
-        <th>Board ID</th>
-        <th>Repository ID</th>
+        <th>Board Name</th>
+        <th>Repository Name</th>
         <th>Subscribed Lists</th>
         <th>Issue Autocard</th>
         <th>Pull Request Autocard</th>
@@ -34,8 +34,8 @@
 
     {% for subscription, update_form, delete_form in subscription_forms_tuples %}
       <tr>
-        <td>{{ subscription.board_id }}</td>
-        <td>{{ subscription.repo_id }}</td>
+        <td>{{ subscription.board.name }}</td>
+        <td>{{ subscription.repo.name }}</td>
         <td>
           <a href="{{ url_for('subscribed_list.index', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
           {{ subscription.subscribed_lists.count() }} lists
