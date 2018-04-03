@@ -48,8 +48,10 @@ class TrelloMemberService(APIService):
         if not record:
             trello_member_model = TrelloMember(
                 name=trello_member.full_name,
+                username=trello_member.username,
                 trello_member_id=trello_member.id
             )
             db.session.add(trello_member_model)
         else:
             record.name = trello_member.full_name
+            record.username = trello_member.username

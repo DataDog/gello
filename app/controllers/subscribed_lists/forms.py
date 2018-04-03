@@ -19,28 +19,28 @@ import textwrap
 
 from flask_wtf import Form
 from wtforms import StringField, SubmitField
-from wtforms.validators import Required, Length
+from wtforms.validators import Required
 from ...models import List, TrelloMember
 
 
 class NewForm(Form):
     """Form for creating a subscribed_list."""
-    list_id = StringField(
-        'List ID',
-        validators=[Required(), Length(1, 64)],
+    list_name = StringField(
+        'List Name',
+        validators=[Required()],
         description=textwrap.dedent(
             """
-            The <code>id</code> of a trello list associated with the trello
-            board subscribed
+            The name of a Trello list associated with the Trello board
+            subscribed
             """
         )
     )
-    trello_member_id = StringField(
-        'Trello Member ID',
+    trello_username = StringField(
+        'Trello Member Username',
         description=textwrap.dedent(
             """
-            An optional <code>id</code> for a member to be automatically
-            assigned to any trello cards created on this list
+            An optional field to specify the Trello username for a member to be
+            automatically assigned to any Trello cards created on this list
             """
         )
     )
@@ -59,23 +59,36 @@ class NewForm(Form):
         - Validates the `trello_member_id `attribute belongs to a
           `TrelloMember`
         """
-        list_id = self.list_id.data.strip()
-        member_id = self.trello_member_id.data.strip()
+        list_name = self.list_name.data.strip()
+        trello_username = self.trello_username.data.strip()
 
         trello_list = List.query.filter_by(
-            trello_list_id=list_id, board_id=self._board_id
+            name=list_name, board_id=self._board_id
         ).first()
 
         if trello_list is None:
             return False
+        self._list_id = trello_list.trello_list_id
 
         # `trello_member_id` is optional
-        if not member_id:
+        if not trello_username:
             return True
 
-        return TrelloMember.query.filter_by(
-            trello_member_id=member_id
-        ).first() is not None
+        trello_member = TrelloMember.query.filter_by(
+            username=trello_username
+        ).first()
+
+        if trello_member is None:
+            return False
+
+        self._trello_member_id = trello_member.trello_member_id
+        return True
+
+    def get_list_id(self):
+        return self._list_id
+
+    def get_trello_member_id(self):
+        return self._trello_member_id
 
 
 class DeleteForm(Form):

@@ -34,13 +34,13 @@ def index(board_id, repo_id):
     # Creation form logic
     create_form = NewForm(board_id)
     if create_form.validate_on_submit():
-        member_id_field = create_form.trello_member_id.data.strip()
+        member_id_field = create_form.get_trello_member_id()
         trello_member_id = member_id_field if member_id_field else None
 
         subscribed_list_service.create(
             board_id=board_id,
             repo_id=repo_id,
-            list_id=create_form.list_id.data,
+            list_id=create_form.get_list_id(),
             trello_member_id=trello_member_id
         )
 

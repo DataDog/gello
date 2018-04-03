@@ -55,8 +55,8 @@
   {{ pagedown.include_pagedown() }}
   <script type="text/javascript">
     $(document).ready(function() {
-      loadAutocompleteData('/api/lists/{{ subscription.board_id }}', 'lists', '#list_id');
-      loadAutocompleteData('/api/trello_members', 'trello_members', '#trello_member_id');
+      loadAutocompleteData('/api/lists/{{ subscription.board_id }}', 'lists', '#list_name');
+      loadAutocompleteData('/api/trello_members', 'trello_members', '#trello_username');
     });
   </script>
 {% endblock %}
