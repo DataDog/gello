@@ -44,10 +44,11 @@
     {% endfor %}
   </table>
 
-  <h3>Create New Subscribed List</h3>
-  <div>
-    {{ wtf.quick_form(create_form) }}
+  <div class="page-header">
+    <h3><b>Create New Subscribed List</b></h3>
   </div>
+
+  {{ wtf.quick_form(create_form) }}
 {% endblock %}
 
 {% block scripts %}

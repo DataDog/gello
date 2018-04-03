@@ -15,11 +15,11 @@
 Repository-related forms.
 """
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import SubmitField
 
 
-class RefreshForm(Form):
+class RefreshForm(FlaskForm):
     """Refreshes repos from the GitHub API when submitted."""
     submit = SubmitField(
         'Refresh repositories',

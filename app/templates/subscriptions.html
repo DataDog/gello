@@ -61,10 +61,11 @@
     </div>
   {% endif %}
 
-  <h3>Create New Subscription</h3>
-  <div>
-    {{ wtf.quick_form(create_form) }}
+  <div class="page-header">
+    <h3><b>Create New Subscription</b></h3>
   </div>
+
+  {{ wtf.quick_form(create_form) }}
 {% endblock %}
 
 {% block scripts %}

@@ -15,11 +15,11 @@
 GitHubMember-related forms.
 """
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import SubmitField
 
 
-class RefreshForm(Form):
+class RefreshForm(FlaskForm):
     """On submitting the form, fetch and update stored github members."""
     submit = SubmitField(
         'Refresh GitHub Members',
