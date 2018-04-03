@@ -15,6 +15,8 @@
 subscribed_lists-related routes and view-specific logic.
 """
 
+import textwrap
+
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
 from . import subscribed_list
@@ -32,22 +34,29 @@ def index(board_id, repo_id):
     Displays trello lists pertaining to a particular subscription.
     """
     # Creation form logic
-    create_form = NewForm(board_id)
+    create_form = NewForm(board_id, repo_id)
     if create_form.validate_on_submit():
-        member_id_field = create_form.get_trello_member_id()
-        trello_member_id = member_id_field if member_id_field else None
+        username = create_form.trello_username.data.strip()
+        member_id = create_form.get_trello_member_id() if username else None
 
         subscribed_list_service.create(
             board_id=board_id,
             repo_id=repo_id,
             list_id=create_form.get_list_id(),
-            trello_member_id=trello_member_id
+            trello_member_id=member_id
         )
 
         flash('Created subscription')
         return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
     elif request.method == 'POST':
-        flash('Could not create subscribed list')
+        flash(
+            textwrap.dedent(
+                f"""
+                Could not create subscribed list because an error occurred:
+                {create_form.get_error_message()}
+                """
+            )
+        )
         return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
 
     subscription = Subscription.query.get_or_404([board_id, repo_id])

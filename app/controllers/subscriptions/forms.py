@@ -21,7 +21,7 @@ import textwrap
 from flask_wtf import Form
 from wtforms import StringField, BooleanField, SubmitField
 from wtforms.validators import Required, Length
-from ...models import Board, List, Repo
+from ...models import Board, List, Repo, Subscription
 
 
 class NewSubscriptionForm(Form):
@@ -79,12 +79,6 @@ class NewSubscriptionForm(Form):
     )
     submit = SubmitField('Create')
 
-    def get_board_id(self):
-        return self._board_id
-
-    def get_repo_id(self):
-        return self._repo_id
-
     def validate(self):
         """Performs validations of the form field values.
 
@@ -100,14 +94,38 @@ class NewSubscriptionForm(Form):
         # Perform board-specific validations
         board = Board.query.filter_by(name=board_name).first()
         if board is None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Board '{board_name}' does not exist
+                """
+            )
             return False
+
+        # Get the `board_id` to return back to `views.py`
         self._board_id = board.trello_board_id
 
         # Perform repo-specific validations
         repo = Repo.query.filter_by(name=repo_name).first()
         if repo is None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Repo '{repo_name}' does not exist
+                """
+            )
             return False
+
+        # Get the `repo_id` to return back to `views.py`
         self._repo_id = repo.github_repo_id
+
+        # Validate the `Subscription` does not already exist
+        subscription = Subscription.query.get([self._board_id, self._repo_id])
+        if subscription is not None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Subscription exists for {board_name} and {repo_name}
+                """
+            )
+            return False
 
         # If the field is empty, return `True`
         if not ids:
@@ -115,11 +133,32 @@ class NewSubscriptionForm(Form):
 
         ids_list = re.split("\s*,\s*", ids)
 
-        return all(
+        # Validate all list id are valid `List`s associated to the `board_id`
+        valid_list_ids = all(
             List.query.filter_by(
-                trello_list_id=list_id, board_id=self.get_board_id()
+                trello_list_id=list_id, board_id=self._board_id
             ) is not None for list_id in ids_list
         )
+
+        if not valid_list_ids:
+            self._error_message = textwrap.dedent(
+                f"""
+                The `list_ids` passed in are not valid
+                """
+            )
+            return False
+
+        # All custom validations passed
+        return True
+
+    def get_board_id(self):
+        return self._board_id
+
+    def get_repo_id(self):
+        return self._repo_id
+
+    def get_error_message(self):
+        return self._error_message
 
 
 class UpdateForm(Form):

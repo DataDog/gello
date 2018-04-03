@@ -16,6 +16,7 @@ subscriptions-related routes and view-specific logic.
 """
 
 import re
+import textwrap
 
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
@@ -55,7 +56,14 @@ def index():
         flash('Created subscription')
         return redirect(url_for('.index'))
     elif request.method == 'POST':
-        flash('Could not create subscription')
+        flash(
+            textwrap.dedent(
+                f"""
+                Could not create subscription because an error occurred:
+                {create_form.get_error_message()}
+                """
+            )
+        )
         return redirect(url_for('.index'))
 
     page = request.args.get('page', 1, type=int)

@@ -20,7 +20,7 @@ import textwrap
 from flask_wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
-from ...models import List, TrelloMember
+from ...models import List, TrelloMember, SubscribedList
 
 
 class NewForm(Form):
@@ -46,10 +46,11 @@ class NewForm(Form):
     )
     submit = SubmitField('Create')
 
-    def __init__(self, board_id):
+    def __init__(self, board_id, repo_id):
         """Sets the `board_id` for the form."""
         Form.__init__(self)
         self._board_id = board_id
+        self._repo_id = repo_id
 
     def validate(self):
         """Performs validations of the form field values.
@@ -67,7 +68,27 @@ class NewForm(Form):
         ).first()
 
         if trello_list is None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Trello List '{trello_list}' does not exist
+                """
+            )
             return False
+
+        # Validate the `SubscribedList` does not already exist
+        subscribed_list = SubscribedList.query.get(
+            [self._board_id, self._repo_id, trello_list.trello_list_id]
+        )
+        if subscribed_list is not None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Subscribed List exists for {self._board_id}, {self._repo_id},
+                {list_name}
+                """
+            )
+            return False
+
+        # Get the `list_id` to return back to `views.py`
         self._list_id = trello_list.trello_list_id
 
         # `trello_member_id` is optional
@@ -79,9 +100,17 @@ class NewForm(Form):
         ).first()
 
         if trello_member is None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Trello Member '{trello_member}' does not exist
+                """
+            )
             return False
 
+        # Get the `trello_member_id` to return back to `views.py`
         self._trello_member_id = trello_member.trello_member_id
+
+        # All custom validations passed
         return True
 
     def get_list_id(self):
@@ -89,6 +118,9 @@ class NewForm(Form):
 
     def get_trello_member_id(self):
         return self._trello_member_id
+
+    def get_error_message(self):
+        return self._error_message
 
 
 class DeleteForm(Form):
