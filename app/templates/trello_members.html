@@ -23,6 +23,7 @@
     <thead>
       <tr>
         <th>Member ID</th>
+        <th>Username</th>
         <th>Name</th>
       </tr>
     </thead>
@@ -30,6 +31,7 @@
     {% for member in members %}
       <tr>
         <td>{{ member.trello_member_id }}</td>
+        <td>{{ member.username }}</td>
         <td>{{ member.name }}</td>
       </tr>
     {% endfor %}

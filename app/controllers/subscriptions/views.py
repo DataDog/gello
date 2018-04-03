@@ -39,8 +39,8 @@ def index():
         list_ids = re.split("\s*,\s*", ids.strip()) if ids else []
 
         subscription_service.create(
-            board_id=create_form.board_id.data.strip(),
-            repo_id=create_form.repo_id.data,
+            board_id=create_form.get_board_id(),
+            repo_id=create_form.get_repo_id(),
             issue_autocard=create_form.issue_autocard.data,
             pull_request_autocard=create_form.pull_request_autocard.data,
             list_ids=list_ids
@@ -49,7 +49,7 @@ def index():
         # Enqueue a task to create a repository webhook for the repo
         CreateGitHubWebhook.delay(
             url_root=request.url_root,
-            repo_id=create_form.repo_id.data,
+            repo_id=create_form.get_repo_id()
         )
 
         flash('Created subscription')

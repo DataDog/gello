@@ -19,29 +19,29 @@ import re
 import textwrap
 
 from flask_wtf import Form
-from wtforms import StringField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, BooleanField, SubmitField
 from wtforms.validators import Required, Length
 from ...models import Board, List, Repo
 
 
 class NewSubscriptionForm(Form):
     """Form for creating a new subscription."""
-    board_id = StringField(
-        'Board ID',
-        validators=[Required(), Length(1, 64)],
+    board_name = StringField(
+        'Board Name',
+        validators=[Required(), Length(1, 100)],
         description=textwrap.dedent(
             """
-            The <code>id</code> of a trello board you wish to subscribe
+            The name of a Trello board you wish to subscribe
             """
         )
     )
-    repo_id = IntegerField(
-        'Repo ID',
-        validators=[Required()],
+    repo_name = StringField(
+        'Repo Name',
+        validators=[Required(), Length(1, 100)],
         description=textwrap.dedent(
             """
-            The <code>id</code> of a github repository board you wish to
-            register event webhooks for
+            The name of a GitHub repository you wish to register event webhooks
+            for
             """
         )
     )
@@ -79,6 +79,12 @@ class NewSubscriptionForm(Form):
     )
     submit = SubmitField('Create')
 
+    def get_board_id(self):
+        return self._board_id
+
+    def get_repo_id(self):
+        return self._repo_id
+
     def validate(self):
         """Performs validations of the form field values.
 
@@ -87,17 +93,21 @@ class NewSubscriptionForm(Form):
         - Validates the `list_ids` attribute is a comma-delimited list of
           `List.trello_list_id` belonging to the `Board` with `board_id`.
         """
-        board_id = self.board_id.data.strip()
-        repo_id = self.repo_id.data
+        board_name = self.board_name.data.strip()
+        repo_name = self.repo_name.data.strip()
         ids = self.list_ids.data.strip()
 
-        board = Board.query.filter_by(trello_board_id=board_id).first()
+        # Perform board-specific validations
+        board = Board.query.filter_by(name=board_name).first()
         if board is None:
             return False
+        self._board_id = board.trello_board_id
 
-        repo = Repo.query.filter_by(github_repo_id=repo_id).first()
+        # Perform repo-specific validations
+        repo = Repo.query.filter_by(name=repo_name).first()
         if repo is None:
             return False
+        self._repo_id = repo.github_repo_id
 
         # If the field is empty, return `True`
         if not ids:
@@ -107,7 +117,7 @@ class NewSubscriptionForm(Form):
 
         return all(
             List.query.filter_by(
-                trello_list_id=list_id, board_id=board_id
+                trello_list_id=list_id, board_id=self.get_board_id()
             ) is not None for list_id in ids_list
         )
 

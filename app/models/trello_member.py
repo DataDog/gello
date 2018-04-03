@@ -25,11 +25,12 @@ class TrelloMember(db.Model):
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text(), unique=False)
+    username = db.Column(db.String(100), unique=True)
     trello_member_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def to_json(self):
         return {
-            'label': self.name,
+            'label': self.username,
             'value': self.trello_member_id
         }
