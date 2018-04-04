@@ -31,12 +31,12 @@
       </td>
       <td>
         <a href="{{ url_for('issue.index', id=repo.id) }}">
-          <b>({{ repo.issues.count() }})</b> issues for {{ repo.name }}
+          <b>({{ repo.issues.count() }})</b> issue cards
         </a>
       </td>
       <td>
         <a href="{{ url_for('pull_request.index', id=repo.id) }}">
-          <b>({{ repo.pull_requests.count() }})</b> pull requests for {{ repo.name }}
+          <b>({{ repo.pull_requests.count() }})</b> pull request cards
         </a>
       </td>
     </tr>
