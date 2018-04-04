@@ -43,6 +43,9 @@ class Repo(db.Model):
         cascade='all, delete-orphan'
     )
 
+    def number_of_cards(self):
+        return self.issues.count() + self.pull_requests.count()
+
     def number_of_issues_by_board_id(self, board_id):
         return len(list(
             filter(lambda x: x.trello_board_id == board_id, self.issues)

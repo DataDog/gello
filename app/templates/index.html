@@ -77,14 +77,20 @@
 
     <hr>
 
-    {% if pagination %}
-      <div class="pagination">
-        {{ macros.pagination_widget(pagination, '.index') }}
+    <div class="page-header float-container">
+      <div class="float-left">
+        <h3>
+          <b>Create New Subscription</b>
+        </h3>
       </div>
-    {% endif %}
 
-    <div class="page-header">
-      <h3><b>Create New Subscription</b></h3>
+      <div class="float-right">
+        {% if pagination %}
+          <div class="pagination">
+            {{ macros.pagination_widget(pagination, '.index') }}
+          </div>
+        {% endif %}
+      </div>
     </div>
 
     {{ wtf.quick_form(create_form, action=url_for('subscription.create')) }}

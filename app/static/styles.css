@@ -127,3 +127,17 @@ body {
     -webkit-flex: 1 0 auto;
     min-height: 40px;
 }
+
+/* Pagination Positioning */
+
+.float-container {
+    overflow: hidden;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
