@@ -123,6 +123,48 @@ class NewForm(FlaskForm):
         return self._error_message
 
 
+class UpdateForm(FlaskForm):
+    """Form for updating an existing subscribed lists."""
+    trello_update_username = StringField('Trello Member Username')
+    submit = SubmitField('Update')
+
+    def validate(self):
+        """Performs validations of the form field values.
+
+        - Validates the `trello_member_id `attribute belongs to a
+          `TrelloMember`
+        """
+        trello_username = self.trello_update_username.data.strip()
+
+        # `trello_member_id` is optional
+        if not trello_username:
+            return True
+
+        trello_member = TrelloMember.query.filter_by(
+            username=trello_username
+        ).first()
+
+        if trello_member is None:
+            self._error_message = textwrap.dedent(
+                f"""
+                Trello Member '{trello_member}' does not exist
+                """
+            )
+            return False
+
+        # Get the `trello_member_id` to return back to `views.py`
+        self._trello_member_id = trello_member.trello_member_id
+
+        # All custom validations passed
+        return True
+
+    def get_trello_member_id(self):
+        return self._trello_member_id
+
+    def get_error_message(self):
+        return self._error_message
+
+
 class DeleteForm(FlaskForm):
     """Form for deleting an existing subscribed_list."""
     submit = SubmitField('Delete')
