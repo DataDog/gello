@@ -57,7 +57,11 @@
 
   {% if pagination %}
     <div class="pagination">
-      {{ macros.pagination_widget(pagination, '.index') }}
+      {% if board %}
+        {{ macros.pagination_widget(pagination, '.filtered_by_board', repo_id=repo.id, board_id=board.trello_board_id) }}
+      {% else %}
+        {{ macros.pagination_widget(pagination, '.index', repo_id=repo.id) }}
+      {% endif %}
     </div>
   {% endif %}
 {% endblock %}

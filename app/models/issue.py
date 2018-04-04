@@ -27,10 +27,10 @@ class Issue(db.Model):
     name = db.Column(db.Text(), unique=True)
     url = db.Column(db.Text(), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    github_issue_id = db.Column(db.Integer, unique=True)
+    github_issue_id = db.Column(db.Integer, unique=False)
     trello_card_url = db.Column(db.Text(), unique=True)
     trello_card_id = db.Column(db.String(64), unique=True)
-    trello_board_id = db.Column(db.String(64), unique=True)
+    trello_board_id = db.Column(db.String(64), unique=False)
 
     # Associations
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.github_repo_id'))

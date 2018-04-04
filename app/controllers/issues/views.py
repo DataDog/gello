@@ -55,7 +55,7 @@ def filtered_by_board(repo_id, board_id):
     page = request.args.get('page', 1, type=int)
 
     issue_records = Issue.query.filter_by(
-        repo_id=repo_id, trello_board_id=board_id
+        repo_id=repo.github_repo_id, trello_board_id=board_id
     )
     pagination = issue_records.order_by(Issue.timestamp.asc()).paginate(
         page, per_page=10, error_out=False
