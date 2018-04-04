@@ -25,31 +25,24 @@
   <table class="table table-hover trello-lists">
     <thead>
       <tr>
-        <th>Repository</th>
-        <th>Board</th>
         <th>List Name</th>
-        <th>Member ID</th>
+        <th>Trello Member Username</th>
+        <th>Update</th>
         <th>Delete</th>
       </tr>
     </thead>
 
-    {% for subscribed_list, form in list_form_pairs %}
+    {% for subscribed_list, update_form, delete_form in list_form_pairs %}
       <tr>
-        <td>
-          <a href="{{ subscribed_list.subscription.repo.url }}">
-            {{ subscribed_list.subscription.repo.name }}
-          </a>
-        </td>
-        <td>
-          <a href="{{ subscribed_list.subscription.board.url }}">
-            {{ subscribed_list.subscription.board.name }}
-          </a>
-        </td>
         <td>{{ subscribed_list.list.name }}</td>
-        <td>{{ subscribed_list.trello_member_id }}</td>
+
+        <form method="POST" action="{{ url_for('.update', board_id=subscription.board_id, repo_id=subscription.repo_id, list_id=subscribed_list.list_id ) }}">
+          <td>{{ update_form.trello_update_username(class="form-control input_username_field") }}</td>
+          <td>{{ update_form.submit(class="btn btn-primary") }}</td>
+        </form>
 
         <form method="POST" action="{{ url_for('.delete', board_id=subscription.board_id, repo_id=subscription.repo_id, list_id=subscribed_list.list_id) }}">
-          <td>{{ form.submit(class="btn btn-danger") }}</td>
+          <td>{{ delete_form.submit(class="btn btn-danger") }}</td>
         </form>
       </tr>
     {% endfor %}
@@ -69,6 +62,7 @@
     $(document).ready(function() {
       loadAutocompleteData('/api/lists/{{ subscription.board_id }}', 'lists', '#list_name');
       loadAutocompleteData('/api/trello_members', 'trello_members', '#trello_username');
+      loadAutocompleteData('/api/trello_members', 'trello_members', '.input_username_field');
     });
   </script>
 {% endblock %}

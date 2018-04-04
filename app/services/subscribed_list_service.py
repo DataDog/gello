@@ -40,9 +40,15 @@ class SubscribedListService(CRUDService):
         # Persists the subscribed_list
         db.session.commit()
 
-    def update(self):
+    def update(self, board_id, repo_id, list_id, trello_member_id=None):
         """Updates a persisted subscribed_list's autocard value."""
-        pass
+        subscribed_list = SubscribedList.query.get(
+            [board_id, repo_id, list_id]
+        )
+        subscribed_list.trello_member_id = trello_member_id
+
+        # Persist the changes
+        db.session.commit()
 
     def delete(self, board_id, repo_id, list_id):
         """Deletes an old, persisted subscribed_list."""
