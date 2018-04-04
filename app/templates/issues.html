@@ -38,22 +38,28 @@
     </thead>
 
     {% for issue in issues %}
-    <tr>
-      <td>{{ issue.name }}</td>
-      <td>
-        <a href="{{ issue.url }}">
-          {{ issue.url }}
-        </a>
-      </td>
-      <td>
-        <a href="{{ issue.trello_card_url }}">
-          {{ issue.trello_card_url }}
-        </a>
-      </td>
-      <td>{{ issue.trello_card_id }}</td>
-    </tr>
+      <tr>
+        <td>{{ issue.name }}</td>
+        <td>
+          <a href="{{ issue.url }}">
+            {{ issue.url }}
+          </a>
+        </td>
+        <td>
+          <a href="{{ issue.trello_card_url }}">
+            {{ issue.trello_card_url }}
+          </a>
+        </td>
+        <td>{{ issue.trello_card_id }}</td>
+      </tr>
     {% endfor %}
   </table>
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}

@@ -39,22 +39,28 @@
     </thead>
 
     {% for pull_request in pull_requests %}
-    <tr>
-      <td>{{ pull_request.name }}</td>
-      <td>
-        <a href="{{ pull_request.url }}">
-          {{ pull_request.url }}
-        </a>
-      </td>
-      <td>
-        <a href="{{ pull_request.trello_card_url }}">
-          {{ pull_request.trello_card_url }}
-        </a>
-      </td>
-      <td>{{ pull_request.trello_card_id }}</td>
-    </tr>
+      <tr>
+        <td>{{ pull_request.name }}</td>
+        <td>
+          <a href="{{ pull_request.url }}">
+            {{ pull_request.url }}
+          </a>
+        </td>
+        <td>
+          <a href="{{ pull_request.trello_card_url }}">
+            {{ pull_request.trello_card_url }}
+          </a>
+        </td>
+        <td>{{ pull_request.trello_card_id }}</td>
+      </tr>
     {% endfor %}
   </table>
+
+  {% if pagination %}
+    <div class="pagination">
+      {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}
