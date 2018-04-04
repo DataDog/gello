@@ -22,15 +22,21 @@
 
   {{ _repos.render(repos) }}
 
-  <div>
-    {{ wtf.quick_form(form) }}
-  </div>
-
-  {% if pagination %}
-    <div class="pagination">
-      {{ macros.pagination_widget(pagination, '.index') }}
+  <div class="float-container">
+    <div class="float-left">
+      <div>
+        {{ wtf.quick_form(form) }}
+      </div>
     </div>
-  {% endif %}
+
+    <div class="float-right">
+      {% if pagination %}
+      <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.index') }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
