@@ -50,3 +50,4 @@ def index():
         pagination=pagination,
         organization_name=current_app.config.get('GITHUB_ORG_LOGIN')
     )
+

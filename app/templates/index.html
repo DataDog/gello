@@ -28,9 +28,9 @@
           <th>Repository</th>
           <th>Subscribed Lists</th>
           <th>Issues</th>
-          <th>Issue Autocard</th>
+          <th>Autocard</th>
           <th>Pull Requests</th>
-          <th>Pull Request Autocard</th>
+          <th>Autocard</th>
           <th>Update</th>
           <th>Delete</th>
         </tr>
@@ -55,13 +55,13 @@
           </td>
           <form method="POST" action="{{ url_for('subscription.update', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
             <td>
-              <a href="{{ url_for('issue.index', id=subscription.repo.id) }}">
+              <a href="{{ url_for('issue.filtered_by_board', repo_id=subscription.repo.id, board_id=subscription.board_id) }}">
                 <b>({{ subscription.repo.number_of_issues_by_board_id(subscription.board_id) }})</b> cards
               </a>
             </td>
             <td>{{ update_form.issue_autocard(checked=subscription.issue_autocard) }}</td>
             <td>
-              <a href="{{ url_for('pull_request.index', id=subscription.repo.id) }}">
+              <a href="{{ url_for('pull_request.filtered_by_board', repo_id=subscription.repo.id, board_id=subscription.board_id) }}">
                 <b>({{ subscription.repo.number_of_pull_requests_by_board_id(subscription.board_id) }})</b> cards
               </a>
             </td>

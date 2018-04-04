@@ -15,8 +15,18 @@
 
 {% block page_content %}
   <div class="page-header">
-    <h1>Community pull request cards for <b>{{ repo.name }}</b></h1>
+    <h1>Community Pull Request Cards</h1>
   </div>
+  <div class="page-header">
+    <h3>
+      For repository <b>{{ repo.name }}</b>
+
+      {% if board %}
+      on board <b>{{ board.name }}</b>
+      {% endif %}
+    </h3>
+  </div>
+
 
   <table class="table table-hover pull-requests">
     <thead>
