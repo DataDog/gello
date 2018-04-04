@@ -22,8 +22,8 @@
   <table class="table table-hover trello-lists">
     <thead>
       <tr>
-        <th>Repository Name</th>
-        <th>Board Name</th>
+        <th>Repository</th>
+        <th>Board</th>
         <th>List Name</th>
         <th>Member ID</th>
         <th>Delete</th>
@@ -32,8 +32,16 @@
 
     {% for subscribed_list, form in list_form_pairs %}
       <tr>
-        <td>{{ subscribed_list.subscription.repo.name }}</td>
-        <td>{{ subscribed_list.subscription.board.name }}</td>
+        <td>
+          <a href="{{ subscribed_list.subscription.repo.url }}">
+            {{ subscribed_list.subscription.repo.name }}
+          </a>
+        </td>
+        <td>
+          <a href="{{ subscribed_list.subscription.board.url }}">
+            {{ subscribed_list.subscription.board.name }}
+          </a>
+        </td>
         <td>{{ subscribed_list.list.name }}</td>
         <td>{{ subscribed_list.trello_member_id }}</td>
 

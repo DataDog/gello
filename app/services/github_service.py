@@ -15,7 +15,7 @@
 Service-helpers for interacting with the GitHub API.
 """
 
-from os import environ
+from os import environ, path
 from ..api_clients import GitHubAPIClient
 
 
@@ -37,7 +37,9 @@ class GitHubService(object):
 
     def create_github_hook(self, url_root, repo_id):
         """Creates a repository webhook for a given repo."""
-        config = {'url': url_root, 'content_type': 'json'}
+        url = path.join(url_root, "webhooks")
+
+        config = {'url': url, 'content_type': 'json'}
         events = ['issues', 'issue_comment', 'pull_request',
                   'pull_request_review_comment']
 
