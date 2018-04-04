@@ -1,5 +1,33 @@
 /* Custom styles */
 
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700');
+
+body {
+    font-family: 'Lato', sans-serif !important;
+}
+
+a {
+    color: #c024b6;
+}
+
+.btn-primary,
+.pagination > .active > a {
+    background: linear-gradient(45deg, #c025b6, #3023ae) #c024b6;
+    border-color: #961d8e;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.pagination > .active > a:hover,
+.pagination > .active > a:active,
+.pagination > .active > a:focus {
+    transition: 0.5s;
+    background-color: #961d8e;
+}
+
+/* Pagination */
+
 div.pagination {
     width: 100%;
     text-align: right;
