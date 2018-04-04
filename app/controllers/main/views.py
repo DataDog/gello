@@ -16,31 +16,45 @@ repos-related routes and view-specific logic.
 """
 
 import json
-from flask import render_template, request, current_app
+
+from flask import render_template, request
 from . import main
 from ...tasks import GitHubReceiver
-from ...models import Repo, Subscription
+from ...models import Subscription
+from app.controllers.subscriptions.forms import NewSubscriptionForm, \
+    UpdateForm, DeleteForm
 
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    """Updates the repositories saved on POST request."""
+    # Creation form logic
     if request.method == 'POST':
         GitHubReceiver.delay(payload=json.loads(request.get_data()))
         return "GitHub event received."
 
+    create_form = NewSubscriptionForm()
     page = request.args.get('page', 1, type=int)
-
-    # Display the subscribed repositories in the home view
-    subscription_ids = [r.repo_id for r in Subscription.query]
-    query = Repo.query.filter(Repo.github_repo_id.in_(subscription_ids))
-    pagination = query.order_by(Repo.timestamp.desc()).paginate(
-        page, per_page=10, error_out=False
+    query = Subscription.query
+    pagination = query.order_by(Subscription.timestamp.desc()).paginate(
+        page, per_page=10,
+        error_out=False
     )
-    subscribed_repos = pagination.items
+    subscriptions = pagination.items
+    subscription_forms_tuples = [
+        (
+            s,
+            UpdateForm(
+                issue_autocard=s.issue_autocard,
+                pull_request_autocard=s.pull_request_autocard
+            ),
+            DeleteForm()
+        ) for s in subscriptions
+    ]
 
     return render_template(
         'index.html',
-        subscribed_repos=subscribed_repos,
-        pagination=pagination,
-        organization_name=current_app.config.get('GITHUB_ORG_LOGIN')
+        create_form=create_form,
+        subscription_forms_tuples=subscription_forms_tuples,
+        pagination=pagination
     )

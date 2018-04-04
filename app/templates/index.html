@@ -18,35 +18,76 @@
 {% block page_content %}
   {% if current_user.is_authenticated %}
     <div class="page-header">
-      <h1>{{ organization_name }}'s Subscribed Repositories</h1>
+      <h1>Subscriptions</h1>
     </div>
-    {{ _repos.render(subscribed_repos) }}
+
+    <table class="table table-hover subscriptions">
+      <thead>
+        <tr>
+          <th>Board</th>
+          <th>Repository</th>
+          <th>Subscribed Lists</th>
+          <th>Issues</th>
+          <th>Autocard</th>
+          <th>Pull Requests</th>
+          <th>Autocard</th>
+          <th>Update</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+
+      {% for subscription, update_form, delete_form in subscription_forms_tuples %}
+        <tr>
+          <td>
+            <a href="{{ subscription.board.url }}">
+              {{ subscription.board.name }}
+            </a>
+          </td>
+          <td>
+            <a href="{{ subscription.repo.url }}">
+              {{ subscription.repo.name }}
+            </a>
+          </td>
+          <td>
+            <a href="{{ url_for('subscribed_list.index', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
+              <b>({{ subscription.subscribed_lists.count() }})</b> lists
+            </a>
+          </td>
+          <form method="POST" action="{{ url_for('subscription.update', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
+            <td>
+              <a href="{{ url_for('issue.filtered_by_board', repo_id=subscription.repo.id, board_id=subscription.board_id) }}">
+                <b>({{ subscription.repo.number_of_issues_by_board_id(subscription.board_id) }})</b> cards
+              </a>
+            </td>
+            <td>{{ update_form.issue_autocard(checked=subscription.issue_autocard) }}</td>
+            <td>
+              <a href="{{ url_for('pull_request.filtered_by_board', repo_id=subscription.repo.id, board_id=subscription.board_id) }}">
+                <b>({{ subscription.repo.number_of_pull_requests_by_board_id(subscription.board_id) }})</b> cards
+              </a>
+            </td>
+            <td>{{ update_form.pull_request_autocard(checked=subscription.pull_request_autocard) }}</td>
+            <td>{{ update_form.submit(class="btn btn-primary") }}</td>
+          </form>
+          <form method="POST" action="{{ url_for('subscription.delete', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
+            <td>{{ delete_form.submit(class="btn btn-danger") }}</td>
+          </form>
+        </tr>
+      {% endfor %}
+    </table>
+
+    <hr>
 
     {% if pagination %}
-    <div class="pagination">
-      {{ macros.pagination_widget(pagination, '.index') }}
-    </div>
+      <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.index') }}
+      </div>
     {% endif %}
 
-    <div class="repo-tabs">
-      <ul class="nav nav-tabs">
-        <li>
-          <a href="{{ url_for('board.index') }}">Boards</a>
-        </li>
-        <li>
-          <a href="{{ url_for('github_member.index') }}">GitHub Members</a>
-        </li>
-        <li>
-          <a href="{{ url_for('trello_member.index') }}">Trello Members</a>
-        </li>
-        <li>
-          <a href="{{ url_for('repo.index') }}">Repos</a>
-        </li>
-        <li>
-          <a href="{{ url_for('subscription.index') }}">Subscriptions</a>
-        </li>
-      </ul>
+    <div class="page-header">
+      <h3><b>Create New Subscription</b></h3>
     </div>
+
+    {{ wtf.quick_form(create_form, action=url_for('subscription.create')) }}
   {% else %}
     <div class="page-header">
       <h1>Please <a href="{{ url_for('auth.login') }}">login</a>.</h1>
@@ -57,4 +98,11 @@
 {% block scripts %}
   {{ super() }}
   {{ pagedown.include_pagedown() }}
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      loadAutocompleteData('/api/boards', 'boards', '#board_name');
+      loadAutocompleteData('/api/repos', 'repos', '#repo_name');
+    });
+  </script>
 {% endblock %}

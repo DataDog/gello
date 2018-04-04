@@ -43,6 +43,16 @@ class Repo(db.Model):
         cascade='all, delete-orphan'
     )
 
+    def number_of_issues_by_board_id(self, board_id):
+        return len(list(
+            filter(lambda x: x.trello_board_id == board_id, self.issues)
+        ))
+
+    def number_of_pull_requests_by_board_id(self, board_id):
+        return len(list(
+            filter(lambda x: x.trello_board_id == board_id, self.pull_requests)
+        ))
+
     def to_json(self):
         return {
             'label': self.name,

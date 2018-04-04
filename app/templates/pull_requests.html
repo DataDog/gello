@@ -15,7 +15,16 @@
 
 {% block page_content %}
   <div class="page-header">
-    <h1>Pull Requests for <b>{{ repo.name }}</b></h1>
+    <h1>Community Pull Request Cards</h1>
+  </div>
+  <div class="page-header">
+    <h3>
+      For repository <b>{{ repo.name }}</b>
+
+      {% if board %}
+      on board <b>{{ board.name }}</b>
+      {% endif %}
+    </h3>
   </div>
 
   <table class="table table-hover pull-requests">
@@ -29,22 +38,32 @@
     </thead>
 
     {% for pull_request in pull_requests %}
-    <tr>
-      <td>{{ pull_request.name }}</td>
-      <td>
-        <a href="{{ pull_request.url }}">
-          {{ pull_request.url }}
-        </a>
-      </td>
-      <td>
-        <a href="{{ pull_request.trello_card_url }}">
-          {{ pull_request.trello_card_url }}
-        </a>
-      </td>
-      <td>{{ pull_request.trello_card_id }}</td>
-    </tr>
+      <tr>
+        <td>{{ pull_request.name }}</td>
+        <td>
+          <a href="{{ pull_request.url }}">
+            {{ pull_request.url }}
+          </a>
+        </td>
+        <td>
+          <a href="{{ pull_request.trello_card_url }}">
+            {{ pull_request.trello_card_url }}
+          </a>
+        </td>
+        <td>{{ pull_request.trello_card_id }}</td>
+      </tr>
     {% endfor %}
   </table>
+
+  {% if pagination %}
+    <div class="pagination">
+      {% if board %}
+        {{ macros.pagination_widget(pagination, '.filtered_by_board', repo_id=repo.id, board_id=board.trello_board_id) }}
+      {% else %}
+        {{ macros.pagination_widget(pagination, '.index', repo_id=repo.id) }}
+      {% endif %}
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}

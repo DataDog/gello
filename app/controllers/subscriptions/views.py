@@ -18,24 +18,22 @@ subscriptions-related routes and view-specific logic.
 import re
 import textwrap
 
-from flask import render_template, redirect, url_for, flash, request
+from flask import redirect, url_for, flash, request
 from flask_login import login_required
 from . import subscription
-from .forms import NewSubscriptionForm, UpdateForm, DeleteForm
-from ...models import Subscription
+from .forms import NewSubscriptionForm, UpdateForm
 from ...services import SubscriptionService
 from ...tasks import CreateGitHubWebhook
 
 subscription_service = SubscriptionService()
 
 
-@subscription.route('/', methods=['GET', 'POST'])
+@subscription.route('/create', methods=['POST'])
 @login_required
-def index():
-    """Updates the repositories saved on POST request."""
-    # Creation form logic
-    create_form = NewSubscriptionForm()
-    if create_form.validate_on_submit():
+def create():
+    create_form = NewSubscriptionForm(request.form)
+
+    if create_form.validate():
         ids = create_form.list_ids.data
         list_ids = re.split("\s*,\s*", ids.strip()) if ids else []
 
@@ -54,8 +52,8 @@ def index():
         )
 
         flash('Created subscription')
-        return redirect(url_for('.index'))
-    elif request.method == 'POST':
+        return redirect(url_for('main.index'))
+    else:
         flash(
             textwrap.dedent(
                 f"""
@@ -64,32 +62,7 @@ def index():
                 """
             )
         )
-        return redirect(url_for('.index'))
-
-    page = request.args.get('page', 1, type=int)
-    query = Subscription.query
-    pagination = query.order_by(Subscription.timestamp.desc()).paginate(
-        page, per_page=10,
-        error_out=False
-    )
-    subscriptions = pagination.items
-    subscription_forms_tuples = [
-        (
-            s,
-            UpdateForm(
-                issue_autocard=s.issue_autocard,
-                pull_request_autocard=s.pull_request_autocard
-            ),
-            DeleteForm()
-        ) for s in subscriptions
-    ]
-
-    return render_template(
-        'subscriptions.html',
-        create_form=create_form,
-        subscription_forms_tuples=subscription_forms_tuples,
-        pagination=pagination
-    )
+        return redirect(url_for('main.index'))
 
 
 @subscription.route('/<string:board_id>/<int:repo_id>/update', methods=['POST'])
@@ -105,7 +78,7 @@ def update(board_id, repo_id):
     )
     flash('Updated subscription')
 
-    return redirect(url_for('.index'))
+    return redirect(url_for('main.index'))
 
 
 @subscription.route('/<string:board_id>/<int:repo_id>/delete', methods=['POST'])
@@ -113,4 +86,4 @@ def update(board_id, repo_id):
 def delete(board_id, repo_id):
     subscription_service.delete(board_id, repo_id)
     flash('Deleted subscription')
-    return redirect(url_for('.index'))
+    return redirect(url_for('main.index'))

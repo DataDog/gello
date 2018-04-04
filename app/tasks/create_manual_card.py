@@ -59,6 +59,7 @@ class CreateManualCard(CreateTrelloCard):
                 url=self._url,
                 github_issue_id=self._id,
                 repo_id=self._repo_id,
+                trello_board_id=card.board_id,
                 trello_card_id=card.id,
                 trello_card_url=card.url
             )
@@ -68,6 +69,7 @@ class CreateManualCard(CreateTrelloCard):
                 url=self._url,
                 github_pull_request_id=self._id,
                 repo_id=self._repo_id,
+                trello_board_id=card.board_id,
                 trello_card_id=card.id,
                 trello_card_url=card.url
             )

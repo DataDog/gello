@@ -28,13 +28,14 @@ class PullRequestService(CRUDService):
     """
 
     def create(self, name, url, github_pull_request_id, repo_id,
-               trello_card_id, trello_card_url):
+               trello_board_id, trello_card_id, trello_card_url):
         """Creates and persists a new pull_request record to the database."""
         pull_request = PullRequest(
             name=name,
             url=url,
             github_pull_request_id=github_pull_request_id,
             repo_id=repo_id,
+            trello_board_id=trello_board_id,
             trello_card_id=trello_card_id,
             trello_card_url=trello_card_url
         )
