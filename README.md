@@ -8,7 +8,10 @@ ___
   * [Creating a Subscription](#creating-a-subscription)
     * [Autocard](#autocard)
     * [Manual](#manual)
-  * [Choosing Your Lists](#choosing-your-lists)
+    * [Selecting Your Lists](#selecting-your-lists)
+  * [Aggregating Community Contributions](#aggregating-community-contributions)
+    * [Issues](#aggregating-community-issues)
+    * [Pull Requests](#aggregating-community-pull-requests)
 
 [How it Works](#how-it-works)
   * [GitHub Webhooks](#github-webhooks)
@@ -37,7 +40,7 @@ _Gello_ was developed to help Datadog manage GitHub Issues and Pull Requests ope
 
 ### Creating a Subscription
 
-When you login to Gello, you will be prompted to create a new subscription.
+When you login to _Gello_, you will be prompted to create a new subscription.
 
 ![Creating a Subscription](/images/create_subscription.png)
 
@@ -63,11 +66,11 @@ If `autocard` is checked for issues or pull requests, Trello cards will automati
 
 If `autocard` is _not_ checked for issues or pull requests, Trello cards will not automatically be created when an issue or pull request is created by an external contributor. However, a person within the GitHub organization may comment `gello create_card` to create a Trello card for the board lists you have subscribed.
 
-### Choosing Your Lists
+#### Selecting Your Lists
 
-Gello lets you select which lists you would like to create cards to for a subscribed board.
+_Gello_ lets you select which lists you would like to create cards to for a subscribed board.
 
-#### Steps to create a Subscribed List
+Steps to create a Subscribed List:
 
 1. After creating a _subscription_ between a GitHub repository and a Trello board, click on a link under the "Subscribed Lists" column in the subscriptions table:
 
@@ -77,6 +80,26 @@ Gello lets you select which lists you would like to create cards to for a subscr
 
 ![Create a Subscribed List](/images/create_subscribed_list.png)
 
+### Aggregating Community Contributions
+
+In addition to creating cards on the lists of Trello boards subscribed, Gello keeps track of open community contributions, which are aggregated by GitHub repository, and can be filtered down by Trello board.
+
+#### Aggregating Community Issues
+
+To see open community issues on a repository aggregated by a Trello board, click on a link under the "Issues" column in the subscriptions table:
+
+![Subscriptions Issues Link](/images/subscriptions_highlight_issues.png)
+
+Here there's a paginated listing of all community issues still open, with links to the corresponding GitHub url, and Trello url (for the card created by _Gello_):
+
+![Community Issues By Board](/images/community_issues_by_board.png)
+
+#### Aggregating Community Pull Requests
+
+Likewise, to see open community pull requests on a repository aggregated by a Trello board, click on a link under the "Pull Requests" column in the subscriptions table:
+
+![Subscriptions Issues Link](/images/subscriptions_highlight_pull_requests.png)
+
 ___
 
 ## How it works
@@ -84,7 +107,7 @@ ___
 _Gello_ works by _subscribing_ Trello boards to GitHub repositories through a web UI, and selecting the corresponding Trello lists you would like cards to be created to following a GitHub event.
 
 ### GitHub Webhooks
-Gello uses [GitHub webhooks](https://developer.github.com/webhooks/) to get event updates from the repositories subscribed.
+_Gello_ uses [GitHub webhooks](https://developer.github.com/webhooks/) to get event updates from the repositories subscribed.
 
 When a subscription is made, _Gello_ will create a GitHub webhook on the corresponding repository with the following permissions: `Issues`, `Issue comments`, `Pull requests`, and `Pull request review comments`.
 
