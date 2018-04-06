@@ -19,8 +19,8 @@ from . import GitHubBaseTask
 from ..services import IssueService, PullRequestService, TrelloService
 
 
-class DeleteTrelloCard(GitHubBaseTask):
-    """A class that deletes a trello card on a board."""
+class DeleteCardObjectFromDatabase(GitHubBaseTask):
+    """A class that deletes a trello card object within Gello."""
 
     def __init__(self):
         """Initializes a task to create a manual trello card."""
@@ -29,10 +29,11 @@ class DeleteTrelloCard(GitHubBaseTask):
         self._trello_service = TrelloService()
 
     def run(self, scope, github_id, card_id):
-        """Deletes a trello card on a trello board."""
-        self._trello_service.delete_card(card_id=card_id)
+        """Deletes the record of the trello card in Gello.
 
-        # Deletes the card record in the database
+        NOTE: this does not delete the card on the Trello board, only removes
+        the record from the database in Gello.
+        """
         if scope == 'issue':
             self._issue_service.delete(github_issue_id=github_id)
         elif scope == 'pull_request':
