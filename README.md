@@ -249,6 +249,7 @@ celery worker -A celery_worker.celery --loglevel=info
 ```
 
 10. In another terminal, run the server
+
 ```bash
 pyenv activate v-3.6.4
 python run.py
@@ -260,27 +261,41 @@ ___
 
 ### Deploying to Heroku
 
+1. Login with your heroku credentials
+
 ```bash
-# Login with your heroku credentials
 heroku login
+```
 
-# Create your application
+2. Create your application
+
+```bash
 heroku apps:create --buildpack heroku/python
+```
 
-# Add redis add-on for celery worker
+3. Add redis add-on for celery worker
+
+```bash
 heroku addons:create heroku-redis -a your_app_name
+```
 
-# Add postgresql add-on for database
+4. Add PostgreSQL add-on for database
+
+```bash
 heroku addons:create heroku-postgresql
+```
 
-# Verify REDIS and DATABASE exist
+5. Verify `REDIS` and `DATABASE` exist
+
+```bash
 heroku addons
+```
 
-# Push the code to heroku
-git push heroku master
+![Addons](/images/heroku_addons.png)
 
-# Configure your environment variables
-#
+6. Configure your environment variables
+
+```bash
 # NOTE: for heroku, you do not need to set the `DATABASE_URL` or `REDIS_URL`
 # environment variables, since they are set automatically with the addons
 heroku config:set ADMIN_EMAIL=email@email.com
@@ -290,11 +305,22 @@ heroku config:set GITHUB_ORG_LOGIN=the_name_of_your_organization
 heroku config:set TRELLO_ORG_NAME=your_trello_organization_name
 heroku config:set TRELLO_API_KEY=your_trello_public_key
 heroku config:set TRELLO_API_TOKEN=a_trello_token_you_generate
+```
 
-# Start the celery worker on a dyno
+7. Push the code to heroku
+
+```bash
+git push heroku master
+```
+
+8. Start the celery worker on a dyno
+
+```bash
 heroku ps:scale worker=1
+```
 
-# Open the application
+9. Open the application
+```bash
 heroku open
 ```
 
