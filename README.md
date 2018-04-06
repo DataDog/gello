@@ -8,7 +8,10 @@ ___
   * [Creating a Subscription](#creating-a-subscription)
     * [Autocard](#autocard)
     * [Manual](#manual)
-  * [Choosing Your Lists](#choosing-your-lists)
+    * [Selecting Your Lists](#selecting-your-lists)
+  * [Aggregating Community Contributions](#aggregating-community-contributions)
+    * [Issues](#aggregating-community-issues)
+    * [Pull Requests](#aggregating-community-pull-requests)
 
 [How it Works](#how-it-works)
   * [GitHub Webhooks](#github-webhooks)
@@ -37,11 +40,11 @@ _Gello_ was developed to help Datadog manage GitHub Issues and Pull Requests ope
 
 ### Creating a Subscription
 
-When you login to Gello, you will be prompted to create a new subscription.
+When you login to _Gello_, you will be prompted to create a new subscription.
 
 ![Creating a Subscription](/images/create_subscription.png)
 
-#### Steps to create a new subscription:
+Steps to create a new subscription:
 
 1. Type in the name of the board you wish to create cards to. The input field will autocomplete with values pulled from Trello:
 
@@ -63,11 +66,11 @@ If `autocard` is checked for issues or pull requests, Trello cards will automati
 
 If `autocard` is _not_ checked for issues or pull requests, Trello cards will not automatically be created when an issue or pull request is created by an external contributor. However, a person within the GitHub organization may comment `gello create_card` to create a Trello card for the board lists you have subscribed.
 
-### Choosing Your Lists
+#### Selecting Your Lists
 
-Gello lets you select which lists you would like to create cards to for a subscribed board.
+_Gello_ lets you select which lists you would like to create cards to for a subscribed board.
 
-#### Steps to create a Subscribed List
+Steps to create a Subscribed List:
 
 1. After creating a _subscription_ between a GitHub repository and a Trello board, click on a link under the "Subscribed Lists" column in the subscriptions table:
 
@@ -77,6 +80,26 @@ Gello lets you select which lists you would like to create cards to for a subscr
 
 ![Create a Subscribed List](/images/create_subscribed_list.png)
 
+### Aggregating Community Contributions
+
+In addition to creating cards on the lists of Trello boards subscribed, Gello keeps track of open community contributions, which are aggregated by GitHub repository, and can be filtered down by Trello board.
+
+#### Aggregating Community Issues
+
+To see open community issues on a repository aggregated by a Trello board, click on a link under the "Issues" column in the subscriptions table:
+
+![Subscriptions Issues Link](/images/subscriptions_highlight_issues.png)
+
+Here there's a paginated listing of all community issues still open, with links to the corresponding GitHub url, and Trello url (for the card created by _Gello_):
+
+![Community Issues By Board](/images/community_issues_by_board.png)
+
+#### Aggregating Community Pull Requests
+
+Likewise, to see open community pull requests on a repository aggregated by a Trello board, click on a link under the "Pull Requests" column in the subscriptions table:
+
+![Subscriptions Issues Link](/images/subscriptions_highlight_pull_requests.png)
+
 ___
 
 ## How it works
@@ -84,7 +107,7 @@ ___
 _Gello_ works by _subscribing_ Trello boards to GitHub repositories through a web UI, and selecting the corresponding Trello lists you would like cards to be created to following a GitHub event.
 
 ### GitHub Webhooks
-Gello uses [GitHub webhooks](https://developer.github.com/webhooks/) to get event updates from the repositories subscribed.
+_Gello_ uses [GitHub webhooks](https://developer.github.com/webhooks/) to get event updates from the repositories subscribed.
 
 When a subscription is made, _Gello_ will create a GitHub webhook on the corresponding repository with the following permissions: `Issues`, `Issue comments`, `Pull requests`, and `Pull request review comments`.
 
@@ -167,31 +190,69 @@ ___
 
 ### macOS Development Setup
 
+1. Install the pip package manager
+
 ```bash
-# Configure the python virtual environment
+sudo easy_install pip
+```
+
+2. Install [Pyenv with brew](https://github.com/pyenv/pyenv#homebrew-on-mac-os-x)
+
+```bash
+brew update
+brew install pyenv
+```
+
+3. Install Python 3.6.4 with Pyenv
+
+```bash
+pyenv install 3.6.4
+```
+
+4. Create and activate `virtualenv` with Python 3.6.4
+
+```bash
 pyenv virtualenv 3.6.4 v-3.6.4
 pyenv activate v-3.6.4
+```
 
-# Install the dependencies
+5. Install the dependencies
+
+```bash
 pip install pipenv
 pipenv install
+```
 
-# Create a PostgreSQL database
+6. Create a PostgreSQL database
+
+```bash
 createdb your_postgresql_database_name
+```
 
-# Run database migrations
+7. Run the database migrations
+
+```bash
 python manage.py db upgrade
+```
 
-# In one terminal, start the worker
+8. Run the deployment command to fetch API Data and create the admin user
+
+```bash
+python manage.py deploy
+```
+
+9. In one terminal, start the worker
+
+```bash
 pyenv activate v-3.6.4
 celery worker -A celery_worker.celery --loglevel=info
+```
 
-# In another terminal, run the server
+10. In another terminal, run the server
+
+```bash
 pyenv activate v-3.6.4
 python run.py
-
-# Visit localhost:5000
-open http://localhost:5000
 ```
 
 ___
@@ -200,27 +261,41 @@ ___
 
 ### Deploying to Heroku
 
+1. Login with your heroku credentials
+
 ```bash
-# Login with your heroku credentials
 heroku login
+```
 
-# Create your application
+2. Create your application
+
+```bash
 heroku apps:create --buildpack heroku/python
+```
 
-# Add redis add-on for celery worker
+3. Add redis add-on for celery worker
+
+```bash
 heroku addons:create heroku-redis -a your_app_name
+```
 
-# Add postgresql add-on for database
+4. Add PostgreSQL add-on for database
+
+```bash
 heroku addons:create heroku-postgresql
+```
 
-# Verify REDIS and DATABASE exist
+5. Verify `REDIS` and `DATABASE` exist
+
+```bash
 heroku addons
+```
 
-# Push the code to heroku
-git push heroku master
+![Addons](/images/heroku_addons.png)
 
-# Configure your environment variables
-#
+6. Configure your environment variables
+
+```bash
 # NOTE: for heroku, you do not need to set the `DATABASE_URL` or `REDIS_URL`
 # environment variables, since they are set automatically with the addons
 heroku config:set ADMIN_EMAIL=email@email.com
@@ -230,11 +305,22 @@ heroku config:set GITHUB_ORG_LOGIN=the_name_of_your_organization
 heroku config:set TRELLO_ORG_NAME=your_trello_organization_name
 heroku config:set TRELLO_API_KEY=your_trello_public_key
 heroku config:set TRELLO_API_TOKEN=a_trello_token_you_generate
+```
 
-# Start the celery worker on a dyno
+7. Push the code to heroku
+
+```bash
+git push heroku master
+```
+
+8. Start the celery worker on a dyno
+
+```bash
 heroku ps:scale worker=1
+```
 
-# Open the application
+9. Open the application
+```bash
 heroku open
 ```
 
@@ -242,3 +328,5 @@ ___
 
 ## Why _Gello_?
 _Gello_ was named because it bridges the gap between the GitHub API and the Trello API.
+
+> Does something not make sense or work as expected? Please open a [pull request](https://github.com/DataDog/gello/compare) to update this documentation. Thank you!
