@@ -18,7 +18,7 @@ celery task, which is enqueued in the receivers task queue.
 
 from . import GitHubBaseTask
 from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
-    DeleteTrelloCard
+    DeleteCardObjectFromDatabase
 from ..models import Subscription, GitHubMember, Repo, Issue, PullRequest
 
 
@@ -93,9 +93,9 @@ class GitHubReceiver(GitHubBaseTask):
              action == 'opened':
             self._create_trello_pull_request_card(board_id, list_id, assignee_id)
         elif scope == 'issue' and action == 'closed':
-            self._delete_issue_trello_cards()
+            self._delete_issue_trello_card_objects()
         elif scope == 'pull_request' and action == 'closed':
-            self._delete_pull_request_trello_cards()
+            self._delete_pull_request_trello_card_objects()
         else:
             print('Unsupported event action.')
 
@@ -144,20 +144,20 @@ class GitHubReceiver(GitHubBaseTask):
             assignee_id=assignee_id
         )
 
-    def _delete_issue_trello_cards(self):
+    def _delete_issue_trello_card_objects(self):
         """Deletes all trello cards associated with an issue."""
         scope = self.get_scope()
         github_id = self.payload[scope]['id']
         issues = Issue.query.filter_by(github_issue_id=github_id)
 
         for issue in issues:
-            DeleteTrelloCard.delay(
+            DeleteCardObjectFromDatabase.delay(
                 scope=scope,
                 github_id=github_id,
                 card_id=issue.trello_card_id
             )
 
-    def _delete_pull_request_trello_cards(self):
+    def _delete_pull_request_trello_card_objects(self):
         """Deletes all trello cards associated with a pull request."""
         scope = self.get_scope()
         github_id = self.payload[scope]['id']
@@ -165,7 +165,7 @@ class GitHubReceiver(GitHubBaseTask):
             github_pull_request_id=github_id)
 
         for pull_request in pull_requests:
-            DeleteTrelloCard.delay(
+            DeleteCardObjectFromDatabase.delay(
                 scope=scope,
                 github_id=github_id,
                 card_id=pull_request.trello_card_id
