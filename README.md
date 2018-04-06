@@ -44,7 +44,7 @@ When you login to _Gello_, you will be prompted to create a new subscription.
 
 ![Creating a Subscription](/images/create_subscription.png)
 
-#### Steps to create a new subscription:
+Steps to create a new subscription:
 
 1. Type in the name of the board you wish to create cards to. The input field will autocomplete with values pulled from Trello:
 
@@ -190,31 +190,68 @@ ___
 
 ### macOS Development Setup
 
+1. Install the pip package manager
+
 ```bash
-# Configure the python virtual environment
+sudo easy_install pip
+```
+
+2. Install [Pyenv with brew](https://github.com/pyenv/pyenv#homebrew-on-mac-os-x)
+
+```bash
+brew update
+brew install pyenv
+```
+
+3. Install Python 3.6.4 with Pyenv
+
+```bash
+pyenv install 3.6.4
+```
+
+4. Create and activate `virtualenv` with Python 3.6.4
+
+```bash
 pyenv virtualenv 3.6.4 v-3.6.4
 pyenv activate v-3.6.4
+```
 
-# Install the dependencies
+5. Install the dependencies
+
+```bash
 pip install pipenv
 pipenv install
+```
 
-# Create a PostgreSQL database
+6. Create a PostgreSQL database
+
+```bash
 createdb your_postgresql_database_name
+```
 
-# Run database migrations
+7. Run the database migrations
+
+```bash
 python manage.py db upgrade
+```
 
-# In one terminal, start the worker
+8. Run the deployment command to fetch API Data and create the admin user
+
+```bash
+python manage.py deploy
+```
+
+9. In one terminal, start the worker
+
+```bash
 pyenv activate v-3.6.4
 celery worker -A celery_worker.celery --loglevel=info
+```
 
-# In another terminal, run the server
+10. In another terminal, run the server
+```bash
 pyenv activate v-3.6.4
 python run.py
-
-# Visit localhost:5000
-open http://localhost:5000
 ```
 
 ___
@@ -265,3 +302,5 @@ ___
 
 ## Why _Gello_?
 _Gello_ was named because it bridges the gap between the GitHub API and the Trello API.
+
+> Does something not make sense or work as expected? Please open a [pull request](https://github.com/DataDog/gello/compare) to update this documentation. Thank you!
