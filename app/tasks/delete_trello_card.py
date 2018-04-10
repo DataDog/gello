@@ -33,6 +33,15 @@ class DeleteCardObjectFromDatabase(GitHubBaseTask):
 
         NOTE: this does not delete the card on the Trello board, only removes
         the record from the database in Gello.
+
+        Args:
+            scope (str): The scope of the webhook payload (i.e., `issue`, or
+                `pull_request`).
+            github_id (int): The GitHub id of the record to be deleted.
+            card_id (str): The id of the trello card being deleted.
+
+        Returns:
+            None
         """
         if scope == 'issue':
             self._issue_service.delete(github_issue_id=github_id)

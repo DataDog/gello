@@ -32,6 +32,9 @@ class CreatePullRequestCard(CreateTrelloCard):
 
         Internal helper to format the trello card body, based on the data
         passed in.
+
+        Returns:
+            str: the markdown template for the Trello card created.
         """
         return textwrap.dedent(
             f"""
@@ -49,6 +52,12 @@ class CreatePullRequestCard(CreateTrelloCard):
         """Concrete helper method.
 
         Internal helper to save the record created to the database.
+
+        Args:
+            card (Card): An object representing the trello card created.
+
+        Returns:
+            None
         """
         self._pull_request_service.create(
             name=self._title,

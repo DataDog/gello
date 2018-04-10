@@ -31,25 +31,27 @@ class GitHubReceiver(GitHubBaseTask):
         Validates the event being received is a GitHub Pull Request event or a
         GitHub Issue event, and then enqueues it in the corresponding events
         queue.
+
+        Args:
+            payload (dict): The card-specific data, used in the `_card_body`
+                            template method.
+
+        Returns:
+            None
         """
         print('Run GitHub receiver task.')
         self.payload = payload
-        self._enqueue_task()
+        self._enqueue_tasks()
 
-    def _user_in_organization(self):
-        """Checks if the person is in the organization.
+    def _enqueue_tasks(self):
+        """Enqueues tasks based on the payload parameters.
+
+        Enqueues tasks for each of the subscriptions which belong to the
+        repository associated by the `github_repo_id`.
 
         Returns:
-            Boolean: `true` if the user belongs to the organization
+            None
         """
-        github_member = GitHubMember.query.filter_by(
-            member_id=self.payload['sender']['id']
-        ).first()
-
-        return github_member is not None
-
-    def _enqueue_task(self):
-        """Enqueues a EventAction task based on the payload parameters."""
         repo = Repo.query.filter_by(
             github_repo_id=self.payload['repository']['id']
         ).first()
@@ -61,8 +63,11 @@ class GitHubReceiver(GitHubBaseTask):
 
         # Get all of the subscriptions related to a repository
         subscriptions = Subscription.query.filter_by(
-            repo_id=repo.github_repo_id)
+            repo_id=repo.github_repo_id
+        )
 
+        # Perform an action for each of the subscribed lists belonging to a
+        # subscription
         for subscription in subscriptions:
             for trello_list in subscription.subscribed_lists:
                 self._handle_card(
@@ -75,7 +80,20 @@ class GitHubReceiver(GitHubBaseTask):
 
     def _handle_card(self, board_id, list_id, issue_autocard,
                      pull_request_autocard, assignee_id):
-        """Determines which type of card to create based on the payload."""
+        """Determines which task to enqueue based on the payload parameters.
+
+        Args:
+            board_id (str): The id of the board the card will be created on.
+            list_id (str): The id of the list the card will be created on.
+            issue_autocard (boolean): If `autocard` is `true` for Issues
+                created
+            pull_request_autocard (boolean): If `autocard` is `true` for Pull
+                Requests created
+            assignee_id (str): The trello_member_id for the card assignee.
+
+        Returns:
+            None
+        """
         scope = self.get_scope()
         action = self.payload['action']
 
@@ -100,8 +118,19 @@ class GitHubReceiver(GitHubBaseTask):
             print('Unsupported event action.')
 
     def _create_manual_card(self, board_id, list_id, assignee_id):
-        """Creates a task to create a trello card."""
-        # Don't create a card if the user DOES NOT belong to the organization
+        """Creates a task to create a trello card.
+
+        NOTE: It does not create a card if the user DOES NOT belong to the
+        GitHub organization associated with the `GITHUB_ORG_LOGIN`.
+
+        Args:
+            board_id (str): The id of the board the card will be created on.
+            list_id (str): The id of the list the card will be created on.
+            assignee_id (str): The trello_member_id for the card assignee.
+
+        Returns:
+            None
+        """
         if not self._user_in_organization():
             print('The user does not belong to the organization.')
             return
@@ -115,8 +144,19 @@ class GitHubReceiver(GitHubBaseTask):
         )
 
     def _create_trello_issue_card(self, board_id, list_id, assignee_id):
-        """Creates a task to create a trello card."""
-        # Don't create a card if the user belongs to the organization
+        """Creates a task to create a trello card.
+
+        NOTE: It does not create a card if the user belongs to the GitHub
+        organization associated with the `GITHUB_ORG_LOGIN`.
+
+        Args:
+            board_id (str): The id of the board the card will be created on.
+            list_id (str): The id of the list the card will be created on.
+            assignee_id (str): The trello_member_id for the card assignee.
+
+        Returns:
+            None
+        """
         if self._user_in_organization():
             print('The user belongs to the organization, not creating card.')
             return
@@ -130,8 +170,19 @@ class GitHubReceiver(GitHubBaseTask):
         )
 
     def _create_trello_pull_request_card(self, board_id, list_id, assignee_id):
-        """Creates a task to create a trello card."""
-        # Don't create a card if the user belongs to the organization
+        """Creates a task to create a trello card.
+
+        NOTE: It does not create a card if the user belongs to the GitHub
+        organization associated with the `GITHUB_ORG_LOGIN`.
+
+        Args:
+            board_id (str): The id of the board the card will be created on.
+            list_id (str): The id of the list the card will be created on.
+            assignee_id (str): The trello_member_id for the card assignee.
+
+        Returns:
+            None
+        """
         if self._user_in_organization():
             print('The user belongs to the organization, not creating card.')
             return
@@ -145,7 +196,11 @@ class GitHubReceiver(GitHubBaseTask):
         )
 
     def _delete_issue_trello_card_objects(self):
-        """Deletes all trello cards associated with an issue."""
+        """Deletes all trello cards associated with an issue.
+
+        Returns:
+            None
+        """
         scope = self.get_scope()
         github_id = self.payload[scope]['id']
         issues = Issue.query.filter_by(github_issue_id=github_id)
@@ -158,7 +213,11 @@ class GitHubReceiver(GitHubBaseTask):
             )
 
     def _delete_pull_request_trello_card_objects(self):
-        """Deletes all trello cards associated with a pull request."""
+        """Deletes all trello cards associated with a pull request.
+
+        Returns:
+            None
+        """
         scope = self.get_scope()
         github_id = self.payload[scope]['id']
         pull_requests = PullRequest.query.filter_by(
@@ -171,6 +230,23 @@ class GitHubReceiver(GitHubBaseTask):
                 card_id=pull_request.trello_card_id
             )
 
+    def _user_in_organization(self):
+        """Checks if the person is in the organization.
+
+        Returns:
+            Boolean: `true` if the user belongs to the organization.
+        """
+        github_member = GitHubMember.query.filter_by(
+            member_id=self.payload['sender']['id']
+        ).first()
+
+        return github_member is not None
+
     def _manual_command_string(self):
-        """The command to create a card when an `autocard` is disabled."""
+        """The command to create a card when an `autocard` is disabled.
+
+        Returns:
+            str: the command string corresponding to manual card creation
+                when `autocard` is disabled for a `Subscription`.
+        """
         return 'gello create_card'
