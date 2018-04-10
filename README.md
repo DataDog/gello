@@ -7,33 +7,33 @@ Gello was developed by Datadog to help manage community contributions on our ope
 
 ## Wiki Table Of Contents
 
-[Feature Overview](/wiki/Feature-Overview)
-  * [Creating a Subscription](/wiki/Feature-Overview#creating-a-subscription)
-    * [Autocard](/wiki/Feature-Overview#autocard)
-    * [Manual](/wiki/Feature-Overview#manual)
-    * [Selecting Your Lists](/wiki/Feature-Overview#selecting-your-lists)
-  * [Aggregating Community Contributions](/wiki/Feature-Overview#aggregating-community-contributions)
-    * [Issues](/wiki/Feature-Overview#aggregating-community-issues)
-    * [Pull Requests](/wiki/Feature-Overview#aggregating-community-pull-requests)
+[Feature Overview](https://github.com/DataDog/gello/wiki/Feature-Overview)
+  * [Creating a Subscription](https://github.com/DataDog/gello/wiki/Feature-Overview#creating-a-subscription)
+    * [Autocard](https://github.com/DataDog/gello/wiki/Feature-Overview#autocard)
+    * [Manual](https://github.com/DataDog/gello/wiki/Feature-Overview#manual)
+    * [Selecting Your Lists](https://github.com/DataDog/gello/wiki/Feature-Overview#selecting-your-lists)
+  * [Aggregating Community Contributions](https://github.com/DataDog/gello/wiki/Feature-Overview#aggregating-community-contributions)
+    * [Issues](https://github.com/DataDog/gello/wiki/Feature-Overview#aggregating-community-issues)
+    * [Pull Requests](https://github.com/DataDog/gello/wiki/Feature-Overview#aggregating-community-pull-requests)
 
-[How it Works](/wiki/How-it-works)
-  * [GitHub Webhooks](/wiki/How-it-works#github-webhooks)
-  * [GitHub Events](/wiki/How-it-works#github-events)
-    * [Pull Request Event](/wiki/How-it-works#pull-request-event)
-    * [Issue Event](/wiki/How-it-works#issue-event)
-    * [Pull Request Comment Event](/wiki/How-it-works#pull-request-comment-event)
-    * [Issue Comment Event](/wiki/How-it-works#issue-comment-event)
+[How it Works](https://github.com/DataDog/gello/wiki/How-it-works)
+  * [GitHub Webhooks](https://github.com/DataDog/gello/wiki/How-it-works#github-webhooks)
+  * [GitHub Events](https://github.com/DataDog/gello/wiki/How-it-works#github-events)
+    * [Pull Request Event](https://github.com/DataDog/gello/wiki/How-it-works#pull-request-event)
+    * [Issue Event](https://github.com/DataDog/gello/wiki/How-it-works#issue-event)
+    * [Pull Request Comment Event](https://github.com/DataDog/gello/wiki/How-it-works#pull-request-comment-event)
+    * [Issue Comment Event](https://github.com/DataDog/gello/wiki/How-it-works#issue-comment-event)
 
-[Configuration](/wiki/Configuration)
-  * [Configure the Server](/wiki/Configuration#configure-the-server)
-    * [GitHub API Token Permissions](/wiki/Configuration#github-api-token)
-    * [Trello Configuration](/wiki/Configuration#trello-configuration)
+[Configuration](https://github.com/DataDog/gello/wiki/Configuration)
+  * [Configure the Server](https://github.com/DataDog/gello/wiki/Configuration#configure-the-server)
+    * [GitHub API Token Permissions](https://github.com/DataDog/gello/wiki/Configuration#github-api-token)
+    * [Trello Configuration](https://github.com/DataDog/gello/wiki/Configuration#trello-configuration)
 
-[Deployment](/wiki/Deployment)
-  * [Deploying to Heroku](/wiki/Deployment#deploying-to-heroku)
+[Deployment](https://github.com/DataDog/gello/wiki/Deployment)
+  * [Deploying to Heroku](https://github.com/DataDog/gello/wiki/Deployment#deploying-to-heroku)
 
-[Development Setup](/wiki/Development-Setup)
-  * [macOS Development Setup](/wiki/Development-Setup#macos-development-setup)
+[Development Setup](https://github.com/DataDog/gello/wiki/Development-Setup)
+  * [macOS Development Setup](https://github.com/DataDog/gello/wiki/Development-Setup#macos-development-setup)
 
 ## Why _Gello_?
 _Gello_ was named because it bridges the gap between the GitHub API and the Trello API.
