@@ -30,12 +30,12 @@ class CreateTrelloCard(GitHubBaseTask):
         queue.
 
         Args:
-            board_id (str):    The id of the board the card will be created on.
-            list_id (str):     The id of the list the card will be created on.
-            name (str):        The name of the card.
-            payload (dict):    The card-specific data, used in the `_card_body`
-                               template method.
-            assignee_id (str): The trello_member_id for the card assignee
+            board_id (str): The id of the board the card will be created on.
+            list_id (str): The id of the list the card will be created on.
+            name (str): The name of the card.
+            payload (dict): The card-specific data, used in the `_card_body`
+                template method.
+            assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
             None
@@ -59,7 +59,7 @@ class CreateTrelloCard(GitHubBaseTask):
     def _card_body(self):
         """Abstract helper method.
 
-        Internal helper to format the trello card body, based on the data
+        Internal helper to format the Trello card body, based on the data
         passed in.
         """
         pass

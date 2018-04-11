@@ -33,6 +33,9 @@ class CreateManualCard(CreateTrelloCard):
 
         Internal helper to format the trello card body, based on the data
         passed in.
+
+        Returns:
+            str: the markdown template for the Trello card created.
         """
         return textwrap.dedent(
             f"""
@@ -50,6 +53,12 @@ class CreateManualCard(CreateTrelloCard):
         """Concrete helper method.
 
         Internal helper to save the record created to the database.
+
+        Args:
+            card (trello.Card): an object representing the trello card created
+
+        Returns:
+            None
         """
         scope = self.get_scope()
 

@@ -28,11 +28,27 @@ class SubscriptionService(CRUDService):
     """
 
     def __init__(self):
+        """Creates a new `subscribed_list_service` for the class."""
         self._subscribed_list_service = SubscribedListService()
 
     def create(self, board_id, repo_id, issue_autocard, pull_request_autocard,
                list_ids=[]):
-        """Creates and persists a new subscription record to the database."""
+        """Creates and persists a new subscription record to the database.
+
+        Args:
+            board_id (str): The id of the `Board` the `Subscription` belongs
+                to.
+            repo_id (int): The id of the `Repo` the `Subscription` belongs to.
+            issue_autocard (Boolean): If `autocard` is `true` for Issues
+                created.
+            pull_request_autocard (Boolean): If `autocard` is `true` for Pull
+                Requests created.
+            list_ids (list(str)): An optional list of ids for trello lists to
+                associate to the subscription as `SubscribedList`s.
+
+        Returns:
+            None
+        """
         subscription = Subscription(
             board_id=board_id,
             repo_id=repo_id,
@@ -53,7 +69,20 @@ class SubscriptionService(CRUDService):
         db.session.commit()
 
     def update(self, board_id, repo_id, issue_autocard, pull_request_autocard):
-        """Updates a persisted subscription's autocard value."""
+        """Updates a persisted subscription's autocard value.
+
+        Args:
+            board_id (str): The id of the `Board` the `Subscription` belongs
+                to.
+            repo_id (int): The id of the `Repo` the `Subscription` belongs to.
+            issue_autocard (Boolean): If `autocard` is `true` for Issues
+                created.
+            pull_request_autocard (Boolean): If `autocard` is `true` for Pull
+                Requests created.
+
+        Returns:
+            None
+        """
         subscription = Subscription.query.get([board_id, repo_id])
         subscription.issue_autocard = issue_autocard
         subscription.pull_request_autocard = pull_request_autocard
@@ -62,7 +91,16 @@ class SubscriptionService(CRUDService):
         db.session.commit()
 
     def delete(self, board_id, repo_id):
-        """Deletes an old, persisted subscription."""
+        """Deletes an old, persisted subscription.
+
+        Args:
+            board_id (str): The id of the `Board` the `Subscription` belongs
+                to.
+            repo_id (int): The id of the `Repo` the `Subscription` belongs to.
+
+        Returns:
+            None
+        """
         subscription = Subscription.query.filter_by(
             board_id=board_id, repo_id=repo_id).first()
 

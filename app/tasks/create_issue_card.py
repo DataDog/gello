@@ -32,6 +32,9 @@ class CreateIssueCard(CreateTrelloCard):
 
         Internal helper to format the trello card body, based on the data
         passed in.
+
+        Returns:
+            str: the markdown template for the Trello card created.
         """
         return textwrap.dedent(
             f"""
@@ -49,6 +52,12 @@ class CreateIssueCard(CreateTrelloCard):
         """Concrete helper method.
 
         Internal helper to save the record created to the database.
+
+        Args:
+            card (trello.Card): An object representing the Trello card created.
+
+        Returns:
+            None
         """
         self._issue_service.create(
             name=self._title,

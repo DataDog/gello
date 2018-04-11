@@ -41,7 +41,15 @@ class RepoService(APIService):
         db.session.commit()
 
     def _insert_or_update(self, repo):
-        """Inserts or updates the records."""
+        """Inserts or updates the records.
+
+        Args:
+            repo (github.Repo): The repository to be inserted into the database
+                if it doesn't exist, or updated if it does.
+
+        Returns:
+            None
+        """
         record = Repo.query.filter_by(github_repo_id=repo.id).first()
 
         if not record:
