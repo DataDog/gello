@@ -41,7 +41,15 @@ class TrelloMemberService(APIService):
         db.session.commit()
 
     def _insert_or_update(self, trello_member):
-        """Inserts or updates the records."""
+        """Inserts or updates the a TrelloMember.
+
+        Args:
+            trello_member (trello.Member): The member to be inserted into the
+                database if it doesn't exist, or updated if it does.
+
+        Returns:
+            None
+        """
         record = TrelloMember.query.filter_by(
             trello_member_id=trello_member.id).first()
 

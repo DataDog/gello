@@ -55,7 +55,7 @@ class CreateManualCard(CreateTrelloCard):
         Internal helper to save the record created to the database.
 
         Args:
-            card (Card): an object representing the trello card created
+            card (trello.Card): an object representing the trello card created
 
         Returns:
             None

@@ -28,7 +28,21 @@ class SubscribedListService(CRUDService):
     """
 
     def create(self, board_id, repo_id, list_id, trello_member_id=None):
-        """Creates and persists a subscribed_list record to the database."""
+        """Creates and persists a subscribed_list record to the database.
+
+        Args:
+            board_id (str): The id of the `Board` the `SubscribedList` belongs
+                to.
+            repo_id (int): The id of the `Repo` the `SubscribedList` belongs
+                to.
+            list_id (str): The id of the `List` the `SubscribedList` belongs
+                to.
+            trello_member_id (str): An optional member id to default assign
+                cards created on this `SubscribedList` to.
+
+        Returns:
+            None
+        """
         subscribed_list = SubscribedList(
             subscription_board_id=board_id,
             subscription_repo_id=repo_id,
@@ -41,7 +55,21 @@ class SubscribedListService(CRUDService):
         db.session.commit()
 
     def update(self, board_id, repo_id, list_id, trello_member_id=None):
-        """Updates a persisted subscribed_list's autocard value."""
+        """Updates a persisted subscribed_list's autocard value.
+
+        Args:
+            board_id (str): The id of the `Board` the `SubscribedList` belongs
+                to.
+            repo_id (int): The id of the `Repo` the `SubscribedList` belongs
+                to.
+            list_id (str): The id of the `List` the `SubscribedList` belongs
+                to.
+            trello_member_id (str): An optional member id to default assign
+                cards created on this `SubscribedList` to.
+
+        Returns:
+            None
+        """
         subscribed_list = SubscribedList.query.get(
             [board_id, repo_id, list_id]
         )
@@ -51,7 +79,22 @@ class SubscribedListService(CRUDService):
         db.session.commit()
 
     def delete(self, board_id, repo_id, list_id):
-        """Deletes an old, persisted subscribed_list."""
+        """Deletes an old, persisted subscribed_list.
+
+        NOTE: the three parameters `board_id`, `repo_id`, and `list_id` all
+        form the composite primary key for the `SubscribedList` record.
+
+        Args:
+            board_id (str): The id of the `Board` the `SubscribedList` belongs
+                to.
+            repo_id (int): The id of the `Repo` the `SubscribedList` belongs
+                to.
+            list_id (str): The id of the `List` the `SubscribedList` belongs
+                to.
+
+        Returns:
+            None
+        """
         SubscribedList.query.filter_by(
             subscription_board_id=board_id,
             subscription_repo_id=repo_id,

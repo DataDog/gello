@@ -32,7 +32,14 @@ class BoardService(APIService):
         self.trello_service = TrelloService()
 
     def fetch(self):
-        """Creates/Updates and persists all boards and corresponding lists."""
+        """Creates/Updates and persists all boards and corresponding lists.
+
+        For each of the boards fetched by the `TrelloService`, insert or update
+        them, then fetch the corresponding lists and insert or update them.
+
+        Returns:
+            None
+        """
         # Add all the boards to the Database for the organization
         for trello_board in self.trello_service.boards():
             self._insert_or_update_board(trello_board)
@@ -45,7 +52,16 @@ class BoardService(APIService):
         db.session.commit()
 
     def _insert_or_update_board(self, board):
-        """Inserts or updates the records."""
+        """Inserts or updates the records.
+
+        Args:
+            board (trello.Board): A Trello board object to be inserted into the
+                database, or updated if the `board.id` matches a
+                `trello_board_id` for an existing `Board` record.
+
+        Returns:
+            None
+        """
         record = Board.query.filter_by(trello_board_id=board.id).first()
 
         if not record:
@@ -60,7 +76,18 @@ class BoardService(APIService):
             record.url = board.url
 
     def _insert_or_update_list(self, trello_list, board_id):
-        """Inserts or updates the records."""
+        """Inserts or updates the records.
+
+        Args:
+            trello_list (trello.List): A Trello list object to be inserted into
+                the database, or updated if the `trello_list.id` matches a
+                `trello_list_id` for an existing `List` record.
+            board_id (str): The id of the `Board` the list will be associated
+                to.
+
+        Returns:
+            None
+        """
         record = List.query.filter_by(trello_list_id=trello_list.id).first()
 
         if not record:

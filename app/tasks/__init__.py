@@ -28,7 +28,7 @@ from .github_receiver import GitHubReceiver
 
 
 def _register_tasks():
-    """Registers class based celery tasks with celery worker"""
+    """Registers class based celery tasks with celery worker."""
     celery.tasks.register(GitHubBaseTask())
     celery.tasks.register(DeleteCardObjectFromDatabase())
     celery.tasks.register(CreateTrelloCard())

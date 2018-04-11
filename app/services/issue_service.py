@@ -29,7 +29,24 @@ class IssueService(CRUDService):
 
     def create(self, name, url, github_issue_id, repo_id, trello_board_id,
                trello_card_id, trello_card_url):
-        """Creates and persists a new issue record to the database."""
+        """Creates and persists a new issue record to the database.
+
+        Args:
+            name (str): The name of the GitHub issue.
+            url (str): The GitHub url of the issue.
+            github_issue_id (int): The id of the GitHub issue.
+            repo_id (int): The id of the GitHub repo corresponding to the
+                issue.
+            trello_board_id (str): The id of the board the card corresponding
+                to the issue was created on.
+            trello_card_id (str): The id of the card created corresponding to
+                the isuse.
+            trello_card_url (str): The url for the created card corresponding
+                to the issue.
+
+        Returns:
+            None
+        """
         issue = Issue(
             name=name,
             url=url,
@@ -49,6 +66,13 @@ class IssueService(CRUDService):
         pass
 
     def delete(self, github_issue_id):
-        """Deletes an old, persisted issue."""
+        """Deletes an old, persisted issue.
+
+        Args:
+            github_issue_id (int): The id of the GitHub issue.
+
+        Returns:
+            None
+        """
         Issue.query.filter_by(github_issue_id=github_issue_id).delete()
         db.session.commit()

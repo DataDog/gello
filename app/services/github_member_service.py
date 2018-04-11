@@ -33,7 +33,11 @@ class GitHubMemberService(APIService):
         self.github_service = GitHubService()
 
     def fetch(self):
-        """Add all the github_members to the database for the organization."""
+        """Add all the github_members to the database for the organization.
+
+        Returns:
+            None
+        """
         for github_member in self.github_service.members():
             self._insert_or_update(github_member)
 
@@ -41,7 +45,17 @@ class GitHubMemberService(APIService):
         db.session.commit()
 
     def _insert_or_update(self, github_member):
-        """Inserts or updates the records."""
+        """Inserts or updates the records.
+
+        Args:
+            github_member (github.Member): An object representation of a GitHub
+                member to be inserted into the database, or updated if the
+                `github_member.id` matches the `member_id` for an existing
+                `GitHubMember`.
+
+        Returns:
+            None
+        """
         record = GitHubMember.query.filter_by(
             member_id=github_member.id).first()
 

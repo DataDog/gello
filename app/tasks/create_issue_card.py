@@ -54,7 +54,7 @@ class CreateIssueCard(CreateTrelloCard):
         Internal helper to save the record created to the database.
 
         Args:
-            card (Card): An object representing the Trello card created.
+            card (trello.Card): An object representing the Trello card created.
 
         Returns:
             None

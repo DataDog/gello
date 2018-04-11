@@ -85,10 +85,10 @@ class GitHubReceiver(GitHubBaseTask):
         Args:
             board_id (str): The id of the board the card will be created on.
             list_id (str): The id of the list the card will be created on.
-            issue_autocard (boolean): If `autocard` is `true` for Issues
-                created
-            pull_request_autocard (boolean): If `autocard` is `true` for Pull
-                Requests created
+            issue_autocard (Boolean): If `autocard` is `true` for Issues
+                created.
+            pull_request_autocard (Boolean): If `autocard` is `true` for Pull
+                Requests created.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:

@@ -54,7 +54,7 @@ class CreatePullRequestCard(CreateTrelloCard):
         Internal helper to save the record created to the database.
 
         Args:
-            card (Card): An object representing the trello card created.
+            card (trello.Card): An object representing the trello card created.
 
         Returns:
             None
