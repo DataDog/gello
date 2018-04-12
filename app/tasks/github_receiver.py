@@ -34,7 +34,7 @@ class GitHubReceiver(GitHubBaseTask):
 
         Args:
             payload (dict): The card-specific data, used in the `_card_body`
-                            template method.
+                template method.
 
         Returns:
             None

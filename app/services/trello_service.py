@@ -15,7 +15,7 @@
 Service-helpers for interacting with the Trello API.
 """
 
-from os import environ
+from os import environ, path
 from ..api_clients import TrelloAPIClient
 
 
@@ -64,6 +64,23 @@ class TrelloService(object):
         asign = [self.client.get_member(assignee_id)] if assignee_id else None
 
         return trello_list.add_card(name=name, desc=desc, assign=asign)
+
+    def create_webhook(self, url_root, trello_model_id):
+        """Creates a webhook for a particular Trello model.
+
+        Args:
+            url_root (str): The root url for Gello.
+            trello_model_id (str): The id of a trello model you wish to
+                subscribe updates to.
+
+        Returns:
+            Boolean: Returns `True` if successfully created else `False`.
+        """
+        return self.client.create_hook(
+            callback_url=path.join(url_root, "/trello"),
+            id_model=trello_model_id,
+            token=environ.get('TRELLO_API_TOKEN')
+        )
 
     def _get_organization(self):
         """Returns a representation of the Trello organization.
