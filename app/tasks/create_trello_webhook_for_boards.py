@@ -28,7 +28,7 @@ class CreateTrelloWebhooksForBoards(Task):
         """Initializes a `TrelloService` object for the class."""
         self._trello_service = TrelloService()
 
-    def run(self, url_root, trello_model_id):
+    def run(self, url_root):
         """Creates a Trello webhook for all `trello.Board` models.
 
         Args:

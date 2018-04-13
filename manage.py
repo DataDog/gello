@@ -56,7 +56,7 @@ def deploy():
     import textwrap
     from app.models import User
     from app import db
-    from app.tasks import FetchAPIData
+    from app.services import api_services
 
     record = User.query.filter_by(
         email=os.environ.get('ADMIN_EMAIL')).first()
@@ -90,8 +90,13 @@ def deploy():
 
         print("Created admin user.")
 
-    # Fetch API data asynchronously
-    FetchAPIData.delay()
+    print("Fetching API data.")
+
+    # Fetch the API Service data on deployment
+    for api_service in api_services():
+        api_service.fetch()
+
+    print("Finished fetching API data.")
 
 
 if __name__ == '__main__':
