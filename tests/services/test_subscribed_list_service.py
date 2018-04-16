@@ -11,7 +11,7 @@
 #
 
 import uuid
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from app import create_app, db
 from app.services import SubscribedListService
@@ -109,7 +109,7 @@ class SubscribedListServiceTestCase(TestCase):
         )
 
         updated_list = SubscribedList.query.get(primary_key)
-        self.assertTrue(updated_list.trello_member_id is new_member_id)
+        self.assertTrue(updated_list.trello_member_id == new_member_id)
 
     def test_delete(self):
         """Test that an subscribed_list is successfully deleted."""
