@@ -49,8 +49,8 @@ class TrelloMemberService(APIService):
         Args:
             fetched_members (list(trello.Member)): The list of members fetched
                 from the Trello API.
-            persisted_members (list(Member)): The list of persisted members
-                fetched from the database.
+            persisted_members (list(TrelloMember)): The list of persisted
+                members fetched from the database.
 
         Returns:
             None
@@ -79,8 +79,8 @@ class TrelloMemberService(APIService):
         Args:
             fetched_members (list(trello.Member)): The list of members fetched
                 from the Trello API.
-            persisted_members (list(Member)): The list of persisted members
-                fetched from the database.
+            persisted_members (list(TrelloMember)): The list of persisted
+                members fetched from the database.
 
         Returns:
             None
