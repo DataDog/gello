@@ -29,7 +29,7 @@ class BoardService(APIService):
 
     def __init__(self):
         """Initializes a new BoardService object."""
-        self.trello_service = TrelloService()
+        self._trello_service = TrelloService()
 
     def fetch(self):
         """Creates/Updates and persists all boards and corresponding lists.
@@ -41,12 +41,15 @@ class BoardService(APIService):
             None
         """
         # Add all the boards to the Database for the organization
-        for trello_board in self.trello_service.boards():
-            self._insert_or_update_board(trello_board)
+        for trello_board in self._trello_service.boards():
+            self._insert_or_update_board(board=trello_board)
 
             # Add all the lists to the Database for a given board
             for trello_list in trello_board.all_lists():
-                self._insert_or_update_list(trello_list, trello_board.id)
+                self._insert_or_update_list(
+                    trello_list=trello_list,
+                    board_id=trello_board.id
+                )
 
         # Persist the boards and lists
         db.session.commit()

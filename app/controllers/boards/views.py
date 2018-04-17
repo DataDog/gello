@@ -22,6 +22,7 @@ from . import board
 from .forms import RefreshForm
 from ...models import Board
 from ...services import BoardService
+from ...tasks import CreateTrelloWebhooksForBoards
 
 board_service = BoardService()
 
@@ -33,8 +34,12 @@ def index():
     form = RefreshForm()
     if form.validate_on_submit():
         board_service.fetch()
-        flash('The boards have been updated.')
 
+        # Enqueue a task to create webhooks for the boards that do not have
+        # webhooks
+        CreateTrelloWebhooksForBoards.delay(url_root=request.url_root)
+
+        flash('The boards have been updated.')
         return redirect(url_for('.index'))
 
     page = request.args.get('page', 1, type=int)

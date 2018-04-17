@@ -12,14 +12,15 @@
 
 """main/views.py
 
-repos-related routes and view-specific logic.
+General routes and view-specific logic. Contains endpoints for
+receiving webhooks from GitHub and Trello.
 """
 
 import json
 
 from flask import render_template, request
 from . import main
-from ...tasks import GitHubReceiver
+from ...tasks import GitHubReceiver, TrelloReceiver
 from ...models import Subscription
 from app.controllers.subscriptions.forms import NewSubscriptionForm, \
     UpdateForm, DeleteForm
@@ -27,7 +28,7 @@ from app.controllers.subscriptions.forms import NewSubscriptionForm, \
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    """Updates the repositories saved on POST request."""
+    """Receives GitHub webhooks on a `POST` request."""
     # Creation form logic
     if request.method == 'POST':
         GitHubReceiver.delay(payload=json.loads(request.get_data()))
@@ -58,3 +59,11 @@ def index():
         subscription_forms_tuples=subscription_forms_tuples,
         pagination=pagination
     )
+
+
+@main.route('/trello', methods=['POST'])
+def trello():
+    """Receives Trello webhooks on a `POST` request."""
+    # Creation form logic
+    TrelloReceiver.delay(payload=json.loads(request.get_data()))
+    return "Trello event received."

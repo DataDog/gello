@@ -28,6 +28,7 @@ class Board(db.Model):
     name = db.Column(db.Text(), unique=True)
     url = db.Column(db.Text(), unique=True)
     trello_board_id = db.Column(db.String(64), unique=True)
+    webhooks_active = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     # Associations
