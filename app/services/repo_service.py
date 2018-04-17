@@ -33,33 +33,73 @@ class RepoService(APIService):
         self.github_service = GitHubService()
 
     def fetch(self):
-        """Add all the repositories to the Database for the organization."""
-        for repo in self.github_service.repos():
-            self._insert_or_update(repo)
-
-        # Persist the repositories
-        db.session.commit()
-
-    def _insert_or_update(self, repo):
-        """Inserts or updates the records.
-
-        Args:
-            repo (github.Repo): The repository to be inserted into the database
-                if it doesn't exist, or updated if it does.
+        """Add all the repos to the database for the organization.
 
         Returns:
             None
         """
-        record = Repo.query.filter_by(github_repo_id=repo.id).first()
+        fetched_repos = self.github_service.repos()
+        persisted_repos = Repo.query.all()
 
-        if not record:
-            repo_model = Repo(
-                name=repo.name,
-                url=repo.html_url,
-                github_repo_id=repo.id
+        self._update_or_delete_records(fetched_repos, persisted_repos)
+        self._create_records(fetched_repos, persisted_repos)
+
+        # Persist the changes
+        db.session.commit()
+
+    def _update_or_delete_records(self, fetched_repos, persisted_repos):
+        """Updates or deletes `Repo` records in the database.
+
+        Args:
+            fetched_repos (list(github.Repo)): The list of repos fetched
+                from the GitHub API.
+            persisted_repos (list(Repo)): The list of persisted
+                repos fetched from the database.
+
+        Returns:
+            None
+        """
+        fetched_repo_ids = list(map(lambda x: x.id, fetched_repos))
+
+        for record in persisted_repos:
+            if record.github_repo_id in fetched_repo_ids:
+                # Find the github repo by unique integer `github_repo_id`
+                github_repo = list(
+                    filter(
+                        lambda x: x.id == record.github_repo_id,
+                        fetched_repos
+                    )
+                )[0]
+
+                # Update the attributes
+                record.name = github_repo.name
+                record.url = github_repo.html_url
+            else:
+                db.session.delete(record)
+
+    def _create_records(self, fetched_repos, persisted_repos):
+        """Inserts `Repo` records into the database.
+
+        Args:
+            fetched_repos (list(github.Repo)): The list of repos fetched
+                from the GitHub API.
+            persisted_repos (list(Repo)): The list of persisted
+                repos fetched from the database.
+
+        Returns:
+            None
+        """
+        persisted_repo_ids = list(
+            map(lambda x: x.github_repo_id, persisted_repos)
+        )
+        repos_to_create = list(
+            filter(lambda x: x.id not in persisted_repo_ids, fetched_repos)
+        )
+
+        for github_repo in repos_to_create:
+            github_repo_model = Repo(
+                name=github_repo.name,
+                url=github_repo.html_url,
+                github_repo_id=github_repo.id
             )
-            # Add repository to database
-            db.session.add(repo_model)
-        else:
-            record.name = repo.name
-            record.url = repo.html_url
+            db.session.add(github_repo_model)

@@ -77,9 +77,11 @@ class BoardService(APIService):
                 record.name = trello_board.name
                 record.url = trello_board.url
 
-                # Add all the lists to the Database for a given board
                 trello_lists = trello_board.all_lists()
+
+                # Update or delete the existing lists for a given board
                 self._update_or_delete_lists(trello_lists, trello_board.id)
+                # Add the new lists to the database for a given board
                 self._create_lists(trello_lists, trello_board.id)
             else:
                 db.session.delete(record)
