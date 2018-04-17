@@ -34,32 +34,68 @@ class TrelloMemberService(APIService):
 
     def fetch(self):
         """Add all the trello_members to the database for the organization."""
-        for trello_member in self.trello_service.members():
-            self._insert_or_update(trello_member)
+        fetched_members = self.trello_service.members()
+        persisted_members = TrelloMember.query.all()
 
-        # Persist the trello_members
+        self._update_or_delete_records(fetched_members, persisted_members)
+        self._create_records(fetched_members, persisted_members)
+
+        # Persist the changes
         db.session.commit()
 
-    def _insert_or_update(self, trello_member):
-        """Inserts or updates the a TrelloMember.
+    def _update_or_delete_records(self, fetched_members, persisted_members):
+        """Updates or deletes `TrelloMember` records in the database.
 
         Args:
-            trello_member (trello.Member): The member to be inserted into the
-                database if it doesn't exist, or updated if it does.
+            fetched_members (list(trello.Member)): The list of members fetched
+                from the Trello API.
+            persisted_members (list(TrelloMember)): The list of persisted
+                members fetched from the database.
 
         Returns:
             None
         """
-        record = TrelloMember.query.filter_by(
-            trello_member_id=trello_member.id).first()
+        fetched_member_ids = list(map(lambda x: x.id, fetched_members))
 
-        if not record:
+        for record in persisted_members:
+            if record.trello_member_id in fetched_member_ids:
+                # Find the trello member by unique string `trello_member_id`
+                trello_member = list(
+                    filter(
+                        lambda x: x.id == record.trello_member_id,
+                        fetched_members
+                    )
+                )[0]
+
+                # Update the attributes
+                record.name = trello_member.full_name
+                record.username = trello_member.username
+            else:
+                db.session.delete(record)
+
+    def _create_records(self, fetched_members, persisted_members):
+        """Inserts `TrelloMember` records into the database.
+
+        Args:
+            fetched_members (list(trello.Member)): The list of members fetched
+                from the Trello API.
+            persisted_members (list(TrelloMember)): The list of persisted
+                members fetched from the database.
+
+        Returns:
+            None
+        """
+        persisted_member_ids = list(
+            map(lambda x: x.trello_member_id, persisted_members)
+        )
+        members_to_create = list(
+            filter(lambda x: x.id not in persisted_member_ids, fetched_members)
+        )
+
+        for trello_member in members_to_create:
             trello_member_model = TrelloMember(
                 name=trello_member.full_name,
                 username=trello_member.username,
                 trello_member_id=trello_member.id
             )
             db.session.add(trello_member_model)
-        else:
-            record.name = trello_member.full_name
-            record.username = trello_member.username

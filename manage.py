@@ -20,6 +20,7 @@ import os
 
 from app import create_app, db
 from app.models import User, Repo
+from app.services import api_services
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
@@ -51,12 +52,23 @@ def test():
 
 
 @manager.command
+def fetch():
+    """Fetch data"""
+    print("Fetching API data.")
+
+    # Fetch the API Service data on deployment
+    for api_service in api_services():
+        api_service.fetch()
+
+    print("Finished fetching API data.")
+
+
+@manager.command
 def deploy():
     """Creates the admin user if they do not exist."""
     import textwrap
     from app.models import User
     from app import db
-    from app.services import api_services
 
     record = User.query.filter_by(
         email=os.environ.get('ADMIN_EMAIL')).first()
@@ -90,13 +102,7 @@ def deploy():
 
         print("Created admin user.")
 
-    print("Fetching API data.")
-
-    # Fetch the API Service data on deployment
-    for api_service in api_services():
-        api_service.fetch()
-
-    print("Finished fetching API data.")
+    fetch()
 
 
 if __name__ == '__main__':
