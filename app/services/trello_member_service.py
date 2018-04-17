@@ -44,7 +44,7 @@ class TrelloMemberService(APIService):
         db.session.commit()
 
     def _update_or_delete_records(self, fetched_members, persisted_members):
-        """Updates or deletes a record in the database
+        """Updates or deletes `TrelloMember` records in the database.
 
         Args:
             fetched_members (list(trello.Member)): The list of members fetched
@@ -74,7 +74,7 @@ class TrelloMemberService(APIService):
                 db.session.delete(record)
 
     def _create_records(self, fetched_members, persisted_members):
-        """Creates records that do not exist in the database.
+        """Inserts `TrelloMember` records into the database.
 
         Args:
             fetched_members (list(trello.Member)): The list of members fetched
