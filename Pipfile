@@ -42,6 +42,7 @@ gunicorn = "*"
 "psycopg2" = "*"
 pygithub = "*"
 py-trello = "*"
+ddtrace = "*"
 
 [dev-packages]
 mock = "*"
