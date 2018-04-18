@@ -19,6 +19,7 @@ import os
 
 
 class Config:
+    APM_ENABLED = 'APM_ENABLED' in os.environ
     BROKER_POOL_LIMIT = 0
     CELERY_BROKER_URL = os.environ.get('REDIS_URL') or \
         'redis://localhost:6379/0'

@@ -101,3 +101,22 @@ def create_app(config_name):
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+
+# Configure tracing if `APM_ENABLED` is `True`
+if app.config.get('APM_ENABLED'):
+    from ddtrace import tracer, patch
+    from ddtrace.contrib.flask import TraceMiddleware
+
+    # Required for Flask middleware:
+    #   http://pypi.datadoghq.com/trace/docs/#module-ddtrace.contrib.flask
+    import blinker as _
+
+    patch(celery=True)
+    patch(sqlalchemy=True)
+
+    traced_app = TraceMiddleware(
+        app,
+        tracer,
+        service='gello',
+        distributed_tracing=False
+    )
