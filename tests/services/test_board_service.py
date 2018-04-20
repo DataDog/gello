@@ -11,7 +11,7 @@
 #
 
 from mock import patch
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from app import create_app, db
 from app.services import BoardService
@@ -52,9 +52,7 @@ class BoardServiceTestCase(TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    @skip
-    @patch('app.services.BoardService.__init__',
-           new=PatchClass.boards_test_case)
+    @patch('app.services.BoardService.__init__', new=PatchClass.boards_test_case)
     def test_fetch_inserts_boards(self):
         """
         Tests the 'fetch' method, and validates it inserts the boards into the
@@ -63,31 +61,31 @@ class BoardServiceTestCase(TestCase):
         board_service = BoardService()
 
         boards = Board.query.all()
-        self.assertTrue(boards.count() is 0)
+        self.assertTrue(len(boards) is 0)
 
         # Fetch and insert the boards into the database
         board_service.fetch()
 
         updated_boards = Board.query.all()
-        self.assertTrue(updated_boards.count() is 2)
+        self.assertTrue(len(updated_boards) is 2)
 
-    @skip
-    @patch('app.services.BoardService.__init__',
-           new=PatchClass.lists_test_case)
+    @patch('app.services.BoardService.__init__', new=PatchClass.lists_test_case)
     def test_fetch_inserts_lists(self):
         """
         Tests the 'fetch' method, and validates it inserts the lists associated
         with boards into the database.
         """
+        board_service = BoardService()
+
         boards = Board.query.all()
         lists = List.query.all()
-        self.assertTrue(boards.count() is 0)
-        self.assertTrue(lists.count() is 0)
+        self.assertTrue(len(boards) is 0)
+        self.assertTrue(len(lists) is 0)
 
         # Fetch and insert the boards and lists into the database
-        self.board_service.fetch()
+        board_service.fetch()
 
         lists = List.query.all()
         boards = Board.query.all()
-        self.assertTrue(boards.count() is 2)
-        self.assertTrue(lists.count() is 5)
+        self.assertTrue(len(boards) is 2)
+        self.assertTrue(len(lists) is 5)
