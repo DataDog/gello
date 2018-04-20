@@ -11,11 +11,9 @@
 #
 
 from mock import patch
-from unittest import TestCase
-
-from app import create_app, db
 from app.services import BoardService
 from app.models import Board, List
+from tests.base_test_case import BaseTestCase
 from tests.utils import mock_trello_service
 
 
@@ -35,22 +33,8 @@ class PatchClass:
         )
 
 
-class BoardServiceTestCase(TestCase):
+class BoardServiceTestCase(BaseTestCase):
     """Tests the `BoardService` service."""
-
-    def setUp(self):
-        # Prepare application
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-        # Prepare database
-        db.create_all()
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
 
     @patch('app.services.BoardService.__init__', new=PatchClass.boards_test_case)
     def test_fetch_inserts_boards(self):

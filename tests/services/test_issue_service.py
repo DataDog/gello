@@ -11,14 +11,13 @@
 #
 
 import uuid
-from unittest import TestCase
-
-from app import create_app, db
+from app import db
 from app.services import IssueService
 from app.models import Issue, Repo
+from tests.base_test_case import BaseTestCase
 
 
-class IssueServiceTestCase(TestCase):
+class IssueServiceTestCase(BaseTestCase):
     """Tests the `IssueService` service."""
 
     # The `github_issue_id` for the `Issue` tested
@@ -27,13 +26,7 @@ class IssueServiceTestCase(TestCase):
 
     def setUp(self):
         """Sets up testing context."""
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-        # Prepare database
-        db.create_all()
-
+        super().setUp()
         self.issue_service = IssueService()
 
         # Create the repo needed for the foreign key constraint
@@ -45,12 +38,6 @@ class IssueServiceTestCase(TestCase):
             )
         )
         db.session.commit()
-
-    def tearDown(self):
-        """Tears down testing context."""
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
 
     def test_create(self):
         """Test that an issue is successfully created."""

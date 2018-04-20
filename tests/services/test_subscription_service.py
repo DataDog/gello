@@ -11,14 +11,13 @@
 #
 
 import uuid
-from unittest import TestCase
-
-from app import create_app, db
+from app import db
 from app.services import SubscriptionService
 from app.models import Board, Repo, Subscription
+from tests.base_test_case import BaseTestCase
 
 
-class SubscriptionServiceTestCase(TestCase):
+class SubscriptionServiceTestCase(BaseTestCase):
     """Tests the `SubscriptionService` service."""
 
     board_id = str(uuid.uuid1())
@@ -26,13 +25,7 @@ class SubscriptionServiceTestCase(TestCase):
 
     def setUp(self):
         """Sets up testing context."""
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-        # Prepare database
-        db.create_all()
-
+        super().setUp()
         self.subscription_service = SubscriptionService()
 
         # Create the board needed for the foreign key constraint
@@ -54,12 +47,6 @@ class SubscriptionServiceTestCase(TestCase):
         )
 
         db.session.commit()
-
-    def tearDown(self):
-        """Tears down testing context."""
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
 
     def test_create(self):
         """Test that an subscription is successfully created."""
