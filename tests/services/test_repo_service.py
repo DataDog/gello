@@ -11,11 +11,10 @@
 #
 
 from mock import patch
-from unittest import TestCase
-
-from app import create_app, db
 from app.services import RepoService
+from app import db
 from app.models import Repo
+from tests.base_test_case import BaseTestCase
 from tests.utils import mock_github_service
 
 
@@ -26,22 +25,8 @@ class PatchClass:
         self.github_service = mock_github_service(repo_count=3)
 
 
-class RepoServiceTestCase(TestCase):
+class RepoServiceTestCase(BaseTestCase):
     """Tests the `RepoService` service."""
-
-    def setUp(self):
-        # Prepare application
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-        # Prepare database
-        db.create_all()
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
 
     @patch('app.services.RepoService.__init__', new=PatchClass.__init__)
     def test_fetch(self):

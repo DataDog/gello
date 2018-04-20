@@ -11,14 +11,13 @@
 #
 
 import uuid
-from unittest import TestCase, skip
-
-from app import create_app, db
+from app import db
 from app.services import SubscribedListService
 from app.models import Board, List, Repo, Subscription, SubscribedList
+from tests.base_test_case import BaseTestCase
 
 
-class SubscribedListServiceTestCase(TestCase):
+class SubscribedListServiceTestCase(BaseTestCase):
     """Tests the `SubscribedListService` service."""
 
     board_id = str(uuid.uuid1())
@@ -27,13 +26,7 @@ class SubscribedListServiceTestCase(TestCase):
 
     def setUp(self):
         """Sets up testing context."""
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-        # Prepare database
-        db.create_all()
-
+        super().setUp()
         self.subscribed_list_service = SubscribedListService()
 
         # Create the board needed for the foreign key constraint
@@ -69,12 +62,6 @@ class SubscribedListServiceTestCase(TestCase):
         )
 
         db.session.commit()
-
-    def tearDown(self):
-        """Tears down testing context."""
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
 
     def test_create(self):
         """Test that an subscribed_list is successfully created."""

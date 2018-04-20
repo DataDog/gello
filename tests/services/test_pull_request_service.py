@@ -11,14 +11,13 @@
 #
 
 import uuid
-from unittest import TestCase
-
-from app import create_app, db
+from app import db
 from app.services import PullRequestService
 from app.models import PullRequest, Repo
+from tests.base_test_case import BaseTestCase
 
 
-class PullRequestServiceTestCase(TestCase):
+class PullRequestServiceTestCase(BaseTestCase):
     """Tests the `PullRequestService` service."""
 
     # The `github_pull_request_id` for the `PullRequest` tested
@@ -27,13 +26,7 @@ class PullRequestServiceTestCase(TestCase):
 
     def setUp(self):
         """Sets up testing context."""
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-        # Prepare database
-        db.create_all()
-
+        super().setUp()
         self.pull_request_service = PullRequestService()
 
         # Create the repo needed for the foreign key constraint
@@ -45,12 +38,6 @@ class PullRequestServiceTestCase(TestCase):
             )
         )
         db.session.commit()
-
-    def tearDown(self):
-        """Tears down testing context."""
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
 
     def test_create(self):
         """Test that a pull request is successfully created."""
