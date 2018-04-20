@@ -48,8 +48,7 @@ class RepoServiceTestCase(BaseTestCase):
     @patch('app.services.RepoService.__init__', new=PatchClass.__init__)
     def test_fetch_with_update(self):
         """
-        Tests the 'fetch' method, and validates it inserts the repos into the
-        database.
+        Tests the 'fetch' method, and validates it updates the repos correctly.
         """
         repo_id = 0
         github_repo_model = Repo(

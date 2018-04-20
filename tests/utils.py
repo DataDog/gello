@@ -19,7 +19,20 @@ import uuid
 import mock
 
 
+BASE_MEMBER_NUM = 0
 BASE_REPO_NUM = 0
+
+
+def make_github_member(github_member_num):
+    """Creates a mock repo."""
+    member_id = BASE_MEMBER_NUM + github_member_num
+    member_login = f"github_member_{github_member_num}"
+
+    return mock.MagicMock(
+        id=member_id,
+        login=member_login,
+        return_value=None
+    )
 
 
 def make_repo(repo_num):
@@ -77,11 +90,14 @@ def mock_trello_service(board_count, list_counts=[]):
     return trello_service
 
 
-def mock_github_service(repo_count):
+def mock_github_service(repo_count=0, member_count=0):
     """Stubs out the GitHubService for testing purposes."""
     github_service = mock.MagicMock()
     github_service.repos.return_value = [
         make_repo(i) for i in range(repo_count)
+    ]
+    github_service.members.return_value = [
+        make_github_member(i) for i in range(member_count)
     ]
 
     return github_service
