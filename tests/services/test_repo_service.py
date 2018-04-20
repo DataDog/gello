@@ -52,7 +52,7 @@ class RepoServiceTestCase(BaseTestCase):
         """
         repo_id = 0
         github_repo_model = Repo(
-            name="old_repo_name",
+            name='old_repo_name',
             url='https://github.com/user/old_repo_name',
             github_repo_id=repo_id
         )

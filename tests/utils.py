@@ -19,13 +19,9 @@ import uuid
 import mock
 
 
-BASE_MEMBER_NUM = 0
-BASE_REPO_NUM = 0
-
-
 def make_github_member(github_member_num):
-    """Creates a mock repo."""
-    member_id = BASE_MEMBER_NUM + github_member_num
+    """Creates a mock github member."""
+    member_id = github_member_num
     member_login = f"github_member_{github_member_num}"
 
     return mock.MagicMock(
@@ -35,9 +31,23 @@ def make_github_member(github_member_num):
     )
 
 
+def make_trello_member(trello_member_num):
+    """Creates a mock trello member."""
+    member_id = f"some_uuid_{trello_member_num}"
+
+    trello_member = mock.MagicMock(
+        id=member_id,
+        username=f"trello_member_{trello_member_num}",
+        return_value=None
+    )
+    trello_member.full_name = f"Trello Name_{trello_member_num}"
+
+    return trello_member
+
+
 def make_repo(repo_num):
     """Creates a mock repo."""
-    repo_id = BASE_REPO_NUM + repo_num
+    repo_id = repo_num
     repo_name = f"repo_{repo_num}"
 
     repo = mock.MagicMock(
@@ -78,13 +88,16 @@ def make_list(board_id, list_num):
     return trello_list
 
 
-def mock_trello_service(board_count, list_counts=[]):
+def mock_trello_service(board_count=0, list_counts=[], member_count=0):
     """Stubs out the TrelloService for testing purposes."""
     assert(board_count is len(list_counts))
 
     trello_service = mock.MagicMock()
     trello_service.boards.return_value = [
         make_board(i, list_counts[i]) for i in range(board_count)
+    ]
+    trello_service.members.return_value = [
+        make_trello_member(i) for i in range(member_count)
     ]
 
     return trello_service

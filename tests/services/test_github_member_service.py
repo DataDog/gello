@@ -53,7 +53,7 @@ class GitHubMemberServiceTestCase(BaseTestCase):
         """
         github_member_id = 0
         github_member_model = GitHubMember(
-            login="old_github_member_login",
+            login='old_github_member_login',
             member_id=github_member_id
         )
         db.session.add(github_member_model)
