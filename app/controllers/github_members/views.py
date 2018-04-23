@@ -39,7 +39,8 @@ def index():
     page = request.args.get('page', 1, type=int)
     query = GitHubMember.query
     pagination = query.order_by(GitHubMember.login.asc()).paginate(
-        page, per_page=10,
+        page,
+        per_page=10,
         error_out=False
     )
     github_members = pagination.items

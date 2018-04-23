@@ -10,19 +10,14 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""utils.py
+"""general.py
 
-Testing utils for stubbing classes and methods
+Testing utils for stubbing classes and methods.
 """
 
 import uuid
 import mock
-from app import db
-from app.models import Board, List, Repo, Subscription, SubscribedList
-
-default_board_id = str(uuid.uuid1())
-default_list_id = str(uuid.uuid1())
-default_repo_id = 100001
+from tests.utils import default_board_id
 
 
 def mock_card(board_id):
@@ -133,59 +128,3 @@ def mock_github_service(repo_count=0, member_count=0):
     ]
 
     return github_service
-
-
-def create_board():
-    """Create the board needed for the foreign key constraint."""
-    db.session.add(
-        Board(
-            name='board_name',
-            url=f"https://trello.com/b/{default_board_id}",
-            trello_board_id=default_board_id
-        )
-    )
-
-
-def create_repo():
-    """Create the repo needed for the foreign key constraint."""
-    db.session.add(
-        Repo(
-            name='repo_name',
-            url='https://github.com/user/repo',
-            github_repo_id=default_repo_id
-        )
-    )
-
-
-def create_list():
-    """Create the list needed for the foreign key constraint."""
-    db.session.add(
-        List(
-            name='list_name',
-            trello_list_id=default_list_id,
-            board_id=default_board_id
-        )
-    )
-
-
-def create_subscription():
-    """Create a subscription."""
-    db.session.add(
-        Subscription(
-            board_id=default_board_id,
-            repo_id=default_repo_id,
-            issue_autocard=True,
-            pull_request_autocard=True
-        )
-    )
-
-
-def create_subscribed_list():
-    """Create a subscribed list to create cards for."""
-    db.session.add(
-        SubscribedList(
-            subscription_board_id=default_board_id,
-            subscription_repo_id=default_repo_id,
-            list_id=default_list_id
-        )
-    )
