@@ -15,7 +15,6 @@ from app import db
 from mock import patch
 from app.models import Issue
 from app.tasks import CreateIssueCard
-from app.services import IssueService
 from tests.utils import create_board, create_repo, create_list, \
     create_subscription, create_subscribed_list, default_board_id, \
     default_list_id, mock_trello_service
@@ -30,7 +29,6 @@ class PatchClass:
             board_count=0,
             list_counts=[]
         )
-        self._issue_service = IssueService()
 
 
 class CreateIssueCardTestCase(BaseTestCase):
@@ -44,8 +42,7 @@ class CreateIssueCardTestCase(BaseTestCase):
         create_list()
         db.session.commit()
 
-    @patch('app.tasks.create_trello_card.CreateTrelloCard.__init__',
-           new=PatchClass.service)
+    @patch('app.tasks.CreateTrelloCard.__init__', new=PatchClass.__init__)
     def test_run(self):
         """"""
         create_subscription()
@@ -62,6 +59,6 @@ class CreateIssueCardTestCase(BaseTestCase):
             payload=payload
         )
 
-        # Enqueuing a new issue open should create a database record
+        # Enqueuing new issue `CreateIssueCard` should create an `Issue` record
         new_issues = Issue.query.all()
         self.assertTrue(len(new_issues) is 1)

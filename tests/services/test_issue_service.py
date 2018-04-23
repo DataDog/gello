@@ -13,8 +13,9 @@
 import uuid
 from app import db
 from app.services import IssueService
-from app.models import Issue, Repo
+from app.models import Issue
 from tests.base_test_case import BaseTestCase
+from tests.utils import create_repo, default_repo_id
 
 
 class IssueServiceTestCase(BaseTestCase):
@@ -29,15 +30,7 @@ class IssueServiceTestCase(BaseTestCase):
         """Sets up testing context."""
         super().setUp()
         self.issue_service = IssueService()
-
-        # Create the repo needed for the foreign key constraint
-        db.session.add(
-            Repo(
-                name='repo_name',
-                url='https://github.com/user/repo',
-                github_repo_id=self.repo_id
-            )
-        )
+        create_repo()
         db.session.commit()
 
     def test_create(self):
@@ -52,7 +45,7 @@ class IssueServiceTestCase(BaseTestCase):
             name=self.issue_name,
             url='https://github.com/user/repo/issues/1',
             github_issue_id=self.issue_id,
-            repo_id=self.repo_id,
+            repo_id=default_repo_id,
             trello_board_id=board_id,
             trello_card_id=uuid.uuid1(),
             trello_card_url=f"https://trello.com/c/{board_id}/a-card"

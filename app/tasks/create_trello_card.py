@@ -49,7 +49,7 @@ class CreateTrelloCard(GitHubBaseTask):
         self._repo_id = self.payload['repository']['id']
 
         # Create a trello card on a given board, and list
-        card = self._trello_service.create_card(
+        card = self.trello_service.create_card(
             board_id=board_id,
             list_id=list_id,
             name=name,
