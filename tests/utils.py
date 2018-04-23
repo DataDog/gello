@@ -17,6 +17,24 @@ Testing utils for stubbing classes and methods
 
 import uuid
 import mock
+from app import db
+from app.models import Board, List, Repo, Subscription, SubscribedList
+
+default_board_id = str(uuid.uuid1())
+default_list_id = str(uuid.uuid1())
+default_repo_id = 100001
+
+
+def mock_card(board_id):
+    """Creates a mock trello card."""
+    card_id = str(uuid.uuid1())
+    trello_card = mock.MagicMock(
+        id=card_id,
+        board_id=board_id,
+        url=f"https://trello.com/c/{card_id}",
+        return_value=None
+    )
+    return trello_card
 
 
 def make_github_member(github_member_num):
@@ -99,6 +117,7 @@ def mock_trello_service(board_count=0, list_counts=[], member_count=0):
     trello_service.members.return_value = [
         make_trello_member(i) for i in range(member_count)
     ]
+    trello_service.create_card.return_value = mock_card(default_board_id)
 
     return trello_service
 
@@ -114,3 +133,59 @@ def mock_github_service(repo_count=0, member_count=0):
     ]
 
     return github_service
+
+
+def create_board():
+    """Create the board needed for the foreign key constraint."""
+    db.session.add(
+        Board(
+            name='board_name',
+            url=f"https://trello.com/b/{default_board_id}",
+            trello_board_id=default_board_id
+        )
+    )
+
+
+def create_repo():
+    """Create the repo needed for the foreign key constraint."""
+    db.session.add(
+        Repo(
+            name='repo_name',
+            url='https://github.com/user/repo',
+            github_repo_id=default_repo_id
+        )
+    )
+
+
+def create_list():
+    """Create the list needed for the foreign key constraint."""
+    db.session.add(
+        List(
+            name='list_name',
+            trello_list_id=default_list_id,
+            board_id=default_board_id
+        )
+    )
+
+
+def create_subscription():
+    """Create a subscription."""
+    db.session.add(
+        Subscription(
+            board_id=default_board_id,
+            repo_id=default_repo_id,
+            issue_autocard=True,
+            pull_request_autocard=True
+        )
+    )
+
+
+def create_subscribed_list():
+    """Create a subscribed list to create cards for."""
+    db.session.add(
+        SubscribedList(
+            subscription_board_id=default_board_id,
+            subscription_repo_id=default_repo_id,
+            list_id=default_list_id
+        )
+    )

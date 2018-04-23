@@ -10,29 +10,43 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-import unittest
-from app import create_app, db
+import json
+from app import db
+from mock import patch
 from app.tasks import GitHubReceiver
+from tests.utils import create_board, create_repo, create_list, \
+    create_subscription, create_subscribed_list
+from tests.base_test_case import BaseTestCase
 
 
-# Run the celery tasks synchronously, so you don't need to spin up a celery
-# worker to perform unit tests
-class GitHubReceiverTestCase(unittest.TestCase):
+class PatchClass:
+    """A class used to patch methods in the `GitHubReceiver`."""
+
+    def user_not_in_org(self):
+        return False
+
+    def user_in_org(self):
+        return True
+
+
+class GitHubReceiverTestCase(BaseTestCase):
     """Tests the `GitHubReceiver` celery task."""
 
     def setUp(self):
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        db.create_all()
+        """Sets up testing context."""
+        super().setUp()
+        create_board()
+        create_repo()
+        create_list()
+        db.session.commit()
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
+    @patch(
+        'app.tasks.GitHubReceiver._user_in_organization',
+        new=PatchClass.user_not_in_org
+    )
+    def test_issue_opened_for_autocard_subscription(self):
+        create_subscription()
+        create_subscribed_list()
 
-    def test_issue_created_for_autocard_subscription(self):
-        pass
-
-    def test_pull_request_created_for_autocard_subscription(self):
-        pass
+        payload = json.loads(open('./tests/fixtures/issue_opened.json').read())
+        GitHubReceiver.delay(payload=payload)

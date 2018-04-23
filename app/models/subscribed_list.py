@@ -30,7 +30,7 @@ class SubscribedList(db.Model):
         db.ForeignKey('lists.trello_list_id'),
         primary_key=True
     )
-    # The an optional attribute that will assign the trello card created
+    # An optional attribute that will assign the trello card created
     trello_member_id = db.Column(db.String(64), unique=False)
 
     __table_args__ = (

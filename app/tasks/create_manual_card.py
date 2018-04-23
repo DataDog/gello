@@ -25,6 +25,7 @@ class CreateManualCard(CreateTrelloCard):
 
     def __init__(self):
         """Initializes a task to create a manual trello card."""
+        super().__init__()
         self._issue_service = IssueService()
         self._pull_request_service = PullRequestService()
 
