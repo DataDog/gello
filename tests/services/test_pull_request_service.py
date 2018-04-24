@@ -22,6 +22,7 @@ class PullRequestServiceTestCase(BaseTestCase):
 
     # The `github_pull_request_id` for the `PullRequest` tested
     pull_request_id = 100000
+    pull_request_name = 'some pull_request'
     repo_id = 100001
 
     def setUp(self):
@@ -41,7 +42,6 @@ class PullRequestServiceTestCase(BaseTestCase):
 
     def test_create(self):
         """Test that a pull request is successfully created."""
-        pull_request_name = 'some pull_request'
         board_id = uuid.uuid1()
 
         pull_requests = PullRequest.query.all()
@@ -49,7 +49,7 @@ class PullRequestServiceTestCase(BaseTestCase):
 
         # Create the pull_request
         self.pull_request_service.create(
-            name=pull_request_name,
+            name=self.pull_request_name,
             url='https://github.com/user/repo/pulls/1',
             github_pull_request_id=self.pull_request_id,
             repo_id=self.repo_id,
@@ -60,6 +60,26 @@ class PullRequestServiceTestCase(BaseTestCase):
 
         new_pull_requests = PullRequest.query.all()
         self.assertTrue(len(new_pull_requests) is 1)
+
+    def test_update(self):
+        """Test that an `PullRequest` is successfully updated."""
+        self.test_create()
+
+        pull_request = PullRequest.query.filter_by(
+            github_pull_request_id=self.pull_request_id
+        ).first()
+        self.assertTrue(pull_request.name == self.pull_request_name)
+
+        new_pull_request_name = 'some new pull_request name'
+        self.pull_request_service.update(
+            github_pull_request_id=self.pull_request_id,
+            name=new_pull_request_name
+        )
+
+        new_pull_request = PullRequest.query.filter_by(
+            github_pull_request_id=self.pull_request_id
+        ).first()
+        self.assertTrue(new_pull_request.name == new_pull_request_name)
 
     def test_delete(self):
         """Test that a pull request is successfully deleted."""

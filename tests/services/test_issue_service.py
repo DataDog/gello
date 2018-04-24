@@ -22,6 +22,7 @@ class IssueServiceTestCase(BaseTestCase):
 
     # The `github_issue_id` for the `Issue` tested
     issue_id = 100000
+    issue_name = 'some issue'
     repo_id = 100001
 
     def setUp(self):
@@ -41,7 +42,6 @@ class IssueServiceTestCase(BaseTestCase):
 
     def test_create(self):
         """Test that an issue is successfully created."""
-        issue_name = 'some issue'
         board_id = uuid.uuid1()
 
         issues = Issue.query.all()
@@ -49,7 +49,7 @@ class IssueServiceTestCase(BaseTestCase):
 
         # Create the issue
         self.issue_service.create(
-            name=issue_name,
+            name=self.issue_name,
             url='https://github.com/user/repo/issues/1',
             github_issue_id=self.issue_id,
             repo_id=self.repo_id,
@@ -60,6 +60,22 @@ class IssueServiceTestCase(BaseTestCase):
 
         new_issues = Issue.query.all()
         self.assertTrue(len(new_issues) is 1)
+
+    def test_update(self):
+        """Test that an `Issue` is successfully updated."""
+        self.test_create()
+
+        issue = Issue.query.filter_by(github_issue_id=self.issue_id).first()
+        self.assertTrue(issue.name == self.issue_name)
+
+        new_issue_name = 'some new issue name'
+        self.issue_service.update(
+            github_issue_id=self.issue_id,
+            name=new_issue_name
+        )
+
+        new_issue = Issue.query.filter_by(github_issue_id=self.issue_id).first()
+        self.assertTrue(new_issue.name == new_issue_name)
 
     def test_delete(self):
         """Test that an issue is successfully deleted."""

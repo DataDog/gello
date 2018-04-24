@@ -61,9 +61,21 @@ class PullRequestService(CRUDService):
         # Persists the pull_request
         db.session.commit()
 
-    def update(self):
-        """Updates a persisted pull_request."""
-        pass
+    def update(self, github_pull_request_id, name):
+        """Updates a persisted pull_request.
+
+        Args:
+            github_pull_request_id (int): The id of the GitHub pull request.
+            name (str): The updated name of the GitHub pull request.
+
+        Returns:
+            None
+        """
+        pull_request = PullRequest.query.filter_by(
+            github_pull_request_id=github_pull_request_id
+        ).first()
+        pull_request.name = name
+        db.session.commit()
 
     def delete(self, github_pull_request_id):
         """Deletes an old, persisted pull_request.
