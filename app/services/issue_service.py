@@ -61,9 +61,19 @@ class IssueService(CRUDService):
         # Persists the issue
         db.session.commit()
 
-    def update(self):
-        """Updates a persisted issue."""
-        pass
+    def update(self, github_issue_id, name):
+        """Updates a persisted issue.
+
+        Args:
+            github_issue_id (int): The id of the GitHub issue.
+            name (str): The updated name of the GitHub issue.
+
+        Returns:
+            None
+        """
+        issue = Issue.query.filter_by(github_issue_id=github_issue_id).first()
+        issue.name = name
+        db.session.commit()
 
     def delete(self, github_issue_id):
         """Deletes an old, persisted issue.
