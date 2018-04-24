@@ -43,6 +43,7 @@ gunicorn = "*"
 pygithub = "*"
 py-trello = "*"
 ddtrace = "*"
+coveralls = "*"
 
 [dev-packages]
 mock = "*"
