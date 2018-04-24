@@ -25,6 +25,7 @@ class CreatePullRequestCard(CreateTrelloCard):
 
     def __init__(self):
         """Initializes a task to create a pull request trello card."""
+        super().__init__()
         self._pull_request_service = PullRequestService()
 
     def _card_body(self):

@@ -13,8 +13,9 @@
 import uuid
 from app import db
 from app.services import PullRequestService
-from app.models import PullRequest, Repo
+from app.models import PullRequest
 from tests.base_test_case import BaseTestCase
+from tests.utils import create_repo, default_repo_id
 
 
 class PullRequestServiceTestCase(BaseTestCase):
@@ -29,15 +30,7 @@ class PullRequestServiceTestCase(BaseTestCase):
         """Sets up testing context."""
         super().setUp()
         self.pull_request_service = PullRequestService()
-
-        # Create the repo needed for the foreign key constraint
-        db.session.add(
-            Repo(
-                name='repo_name',
-                url='https://github.com/user/repo',
-                github_repo_id=self.repo_id
-            )
-        )
+        create_repo()
         db.session.commit()
 
     def test_create(self):
@@ -52,7 +45,7 @@ class PullRequestServiceTestCase(BaseTestCase):
             name=self.pull_request_name,
             url='https://github.com/user/repo/pulls/1',
             github_pull_request_id=self.pull_request_id,
-            repo_id=self.repo_id,
+            repo_id=default_repo_id,
             trello_board_id=board_id,
             trello_card_id=uuid.uuid1(),
             trello_card_url=f"https://trello.com/c/{board_id}/a-card"

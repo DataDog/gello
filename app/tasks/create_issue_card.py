@@ -25,6 +25,7 @@ class CreateIssueCard(CreateTrelloCard):
 
     def __init__(self):
         """Initializes a task to create an issue trello card."""
+        super().__init__()
         self._issue_service = IssueService()
 
     def _card_body(self):

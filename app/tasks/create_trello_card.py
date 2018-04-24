@@ -22,6 +22,10 @@ from ..services import TrelloService
 class CreateTrelloCard(GitHubBaseTask):
     """An abstract class that creates a trello card on a board."""
 
+    def __init__(self):
+        """Initializes a task to create a trello card."""
+        self._trello_service = TrelloService()
+
     def run(self, board_id, list_id, name, payload, assignee_id=None):
         """Performs validations on the event type and enqueues them.
 
@@ -45,7 +49,7 @@ class CreateTrelloCard(GitHubBaseTask):
         self._repo_id = self.payload['repository']['id']
 
         # Create a trello card on a given board, and list
-        card = TrelloService().create_card(
+        card = self.trello_service().create_card(
             board_id=board_id,
             list_id=list_id,
             name=name,
@@ -55,6 +59,14 @@ class CreateTrelloCard(GitHubBaseTask):
 
         # Persist the card object to the database
         self._persist_card_to_database(card=card)
+
+    def trello_service(self):
+        """Reutrns the TrelloService instance.
+
+        Returns:
+            TrelloService
+        """
+        return self._trello_service
 
     def _card_body(self):
         """Abstract helper method.
