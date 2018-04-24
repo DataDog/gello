@@ -10,10 +10,9 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-import uuid
+import json
 
-default_board_id = str(uuid.uuid1())
-default_list_id = str(uuid.uuid1())
-default_card_id = str(uuid.uuid1())
-default_repo_id = 100001
-default_issue_id = 315902751
+
+def json_fixture(path):
+    """Loads a JSON file into a Python `dict`."""
+    return json.loads(open(path).read())
