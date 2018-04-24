@@ -15,9 +15,10 @@
 Testing utils for creating database records needed for associations.
 """
 
-from tests.utils import default_board_id, default_repo_id, default_list_id
+from tests.utils import default_board_id, default_repo_id, default_list_id, \
+    default_issue_id, default_card_id
 from app import db
-from app.models import Board, List, Repo, Subscription, SubscribedList
+from app.models import Board, Issue, List, Repo, Subscription, SubscribedList
 
 
 def create_board():
@@ -53,14 +54,14 @@ def create_list():
     )
 
 
-def create_subscription():
+def create_subscription(issue_autocard=True, pull_request_autocard=True):
     """Create a subscription."""
     db.session.add(
         Subscription(
             board_id=default_board_id,
             repo_id=default_repo_id,
-            issue_autocard=True,
-            pull_request_autocard=True
+            issue_autocard=issue_autocard,
+            pull_request_autocard=pull_request_autocard
         )
     )
 
@@ -72,5 +73,19 @@ def create_subscribed_list():
             subscription_board_id=default_board_id,
             subscription_repo_id=default_repo_id,
             list_id=default_list_id
+        )
+    )
+
+
+def create_issue():
+    """Create a GitHub issue representation."""
+    db.session.add(
+        Issue(
+            name='Test adding a new issue',
+            url='https://github.com/user/repo/issues/56',
+            github_issue_id=default_issue_id,
+            repo_id=default_repo_id,
+            trello_board_id=default_board_id,
+            trello_card_id=default_card_id
         )
     )
