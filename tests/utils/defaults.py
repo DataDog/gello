@@ -10,6 +10,8 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-from tests.utils.defaults import *
-from tests.utils.mocks import *
-from tests.utils.database import *
+import uuid
+
+default_board_id = str(uuid.uuid1())
+default_list_id = str(uuid.uuid1())
+default_repo_id = 100001

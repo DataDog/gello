@@ -21,16 +21,6 @@ from tests.utils import create_board, create_repo, create_list, \
 from tests.base_test_case import BaseTestCase
 
 
-class PatchClass:
-    """A class used to patch the `CreateIssueCard` constructor."""
-
-    def service(self):
-        self.trello_service = mock_trello_service(
-            board_count=0,
-            list_counts=[]
-        )
-
-
 class CreateIssueCardTestCase(BaseTestCase):
     """Tests the `CreateIssueCard` celery task."""
 
@@ -40,13 +30,14 @@ class CreateIssueCardTestCase(BaseTestCase):
         create_board()
         create_repo()
         create_list()
-        db.session.commit()
-
-    @patch('app.tasks.CreateTrelloCard.__init__', new=PatchClass.__init__)
-    def test_run(self):
-        """"""
         create_subscription()
         create_subscribed_list()
+        db.session.commit()
+
+    @patch('app.tasks.CreateIssueCard.trello_service')
+    def test_run(self, mock):
+        """Tests to ensure a new `Issue` is persisted when the task is run."""
+        mock.return_value = mock_trello_service()
 
         issues = Issue.query.all()
         self.assertTrue(len(issues) is 0)

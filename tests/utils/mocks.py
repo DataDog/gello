@@ -32,7 +32,7 @@ def mock_card(board_id):
     return trello_card
 
 
-def make_github_member(github_member_num):
+def mock_github_member(github_member_num):
     """Creates a mock github member."""
     member_id = github_member_num
     member_login = f"github_member_{github_member_num}"
@@ -44,7 +44,7 @@ def make_github_member(github_member_num):
     )
 
 
-def make_trello_member(trello_member_num):
+def mock_trello_member(trello_member_num):
     """Creates a mock trello member."""
     member_id = f"some_uuid_{trello_member_num}"
 
@@ -58,7 +58,7 @@ def make_trello_member(trello_member_num):
     return trello_member
 
 
-def make_repo(repo_num):
+def mock_repo(repo_num):
     """Creates a mock repo."""
     repo_id = repo_num
     repo_name = f"repo_{repo_num}"
@@ -73,7 +73,7 @@ def make_repo(repo_num):
     return repo
 
 
-def make_board(board_num, list_count):
+def mock_board(board_num, list_count):
     """Creates a mock board."""
     board_id = str(uuid.uuid1())
     board = mock.MagicMock(
@@ -83,13 +83,13 @@ def make_board(board_num, list_count):
     )
     board.name = f"board_{board_num}",
     board.all_lists.return_value = [
-        make_list(board_id, i) for i in range(list_count)
+        mock_list(board_id, i) for i in range(list_count)
     ]
 
     return board
 
 
-def make_list(board_id, list_num):
+def mock_list(board_id, list_num):
     """Creates a mock list."""
     trello_list = mock.MagicMock(
         board_id=board_id,
@@ -107,10 +107,10 @@ def mock_trello_service(board_count=0, list_counts=[], member_count=0):
 
     trello_service = mock.MagicMock()
     trello_service.boards.return_value = [
-        make_board(i, list_counts[i]) for i in range(board_count)
+        mock_board(i, list_counts[i]) for i in range(board_count)
     ]
     trello_service.members.return_value = [
-        make_trello_member(i) for i in range(member_count)
+        mock_trello_member(i) for i in range(member_count)
     ]
     trello_service.create_card.return_value = mock_card(default_board_id)
 
@@ -121,10 +121,10 @@ def mock_github_service(repo_count=0, member_count=0):
     """Stubs out the GitHubService for testing purposes."""
     github_service = mock.MagicMock()
     github_service.repos.return_value = [
-        make_repo(i) for i in range(repo_count)
+        mock_repo(i) for i in range(repo_count)
     ]
     github_service.members.return_value = [
-        make_github_member(i) for i in range(member_count)
+        mock_github_member(i) for i in range(member_count)
     ]
 
     return github_service
