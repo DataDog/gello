@@ -34,6 +34,8 @@ Gello was developed by Datadog to help manage community contributions on our ope
 
 [Development Setup](https://github.com/DataDog/gello/wiki/Development-Setup)
   * [macOS Development Setup](https://github.com/DataDog/gello/wiki/Development-Setup#macos-development-setup)
+  * [Running Unit Tests](https://github.com/DataDog/gello/wiki/Development-Setup#unit-tests)
+  * [Generating Coverage Reports](https://github.com/DataDog/gello/wiki/Development-Setup#coverage-reports)
 
 ## Why _Gello_?
 _Gello_ was named because it bridges the gap between the GitHub API and the Trello API.
