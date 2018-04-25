@@ -13,15 +13,15 @@
 from app import db
 from mock import patch
 from app.models import Issue
-from app.tasks import CreateIssueCard
+from app.tasks import CreateManualCard
 from tests.utils import create_board, create_repo, create_list, \
     create_subscription, create_subscribed_list, default_board_id, \
     default_list_id, mock_trello_service, json_fixture
 from tests.base_test_case import BaseTestCase
 
 
-class CreateIssueCardTestCase(BaseTestCase):
-    """Tests the `CreateIssueCard` celery task."""
+class CreateManualCardTestCase(BaseTestCase):
+    """Tests the `CreateManualCard` celery task."""
 
     def setUp(self):
         """Sets up testing context."""
@@ -33,7 +33,7 @@ class CreateIssueCardTestCase(BaseTestCase):
         create_subscribed_list()
         db.session.commit()
 
-    @patch('app.tasks.CreateIssueCard.trello_service')
+    @patch('app.tasks.CreateManualCard.trello_service')
     def test_run(self, mock):
         """Tests to ensure a new `Issue` is persisted when the task is run."""
         mock.return_value = mock_trello_service()
@@ -41,14 +41,14 @@ class CreateIssueCardTestCase(BaseTestCase):
         issues = Issue.query.all()
         self.assertTrue(len(issues) is 0)
 
-        payload = json_fixture('./tests/fixtures/issue_opened.json')
-        CreateIssueCard.delay(
+        payload = json_fixture('./tests/fixtures/manual_comment.json')
+        CreateManualCard.delay(
             board_id=default_board_id,
             list_id=default_list_id,
-            name='Fake Issue',
+            name='test',
             payload=payload
         )
 
-        # Enqueuing new issue `CreateIssueCard` should create an `Issue` record
+        # Enqueuing new issue `CreateManualCard` should create an `Issue`
         new_issues = Issue.query.all()
         self.assertTrue(len(new_issues) is 1)
