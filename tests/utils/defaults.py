@@ -17,3 +17,4 @@ default_list_id = str(uuid.uuid1())
 default_card_id = str(uuid.uuid1())
 default_repo_id = 100001
 default_issue_id = 315902751
+default_pull_request_id = 183771427

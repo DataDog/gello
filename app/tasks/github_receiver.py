@@ -208,8 +208,7 @@ class GitHubReceiver(GitHubBaseTask):
         for issue in issues:
             DeleteCardObjectFromDatabase.delay(
                 scope=scope,
-                github_id=github_id,
-                card_id=issue.trello_card_id
+                github_id=github_id
             )
 
     def _delete_pull_request_trello_card_objects(self):
@@ -226,8 +225,7 @@ class GitHubReceiver(GitHubBaseTask):
         for pull_request in pull_requests:
             DeleteCardObjectFromDatabase.delay(
                 scope=scope,
-                github_id=github_id,
-                card_id=pull_request.trello_card_id
+                github_id=github_id
             )
 
     def _user_in_organization(self):

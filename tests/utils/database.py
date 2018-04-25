@@ -16,9 +16,10 @@ Testing utils for creating database records needed for associations.
 """
 
 from tests.utils import default_board_id, default_repo_id, default_list_id, \
-    default_issue_id, default_card_id
+    default_issue_id, default_card_id, default_pull_request_id
 from app import db
-from app.models import Board, Issue, List, Repo, Subscription, SubscribedList
+from app.models import Board, Issue, List, PullRequest, Repo, Subscription, \
+    SubscribedList
 
 
 def create_board():
@@ -82,8 +83,22 @@ def create_issue():
     db.session.add(
         Issue(
             name='Test adding a new issue',
-            url='https://github.com/user/repo/issues/56',
+            url='https://github.com/a-organization/a-repo/issues/56',
             github_issue_id=default_issue_id,
+            repo_id=default_repo_id,
+            trello_board_id=default_board_id,
+            trello_card_id=default_card_id
+        )
+    )
+
+
+def create_pull_request():
+    """Create a GitHub pull request representation."""
+    db.session.add(
+        PullRequest(
+            name='Update README.md',
+            url='https://github.com/a-organization/a-repo/pulls/57',
+            github_pull_request_id=default_pull_request_id,
             repo_id=default_repo_id,
             trello_board_id=default_board_id,
             trello_card_id=default_card_id

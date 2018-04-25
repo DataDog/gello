@@ -10,14 +10,13 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-import json
 from app import db
 from mock import patch
 from app.models import PullRequest
 from app.tasks import CreatePullRequestCard
 from tests.utils import create_board, create_repo, create_list, \
     create_subscription, create_subscribed_list, default_board_id, \
-    default_list_id, mock_trello_service
+    default_list_id, mock_trello_service, json_fixture
 from tests.base_test_case import BaseTestCase
 
 
@@ -52,7 +51,7 @@ class CreatePullRequestCardTestCase(BaseTestCase):
         pull_requests = PullRequest.query.all()
         self.assertTrue(len(pull_requests) is 0)
 
-        payload = json.loads(open('./tests/fixtures/pull_request_opened.json').read())
+        payload = json_fixture('./tests/fixtures/pull_request_opened.json')
         CreatePullRequestCard.delay(
             board_id=default_board_id,
             list_id=default_list_id,

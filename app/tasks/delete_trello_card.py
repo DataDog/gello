@@ -12,11 +12,11 @@
 
 """delete_trello_card.py
 
-Deletes a trello card.
+Deletes a trello card object.
 """
 
 from . import GitHubBaseTask
-from ..services import IssueService, PullRequestService, TrelloService
+from ..services import IssueService, PullRequestService
 
 
 class DeleteCardObjectFromDatabase(GitHubBaseTask):
@@ -26,9 +26,8 @@ class DeleteCardObjectFromDatabase(GitHubBaseTask):
         """Initializes a task to create a manual trello card."""
         self._issue_service = IssueService()
         self._pull_request_service = PullRequestService()
-        self._trello_service = TrelloService()
 
-    def run(self, scope, github_id, card_id):
+    def run(self, scope, github_id):
         """Deletes the record of the trello card in Gello.
 
         NOTE: this does not delete the card on the Trello board, only removes
@@ -38,7 +37,6 @@ class DeleteCardObjectFromDatabase(GitHubBaseTask):
             scope (str): The scope of the webhook payload (i.e., `issue`, or
                 `pull_request`).
             github_id (int): The GitHub id of the record to be deleted.
-            card_id (str): The id of the trello card being deleted.
 
         Returns:
             None
