@@ -10,26 +10,21 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-""""""
+"""auth/views.py
+
+Auth-related view logic.
+"""
 
 from flask import render_template, redirect, request, url_for, flash
-from flask_login import login_user, logout_user, login_required, \
-    current_user
+from flask_login import login_user, logout_user, login_required
 from . import auth
 from ...models import User
 from .forms import LoginForm
 
 
-@auth.before_app_request
-def before_request():
-    """"""
-    if current_user.is_authenticated:
-        print('User authenticated.')
-
-
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    """"""
+    """Handles login for Gello."""
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -45,7 +40,7 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
-    """"""
+    """Logs the current user out of their session."""
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.index'))

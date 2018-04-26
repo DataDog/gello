@@ -15,8 +15,8 @@
 Trello_Members-related routes and view-specific logic.
 """
 
-from flask import render_template, redirect, url_for, flash, request,\
-    current_app
+from os import environ
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
 from . import trello_member
 from .forms import RefreshForm
@@ -49,5 +49,5 @@ def index():
         members=trello_members,
         form=form,
         pagination=pagination,
-        organization_name=current_app.config.get('TRELLO_ORG_NAME')
+        organization_name=environ.get('TRELLO_ORG_NAME')
     )

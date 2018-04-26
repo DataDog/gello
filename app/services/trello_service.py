@@ -27,7 +27,6 @@ class TrelloService(object):
     def __init__(self):
         """Initializes a new TrelloService object."""
         self.client = TrelloAPIClient().client()
-        self.organization = self._get_organization()
 
     def boards(self):
         """Returns a list of objects representing trello boards.
@@ -43,7 +42,7 @@ class TrelloService(object):
         Returns:
             list(trello.Member)
         """
-        return self.organization.get_members()
+        return self._get_organization().get_members()
 
     def create_card(self, board_id, list_id, name, desc, assignee_id=None):
         """Creates a card on a board, and a list.
@@ -65,16 +64,25 @@ class TrelloService(object):
 
         return trello_list.add_card(name=name, desc=desc, assign=asign)
 
+    def organizations(self):
+        """Returns a list of Trello organizations associated with the API Token.
+
+        Returns:
+            list(trello.Organization)
+        """
+        return self.client.list_organizations()
+
     def _get_organization(self):
         """Returns a representation of the Trello organization.
-
-        XXX: handle error case where the organization does not exist for Trello
-        credentials.
 
         Returns:
             trello.Organization
         """
-        orgs = self.client.list_organizations()
+        if 'TRELLO_ORG_NAME' not in environ:
+            print('Must supply the `TRELLO_ORG_NAME` variable.')
+            return
+
+        orgs = self.organizations()
         return next(
             o for o in orgs if o.name == environ.get('TRELLO_ORG_NAME')
         )

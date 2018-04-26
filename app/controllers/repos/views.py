@@ -15,8 +15,8 @@
 repos-related routes and view-specific logic.
 """
 
-from flask import render_template, redirect, url_for, flash, request,\
-    current_app
+from os import environ
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
 from . import repo
 from .forms import RefreshForm
@@ -48,6 +48,5 @@ def index():
         repos=repos,
         form=form,
         pagination=pagination,
-        organization_name=current_app.config.get('GITHUB_ORG_LOGIN')
+        organization_name=environ.get('GITHUB_ORG_LOGIN')
     )
-

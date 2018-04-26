@@ -1,0 +1,35 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Gello{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Onboarding</h1>
+  </div>
+
+  {{ wtf.quick_form(onboarding_form) }}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      loadAutocompleteData('/api/trello_names',  'names',  '#trello_organization_name');
+      loadAutocompleteData('/api/github_logins', 'logins', '#github_organization_login');
+    });
+  </script>
+{% endblock %}

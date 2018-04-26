@@ -27,6 +27,7 @@ from .github_member_service import GitHubMemberService
 from .trello_member_service import TrelloMemberService
 from .issue_service import IssueService
 from .pull_request_service import PullRequestService
+from .onboarding_service import OnboardingService
 
 
 def api_services():

@@ -102,7 +102,8 @@ def deploy():
 
         print("Created admin user.")
 
-    fetch()
+    if 'TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in os.environ:
+        fetch()
 
 
 if __name__ == '__main__':

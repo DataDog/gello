@@ -124,7 +124,9 @@
   <script type="text/javascript">
     function loadAutocompleteData(endpoint, scope, input_id) {
       $.getJSON(endpoint, function(data, status, xhr) {
+        console.log(data);
         var records = $.map(data[scope], function(record) { return record['label'] });
+        console.log(records);
 
         $(input_id).autocomplete({
           minLength: 0,
