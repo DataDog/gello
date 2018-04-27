@@ -15,19 +15,18 @@
 onboarding-related routes and view-specific logic.
 """
 
-from os import environ
 import textwrap
 
 from flask import redirect, request, url_for, flash, render_template
 from flask_login import login_required
 from . import onboarding
 from .forms import OnboardingForm
-from ...services import OnboardingService, GitHubService, TrelloService, \
+from ...services import ConfigValueService, GitHubService, TrelloService, \
     api_services
 
 github_service = GitHubService()
 trello_service = TrelloService()
-onboarding_service = OnboardingService()
+config_value_service = ConfigValueService()
 
 
 @onboarding.route('/', methods=['GET', 'POST'])
@@ -37,17 +36,14 @@ def index():
 
     if onboarding_form.validate_on_submit():
         name = onboarding_form.get_trello_name()
-        onboarding_service.set_trello_organization(name=name)
+        config_value_service.create(key='TRELLO_ORG_NAME', value=name)
 
         login = onboarding_form.get_github_login()
-        onboarding_service.set_github_organization(login=login)
+        config_value_service.create(key='GITHUB_ORG_LOGIN', value=login)
 
         # Fetch data for the GitHub and Trello organizations
         for api_service in api_services():
             api_service.fetch()
-
-        # Persist new environment variables for the next time the server is run
-        onboarding_service.write_out_environment_variables()
 
         flash(
             textwrap.dedent(

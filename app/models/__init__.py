@@ -25,3 +25,4 @@ from .github_member import GitHubMember
 from .trello_member import TrelloMember
 from .board import Board
 from .list import List
+from .config_value import ConfigValue
