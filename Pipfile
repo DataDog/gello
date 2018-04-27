@@ -45,6 +45,7 @@ py-trello = "*"
 ddtrace = "*"
 coveralls = "*"
 python-dotenv = "*"
+flask-dotenv = "*"
 
 [dev-packages]
 mock = "*"

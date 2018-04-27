@@ -4,7 +4,7 @@
 # Unless explicitly stated otherwise all files in this repository are licensed
 # under the Apache 2 License.
 #
-# This product includes software developed at Datadog
+# # This product includes software developed at Datadog
 # (https://www.datadoghq.com/).
 #
 # Copyright 2018 Datadog, Inc.
@@ -22,6 +22,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from flask_pagedown import PageDown
+from flask_dotenv import DotEnv
 from celery import Celery
 
 # load environment variable for local development/ migration
@@ -61,6 +62,12 @@ def create_app(config_name):
     login_manager.init_app(app)
     pagedown.init_app(app)
     celery.conf.update(app.config)
+
+    env_file_path = os.path.join(app.root_path, '../', '.env')
+
+    if os.path.exists(env_file_path):
+        env = DotEnv()
+        env.init_app(app)
 
     if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
         from flask_sslify import SSLify
@@ -122,7 +129,8 @@ def before_request():
     """
     if current_user.is_authenticated:
         # Don't redirect to the `/onboarding` route for these routes
-        if request.endpoint.startswith('api') or \
+        if request is None or request.endpoint is None or \
+           request.endpoint.startswith('api') or \
            request.endpoint.startswith('auth'):
             return
 

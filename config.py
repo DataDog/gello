@@ -16,6 +16,7 @@ Configuration for the Flask application.
 """
 
 import os
+from flask_dotenv import DotEnv
 
 
 class Config:
@@ -33,7 +34,11 @@ class Config:
 
     @staticmethod
     def init_app(app):
-        pass
+        env_file_path = os.path.join(app.root_path, '../', '.env')
+
+        if os.path.exists(env_file_path):
+            env = DotEnv()
+            env.init_app(app)
 
 
 class DevelopmentConfig(Config):

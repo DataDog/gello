@@ -15,6 +15,7 @@
 onboarding-related routes and view-specific logic.
 """
 
+from os import environ
 import textwrap
 
 from flask import redirect, request, url_for, flash, render_template
@@ -45,6 +46,9 @@ def index():
         for api_service in api_services():
             api_service.fetch()
 
+        # Persist new environment variables for the next time the server is run
+        onboarding_service.write_out_environment_variables()
+
         flash(
             textwrap.dedent(
                 f"""
@@ -53,6 +57,7 @@ def index():
                 """
             )
         )
+
         return redirect(url_for('.index'))
     elif request.method == 'POST':
         flash(
