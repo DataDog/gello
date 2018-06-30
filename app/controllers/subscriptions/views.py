@@ -42,6 +42,7 @@ def create():
             repo_id=create_form.get_repo_id(),
             issue_autocard=create_form.issue_autocard.data,
             pull_request_autocard=create_form.pull_request_autocard.data,
+            merged_pull_request_autocard=create_form.merged_pull_request_autocard,
             list_ids=list_ids
         )
 
@@ -74,7 +75,8 @@ def update(board_id, repo_id):
         board_id=board_id,
         repo_id=repo_id,
         issue_autocard=form.issue_autocard.data,
-        pull_request_autocard=form.pull_request_autocard.data
+        pull_request_autocard=form.pull_request_autocard.data,
+        merged_pull_request_autocard=form.merged_pull_request_autocard
     )
     flash('Updated subscription')
 

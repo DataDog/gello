@@ -55,14 +55,15 @@ def create_list():
     )
 
 
-def create_subscription(issue_autocard=True, pull_request_autocard=True):
+def create_subscription(issue_autocard=True, pull_request_autocard=True, merged_pull_request_autocard=True):
     """Create a subscription."""
     db.session.add(
         Subscription(
             board_id=default_board_id,
             repo_id=default_repo_id,
             issue_autocard=issue_autocard,
-            pull_request_autocard=pull_request_autocard
+            pull_request_autocard=pull_request_autocard,
+            merged_pull_request_autocard=merged_pull_request_autocard
         )
     )
 

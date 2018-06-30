@@ -17,8 +17,8 @@ celery task, which is enqueued in the receivers task queue.
 """
 
 from . import GitHubBaseTask
-from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
-    DeleteCardObjectFromDatabase
+from . import CreateIssueCard, CreatePullRequestCard, CreateMergedPullRequestCard, \
+ CreateManualCard, DeleteCardObjectFromDatabase
 from ..models import Subscription, GitHubMember, Repo, Issue, PullRequest
 
 
@@ -74,12 +74,13 @@ class GitHubReceiver(GitHubBaseTask):
                     board_id=subscription.board_id,
                     list_id=trello_list.list_id,
                     issue_autocard=subscription.issue_autocard,
-                    pull_request_autocard=subscription.issue_autocard,
+                    pull_request_autocard=subscription.pull_request_autocard,
+                    merged_pull_request_autocard=subscription.pr_closed_autocard
                     assignee_id=trello_list.trello_member_id
                 )
 
     def _handle_card(self, board_id, list_id, issue_autocard,
-                     pull_request_autocard, assignee_id):
+                     pull_request_autocard, merged_pull_request_autocard, assignee_id):
         """Determines which task to enqueue based on the payload parameters.
 
         Args:
@@ -89,6 +90,8 @@ class GitHubReceiver(GitHubBaseTask):
                 created.
             pull_request_autocard (Boolean): If `autocard` is `true` for Pull
                 Requests created.
+            merged_pull_request_autocard (Boolean): If `autocard` is `true` for
+                Merged Pull Requests
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -96,6 +99,7 @@ class GitHubReceiver(GitHubBaseTask):
         """
         scope = self.get_scope()
         action = self.payload['action']
+        merged = self.payload.get('merged', None)
 
         if not issue_autocard and scope == 'issue' and \
            'comment' in self.payload and action == 'created' and \
@@ -110,9 +114,11 @@ class GitHubReceiver(GitHubBaseTask):
         elif pull_request_autocard and scope == 'pull_request' and \
              action == 'opened':
             self._create_trello_pull_request_card(board_id, list_id, assignee_id)
+        elif merged_pull_request_autocard and merged and action == 'closed':
+            self._create_trello_merged_pull_request_card()
         elif scope == 'issue' and action == 'closed':
             self._delete_issue_trello_card_objects()
-        elif scope == 'pull_request' and action == 'closed':
+        elif scope == 'pull_request' and action == 'closed' and not merged_pull_request_autocard:
             self._delete_pull_request_trello_card_objects()
         else:
             print('Unsupported event action.')
@@ -188,6 +194,26 @@ class GitHubReceiver(GitHubBaseTask):
             return
 
         CreatePullRequestCard.delay(
+            board_id=board_id,
+            list_id=list_id,
+            name=self.payload['pull_request']['title'],
+            payload=self.payload,
+            assignee_id=assignee_id
+        )
+
+    def _create_trello_merged_pull_request_card(self, board_id, list_id, assignee_id):
+        """Creates a task to create a trello card.
+
+        Args:
+            board_id (str): The id of the board the card will be created on.
+            list_id (str): The id of the list the card will be created on.
+            assignee_id (str): The trello_member_id for the card assignee.
+
+        Returns:
+            None
+        """
+
+        CreateMergedPullRequestCard.delay(
             board_id=board_id,
             list_id=list_id,
             name=self.payload['pull_request']['title'],

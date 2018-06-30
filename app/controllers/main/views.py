@@ -46,7 +46,8 @@ def index():
             s,
             UpdateForm(
                 issue_autocard=s.issue_autocard,
-                pull_request_autocard=s.pull_request_autocard
+                pull_request_autocard=s.pull_request_autocard,
+                merged_pull_request_autocard=s.merged_pull_request_autocard
             ),
             DeleteForm()
         ) for s in subscriptions

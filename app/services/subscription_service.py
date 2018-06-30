@@ -32,7 +32,7 @@ class SubscriptionService(CRUDService):
         self._subscribed_list_service = SubscribedListService()
 
     def create(self, board_id, repo_id, issue_autocard, pull_request_autocard,
-               list_ids=[]):
+               merged_pull_request_autocard, list_ids=[]):
         """Creates and persists a new subscription record to the database.
 
         Args:
@@ -43,6 +43,8 @@ class SubscriptionService(CRUDService):
                 created.
             pull_request_autocard (Boolean): If `autocard` is `true` for Pull
                 Requests created.
+            merged_pull_request_autocard (Boolean): If 'autocard' is true for Merged
+                Pull Requests
             list_ids (list(str)): An optional list of ids for trello lists to
                 associate to the subscription as `SubscribedList`s.
 
@@ -53,7 +55,8 @@ class SubscriptionService(CRUDService):
             board_id=board_id,
             repo_id=repo_id,
             issue_autocard=issue_autocard,
-            pull_request_autocard=pull_request_autocard
+            pull_request_autocard=pull_request_autocard,
+            merged_pull_request_autocard=merged_pull_request_autocard
         )
         db.session.add(subscription)
 
@@ -68,7 +71,7 @@ class SubscriptionService(CRUDService):
         # Persists the subscription
         db.session.commit()
 
-    def update(self, board_id, repo_id, issue_autocard, pull_request_autocard):
+    def update(self, board_id, repo_id, issue_autocard, pull_request_autocard, merged_pull_request_autocard):
         """Updates a persisted subscription's autocard value.
 
         Args:
@@ -79,6 +82,8 @@ class SubscriptionService(CRUDService):
                 created.
             pull_request_autocard (Boolean): If `autocard` is `true` for Pull
                 Requests created.
+            merged_pull_request_autocard (Boolean): If `autocard` is `true` for 
+                 Merged Pull Requests
 
         Returns:
             None
@@ -86,6 +91,7 @@ class SubscriptionService(CRUDService):
         subscription = Subscription.query.get([board_id, repo_id])
         subscription.issue_autocard = issue_autocard
         subscription.pull_request_autocard = pull_request_autocard
+        subscription.merged_pull_request_autocard = merged_pull_request_autocard
 
         # Persist the changes
         db.session.commit()

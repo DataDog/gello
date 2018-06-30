@@ -77,6 +77,16 @@ class NewSubscriptionForm(FlaskForm):
             """
         )
     )
+    merged_pull_request_autocard = BooleanField(
+        'Merged Pull Request Autocard',
+        description=textwrap.dedent(
+            """
+            If checked, trello cards will automatically be created when a
+            <a href='https://help.github.com/articles/about-pull-requests/'>Pull Request</a>
+            by any auther, including those in your organization, is merged.  
+            """
+        )
+    )
     submit = SubmitField('Create')
 
     def validate(self):
@@ -165,6 +175,7 @@ class UpdateForm(FlaskForm):
     """Form for updating an existing subscription."""
     issue_autocard = BooleanField('Issue Autocard')
     pull_request_autocard = BooleanField('Pull Request Autocard')
+    merged_pull_request_autocard = BooleanField('Merged Pull Request Autocard')
     submit = SubmitField('Update')
 
 

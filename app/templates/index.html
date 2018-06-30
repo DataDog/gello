@@ -31,6 +31,8 @@
           <th>Autocard</th>
           <th>Pull Requests</th>
           <th>Autocard</th>
+          <th>Merged Pull Requests</th>
+          <th>Autocard</th>
           <th>Update</th>
           <th>Delete</th>
         </tr>
@@ -66,6 +68,11 @@
               </a>
             </td>
             <td>{{ update_form.pull_request_autocard(checked=subscription.pull_request_autocard) }}</td>
+            <td>{{ update_form.submit(class="btn btn-primary") }}</td>
+            <td>
+              <p>NA</p>
+            </td>
+            <td>{{ update_form.merged_pull_request_autocard(checked=subscription.merged_pull_request_autocard) }}</td>
             <td>{{ update_form.submit(class="btn btn-primary") }}</td>
           </form>
           <form method="POST" action="{{ url_for('subscription.delete', board_id=subscription.board_id, repo_id=subscription.repo_id) }}">
