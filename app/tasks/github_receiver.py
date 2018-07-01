@@ -75,7 +75,7 @@ class GitHubReceiver(GitHubBaseTask):
                     list_id=trello_list.list_id,
                     issue_autocard=subscription.issue_autocard,
                     pull_request_autocard=subscription.pull_request_autocard,
-                    merged_pull_request_autocard=subscription.pr_closed_autocard
+                    merged_pull_request_autocard=subscription.pr_closed_autocard,
                     assignee_id=trello_list.trello_member_id
                 )
 

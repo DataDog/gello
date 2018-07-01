@@ -84,6 +84,16 @@ def upgrade():
         )
     )
 
+    op.add_column(
+        'subscriptions',
+        sa.Column(
+            'merged_pull_request_autocard',
+            sa.Boolean(),
+            nullable=False,
+            server_default='false'
+        )
+    )
+
     for sub in session.query(Subscription).filter_by(issue_autocard=True):
         sub.pull_request_autocard = True
 
