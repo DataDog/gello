@@ -83,7 +83,7 @@ class NewSubscriptionForm(FlaskForm):
             """
             If checked, trello cards will automatically be created when a
             <a href='https://help.github.com/articles/about-pull-requests/'>Pull Request</a>
-            by any auther, including those in your organization, is merged.  
+            by any author, including those in your organization, is merged.  
             """
         )
     )
