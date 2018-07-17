@@ -115,7 +115,7 @@ class GitHubReceiver(GitHubBaseTask):
              action == 'opened':
             self._create_trello_pull_request_card(board_id, list_id, assignee_id)
         elif merged_pull_request_autocard and merged and action == 'closed':
-            self._create_trello_merged_pull_request_card(board_id, list_id, _assignee_id)
+            self._create_trello_merged_pull_request_card(board_id, list_id, assignee_id)
         elif scope == 'issue' and action == 'closed':
             self._delete_issue_trello_card_objects()
         elif scope == 'pull_request' and action == 'closed' and not merged_pull_request_autocard:
