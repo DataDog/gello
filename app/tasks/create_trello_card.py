@@ -56,6 +56,7 @@ class CreateTrelloCard(GitHubBaseTask):
             desc=self._card_body(),
             assignee_id=assignee_id
         )
+        card.attach(self._title, url=self._url)
 
         # Persist the card object to the database
         self._persist_card_to_database(card=card)
