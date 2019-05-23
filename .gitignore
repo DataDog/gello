@@ -94,3 +94,9 @@ TODOS.org
 
 # Node modules
 node_modules/
+
+# IDE (Pycharm)
+.idea/
+
+# Redis
+dump.rdb

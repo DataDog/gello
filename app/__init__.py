@@ -23,6 +23,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_pagedown import PageDown
 from celery import Celery
+
+# load environment variable for local development/ migration
+if os.path.exists('.env'):
+    print('Importing environment from .env in __init__...')
+
+    from dotenv import load_dotenv
+    load_dotenv()
+
 from config import config, Config
 
 bootstrap = Bootstrap()
