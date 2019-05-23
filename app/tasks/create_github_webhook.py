@@ -17,6 +17,7 @@ Creates a webhook for a repository.
 
 from celery.task import Task
 from ..services import GitHubService
+from ..services import RepoService
 
 
 class CreateGitHubWebhook(Task):
@@ -25,6 +26,7 @@ class CreateGitHubWebhook(Task):
     def __init__(self):
         """Initializes a `GitHubService` object for the class."""
         self._github_service = GitHubService()
+        self._repo_service = RepoService()
 
     def run(self, url_root, repo_id):
         """Creates a GitHub webhook for a repository.
@@ -36,7 +38,29 @@ class CreateGitHubWebhook(Task):
         Returns:
             None
         """
-        self._github_service.create_github_hook(
+
+        # Create a GitHub webhook on given repo
+        webhook_id = self._github_service.create_github_hook(
             url_root=url_root,
+            repo_id=repo_id
+        )
+
+        # Persist the webhook_id field to repo record in database
+        self._persist_webhook_to_database(webhook_id=webhook_id, repo_id=repo_id)
+
+    def _persist_webhook_to_database(self, webhook_id, repo_id):
+        """Concrete helper method.
+
+        Internal helper to save the record created to the database.
+
+        Args:
+            webhook_id (int): A GitHub-issued identifier for webhooks.
+            (note: webhook_id is NOT unique, it need to be used with repo_id)
+
+        Returns:
+            None
+        """
+        self._repo_service.add_webhook(
+            webhook_id=webhook_id,
             repo_id=repo_id
         )

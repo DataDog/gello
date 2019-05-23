@@ -51,19 +51,20 @@ class GitHubService(object):
             repo_id (int): The id of the repository to create the webhook to.
 
         Returns:
-            None
+            int: the id of the newly-created webhook (unique per repo)
         """
         config = {'url': url_root, 'content_type': 'json'}
         events = ['issues', 'issue_comment', 'pull_request',
                   'pull_request_review_comment']
 
         repo = self.client.get_repo(repo_id)
-        repo.create_hook(
+        hook = repo.create_hook(
             name='web',
             config=config,
             events=events,
             active=True
         )
+        return hook.id
 
     def _get_organization(self):
         """Returns a representation of the GitHub organization.
