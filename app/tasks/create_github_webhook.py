@@ -55,7 +55,8 @@ class CreateGitHubWebhook(Task):
 
         Args:
             webhook_id (int): A GitHub-issued identifier for webhooks.
-            (note: webhook_id is NOT unique, it need to be used with repo_id)
+                (note: webhook_id is NOT unique, it need to be used with repo_id)
+            repo_id (int): The id for the repo record to add webhook field to.
 
         Returns:
             None
