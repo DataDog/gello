@@ -66,6 +66,20 @@ class GitHubService(object):
         )
         return hook.id
 
+    def delete_github_hook(self, webhook_id, repo_id):
+        """Deletes a repository webhook from a given repo.
+
+        Args:
+            webhook_id (int): The id for the webhook to be deleted.
+            repo_id (int): The id of the repository to delete the webhook from.
+
+        Returns:
+            None
+        """
+        repo = self.client.get_repo(repo_id)
+        webhook = repo.get_hook(webhook_id)
+        webhook.delete()
+
     def _get_organization(self):
         """Returns a representation of the GitHub organization.
 
