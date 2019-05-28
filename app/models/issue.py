@@ -18,7 +18,6 @@ User model.
 from datetime import datetime
 from .. import db
 
-
 class Issue(db.Model):
     __tablename__ = 'issues'
 
@@ -31,6 +30,13 @@ class Issue(db.Model):
     trello_card_url = db.Column(db.Text(), unique=True)
     trello_card_id = db.Column(db.String(64), unique=True)
     trello_board_id = db.Column(db.String(64), unique=False)
+    trello_list_id = db.Column(
+        db.String(64), db.ForeignKey('lists.trello_list_id'), unique=False
+    )
 
     # Associations
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.github_repo_id'))
+
+    __table_args__ = (db.UniqueConstraint(
+        'trello_list_id', 'github_issue_id', name='uq_issues_list'),
+    )
