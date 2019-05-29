@@ -28,7 +28,7 @@ class PullRequestService(CRUDService):
     """
 
     def create(self, name, url, github_pull_request_id, repo_id,
-               trello_board_id, trello_card_id, trello_card_url):
+               trello_board_id, trello_card_id, trello_card_url, trello_list_id):
         """Creates and persists a new pull_request record to the database.
 
         Args:
@@ -43,6 +43,8 @@ class PullRequestService(CRUDService):
                 the isuse.
             trello_card_url (str): The url for the created card corresponding
                 to the pull request.
+            trello_list_id (str): The id for the list the card corresponding
+                to the issue was created on.
 
         Returns:
             None
@@ -54,7 +56,8 @@ class PullRequestService(CRUDService):
             repo_id=repo_id,
             trello_board_id=trello_board_id,
             trello_card_id=trello_card_id,
-            trello_card_url=trello_card_url
+            trello_card_url=trello_card_url,
+            trello_list_id=trello_list_id
         )
         db.session.add(pull_request)
 

@@ -15,7 +15,8 @@ from app import db
 from app.services import IssueService
 from app.models import Issue
 from tests.base_test_case import BaseTestCase
-from tests.utils import create_repo, default_repo_id
+from tests.utils import create_board, create_list, create_repo, \
+    default_board_id, default_repo_id, default_list_id
 
 
 class IssueServiceTestCase(BaseTestCase):
@@ -24,19 +25,18 @@ class IssueServiceTestCase(BaseTestCase):
     # The `github_issue_id` for the `Issue` tested
     issue_id = 100000
     issue_name = 'some issue'
-    repo_id = 100001
 
     def setUp(self):
         """Sets up testing context."""
         super().setUp()
         self.issue_service = IssueService()
+        create_board()
+        create_list()
         create_repo()
         db.session.commit()
 
     def test_create(self):
         """Test that an issue is successfully created."""
-        board_id = uuid.uuid1()
-
         issues = Issue.query.all()
         self.assertTrue(len(issues) is 0)
 
@@ -46,9 +46,10 @@ class IssueServiceTestCase(BaseTestCase):
             url='https://github.com/user/repo/issues/1',
             github_issue_id=self.issue_id,
             repo_id=default_repo_id,
-            trello_board_id=board_id,
+            trello_board_id=default_board_id,
             trello_card_id=uuid.uuid1(),
-            trello_card_url=f"https://trello.com/c/{board_id}/a-card"
+            trello_card_url=f"https://trello.com/c/{default_board_id}/a-card",
+            trello_list_id=default_list_id
         )
 
         new_issues = Issue.query.all()

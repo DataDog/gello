@@ -17,15 +17,16 @@ Testing utils for stubbing classes and methods.
 
 import uuid
 import mock
-from tests.utils import default_board_id
+from tests.utils import default_board_id, default_list_id
 
 
-def mock_card(board_id):
+def mock_card(board_id, list_id):
     """Creates a mock trello card."""
     card_id = str(uuid.uuid1())
     trello_card = mock.MagicMock(
         id=card_id,
         board_id=board_id,
+        list_id=list_id,
         url=f"https://trello.com/c/{card_id}",
         return_value=None
     )
@@ -112,7 +113,7 @@ def mock_trello_service(board_count=0, list_counts=[], member_count=0):
     trello_service.members.return_value = [
         mock_trello_member(i) for i in range(member_count)
     ]
-    trello_service.create_card.return_value = mock_card(default_board_id)
+    trello_service.create_card.return_value = mock_card(default_board_id, default_list_id)
 
     return trello_service
 
