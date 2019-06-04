@@ -28,7 +28,7 @@ class IssueService(CRUDService):
     """
 
     def create(self, name, url, github_issue_id, repo_id, trello_board_id,
-               trello_card_id, trello_card_url):
+               trello_card_id, trello_card_url, trello_list_id):
         """Creates and persists a new issue record to the database.
 
         Args:
@@ -43,10 +43,13 @@ class IssueService(CRUDService):
                 the isuse.
             trello_card_url (str): The url for the created card corresponding
                 to the issue.
+            trello_list_id (str): The id for the list the card corresponding
+                to the issue was created on.
 
         Returns:
             None
         """
+
         issue = Issue(
             name=name,
             url=url,
@@ -54,7 +57,8 @@ class IssueService(CRUDService):
             repo_id=repo_id,
             trello_board_id=trello_board_id,
             trello_card_id=trello_card_id,
-            trello_card_url=trello_card_url
+            trello_card_url=trello_card_url,
+            trello_list_id=trello_list_id
         )
         db.session.add(issue)
 

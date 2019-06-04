@@ -23,7 +23,9 @@ from flask_login import login_required
 from . import subscription
 from .forms import NewSubscriptionForm, UpdateForm
 from ...services import SubscriptionService
-from ...tasks import CreateGitHubWebhook
+from ...tasks import CreateGitHubWebhook, DeleteGitHubWebhook
+from ...models import Repo
+from ...models import Subscription
 
 subscription_service = SubscriptionService()
 
@@ -36,21 +38,24 @@ def create():
     if create_form.validate():
         ids = create_form.list_ids.data
         list_ids = re.split("\s*,\s*", ids.strip()) if ids else []
+        repo_id = create_form.get_repo_id()
+
+        # check if there already exists a webhook with this repository
+        repo = Repo.query.filter_by(github_repo_id=repo_id).first()
+        if repo.github_webhook_id is None:
+            # Enqueue a task to create a webhook for the repo (and persist webhook_id)
+            CreateGitHubWebhook.delay(
+                url_root=request.url_root,
+                repo_id=create_form.get_repo_id()
+            )
 
         subscription_service.create(
             board_id=create_form.get_board_id(),
-            repo_id=create_form.get_repo_id(),
+            repo_id=repo_id,
             issue_autocard=create_form.issue_autocard.data,
             pull_request_autocard=create_form.pull_request_autocard.data,
             list_ids=list_ids
         )
-
-        # Enqueue a task to create a repository webhook for the repo
-        CreateGitHubWebhook.delay(
-            url_root=request.url_root,
-            repo_id=create_form.get_repo_id()
-        )
-
         flash('Created subscription')
         return redirect(url_for('main.index'))
     else:
@@ -85,5 +90,17 @@ def update(board_id, repo_id):
 @login_required
 def delete(board_id, repo_id):
     subscription_service.delete(board_id, repo_id)
+
+    # check if no other subscriptions are listening to this repo
+    subscriptions = Subscription.query.filter_by(repo_id=repo_id).all()
+
+    if not subscriptions:
+        # Enqueue a task to delete the webhook from the repo (and remove webhook_id)
+        repo = Repo.query.filter_by(github_repo_id=repo_id).first()
+        DeleteGitHubWebhook.delay(
+            webhook_id=repo.github_webhook_id,
+            repo_id=repo_id
+        )
+
     flash('Deleted subscription')
     return redirect(url_for('main.index'))

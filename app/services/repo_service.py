@@ -103,3 +103,35 @@ class RepoService(APIService):
                 github_repo_id=github_repo.id
             )
             db.session.add(github_repo_model)
+
+    def add_webhook(self, webhook_id, repo_id):
+        """Updates `Repo` records by filling the github_webhook_id field.
+
+        Args:
+            webhook_id (int): The GitHub-issued id for webhook (unique per repo).
+            repo_id (int): The GitHub repo id for which the webhook was created.
+
+        Returns:
+            None
+        """
+        repo = Repo.query.filter_by(github_repo_id=repo_id).first()
+        repo.github_webhook_id = webhook_id
+
+        # Persist the changes
+        db.session.commit()
+
+    def remove_webhook(self, repo_id):
+        """Updates a `Repo` record by setting the github_webhook_id field to None.
+
+        Args:
+            webhook_id (int): The GitHub-issued id for webhook (unique per repo)
+            repo_id (int): The GitHub repo id for which the webhook was created.
+
+        Returns:
+            None
+        """
+        repo = Repo.query.filter_by(github_repo_id=repo_id).first()
+        repo.github_webhook_id = None
+
+        # Persist the changes
+        db.session.commit()

@@ -15,7 +15,8 @@ from app import db
 from app.services import PullRequestService
 from app.models import PullRequest
 from tests.base_test_case import BaseTestCase
-from tests.utils import create_repo, default_repo_id
+from tests.utils import create_board, create_list, create_repo, \
+    default_board_id, default_repo_id, default_list_id
 
 
 class PullRequestServiceTestCase(BaseTestCase):
@@ -24,19 +25,18 @@ class PullRequestServiceTestCase(BaseTestCase):
     # The `github_pull_request_id` for the `PullRequest` tested
     pull_request_id = 100000
     pull_request_name = 'some pull_request'
-    repo_id = 100001
 
     def setUp(self):
         """Sets up testing context."""
         super().setUp()
         self.pull_request_service = PullRequestService()
+        create_board()
+        create_list()
         create_repo()
         db.session.commit()
 
     def test_create(self):
         """Test that a pull request is successfully created."""
-        board_id = uuid.uuid1()
-
         pull_requests = PullRequest.query.all()
         self.assertTrue(len(pull_requests) is 0)
 
@@ -46,9 +46,10 @@ class PullRequestServiceTestCase(BaseTestCase):
             url='https://github.com/user/repo/pulls/1',
             github_pull_request_id=self.pull_request_id,
             repo_id=default_repo_id,
-            trello_board_id=board_id,
+            trello_board_id=default_board_id,
             trello_card_id=uuid.uuid1(),
-            trello_card_url=f"https://trello.com/c/{board_id}/a-card"
+            trello_card_url=f"https://trello.com/c/{default_board_id}/a-card",
+            trello_list_id=default_list_id
         )
 
         new_pull_requests = PullRequest.query.all()

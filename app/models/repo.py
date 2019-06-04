@@ -29,6 +29,7 @@ class Repo(db.Model):
     url = db.Column(db.Text(), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     github_repo_id = db.Column(db.Integer, unique=True)
+    github_webhook_id = db.Column(db.Integer)
 
     # Associations
     issues = db.relationship('Issue', backref='repo', lazy='dynamic')

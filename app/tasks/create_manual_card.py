@@ -71,7 +71,8 @@ class CreateManualCard(CreateTrelloCard):
                 repo_id=self._repo_id,
                 trello_board_id=card.board_id,
                 trello_card_id=card.id,
-                trello_card_url=card.url
+                trello_card_url=card.url,
+                trello_list_id=card.list_id
             )
         elif scope == 'pull_request':
             self._pull_request_service.create(
@@ -81,7 +82,8 @@ class CreateManualCard(CreateTrelloCard):
                 repo_id=self._repo_id,
                 trello_board_id=card.board_id,
                 trello_card_id=card.id,
-                trello_card_url=card.url
+                trello_card_url=card.url,
+                trello_list_id=card.list_id
             )
         else:
             print('Unsupported GitHub scope')

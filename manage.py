@@ -25,7 +25,7 @@ from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
 if os.path.exists('.env'):
-    print('Importing environment from .env...')
+    print('Importing environment from .env in manage.py...')
 
     from dotenv import load_dotenv
     load_dotenv()

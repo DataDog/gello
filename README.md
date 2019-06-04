@@ -1,43 +1,33 @@
 # Gello
-:octocat: A self-hosted server for managing Trello cards based on GitHub webhook-events.
+_Gello_ is a self-hosted server for managing Trello cards based on GitHub webhook-events.
 
-## Overview
+It is developed by Datadog to help manage community contributions on our open-source GitHub repositories, and incorporate them into our biweekly sprints.
 
-Gello was developed by Datadog to help manage community contributions on our open-source GitHub repositories, and incorporate them into our biweekly sprints.
+## How it Works
 
-## Wiki Table Of Contents
+Users can subscribe Trello boards (and lists) to GitHub repositories through a web UI, and Trello cards will be created to the subscribed list following every Issue or Pull Request opened by a community member.
+ 
+### Example Usage:
 
-[Feature Overview](https://github.com/DataDog/gello/wiki/Feature-Overview)
-  * [Creating a Subscription](https://github.com/DataDog/gello/wiki/Feature-Overview#creating-a-subscription)
-    * [Autocard](https://github.com/DataDog/gello/wiki/Feature-Overview#autocard)
-    * [Manual](https://github.com/DataDog/gello/wiki/Feature-Overview#manual)
-    * [Selecting Your Lists](https://github.com/DataDog/gello/wiki/Feature-Overview#selecting-your-lists)
-  * [Aggregating Community Contributions](https://github.com/DataDog/gello/wiki/Feature-Overview#aggregating-community-contributions)
-    * [Issues](https://github.com/DataDog/gello/wiki/Feature-Overview#aggregating-community-issues)
-    * [Pull Requests](https://github.com/DataDog/gello/wiki/Feature-Overview#aggregating-community-pull-requests)
+1. Create a new subscription:
 
-[How it Works](https://github.com/DataDog/gello/wiki/How-it-works)
-  * [GitHub Webhooks](https://github.com/DataDog/gello/wiki/How-it-works#github-webhooks)
-  * [GitHub Events](https://github.com/DataDog/gello/wiki/How-it-works#github-events)
-    * [Pull Request Event](https://github.com/DataDog/gello/wiki/How-it-works#pull-request-event)
-    * [Issue Event](https://github.com/DataDog/gello/wiki/How-it-works#issue-event)
-    * [Pull Request Comment Event](https://github.com/DataDog/gello/wiki/How-it-works#pull-request-comment-event)
-    * [Issue Comment Event](https://github.com/DataDog/gello/wiki/How-it-works#issue-comment-event)
+    ![Creating a Subscription](images/demo/01_create_subscription.gif)
 
-[Configuration](https://github.com/DataDog/gello/wiki/Configuration)
-  * [Configure the Server](https://github.com/DataDog/gello/wiki/Configuration#configure-the-server)
-    * [GitHub API Token Permissions](https://github.com/DataDog/gello/wiki/Configuration#github-api-token)
-    * [Trello Configuration](https://github.com/DataDog/gello/wiki/Configuration#trello-configuration)
+2. (A community member) opens an issue:
 
-[Deployment](https://github.com/DataDog/gello/wiki/Deployment)
-  * [Deploying to Heroku](https://github.com/DataDog/gello/wiki/Deployment#deploying-to-heroku)
+    ![Opening an Issue](images/demo/02_new_issue.gif)
 
-[Development Setup](https://github.com/DataDog/gello/wiki/Development-Setup)
-  * [macOS Development Setup](https://github.com/DataDog/gello/wiki/Development-Setup#macos-development-setup)
-  * [Running Unit Tests](https://github.com/DataDog/gello/wiki/Development-Setup#unit-tests)
-  * [Generating Coverage Reports](https://github.com/DataDog/gello/wiki/Development-Setup#coverage-reports)
+3. View Trello card auto-created from this issue:
 
-## Why _Gello_?
-_Gello_ was named because it bridges the gap between the GitHub API and the Trello API.
+    ![Viewing new card](images/demo/03_view_card.gif)
+
+
+## Getting Started
+
+1. [Feature Overview](docs/feature.md)
+2. [Development Guide](docs/development.md)
+3. [Deployment Guide](docs/deployment.md)
+
+## Contributing
 
 > Does something not make sense or work as expected? Please open a [pull request](https://github.com/DataDog/gello/compare) to update this documentation. Thank you!
