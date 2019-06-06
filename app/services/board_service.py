@@ -84,6 +84,12 @@ class BoardService(APIService):
                 # Add the new lists to the database for a given board
                 self._create_lists(trello_lists, trello_board.id)
             else:
+                # Delete the lists that reference this board first
+                persisted_lists = List.query.filter_by(board_id=record.trello_board_id)
+                for l in persisted_lists:
+                    db.session.delete(l)
+
+                # Then delete this board
                 db.session.delete(record)
 
     def _create_boards(self, fetched_boards, persisted_boards):
