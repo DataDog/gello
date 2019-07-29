@@ -46,9 +46,9 @@ class TrelloMemberServiceTestCase(BaseTestCase):
         self.assertTrue(len(updated_trello_members) is 3)
 
     @patch('app.services.TrelloMemberService.__init__', new=PatchClass.__init__)
-    def test_fetch_with_update(self):
+    def test_fetch_with_updated_username(self):
         """
-        Tests the 'fetch' method, and validates it updates the trello_members
+        Tests the 'fetch' method, and validates it updates Trello username
         correctly.
         """
         trello_member_id = "some_uuid_0"
@@ -77,3 +77,37 @@ class TrelloMemberServiceTestCase(BaseTestCase):
         ).first()
         self.assertTrue(updated.name == 'Trello Name_0')
         self.assertTrue(updated.username == 'trello_member_0')
+
+    # FIXME: change update username to update memberid
+    @patch('app.services.TrelloMemberService.__init__', new=PatchClass.__init__)
+    def test_fetch_with_updated_member_id(self):
+        """
+        Tests the 'fetch' method, and validates it updates Trello member ID
+        correctly.
+        """
+        trello_username = 'trello_member_0'
+        trello_member_model = TrelloMember(
+            name='Old Name',
+            username=trello_username,
+            trello_member_id='some_uuid_old'
+        )
+        db.session.add(trello_member_model)
+
+        trello_member_service = TrelloMemberService()
+
+        # Validate record has proper attributes
+        trello_member = TrelloMember.query.filter_by(
+            username=trello_username
+        ).first()
+        self.assertTrue(trello_member.name == 'Old Name')
+        self.assertTrue(trello_member.trello_member_id == 'some_uuid_old')
+
+        # Fetch and insert the trello_members into the database
+        trello_member_service.fetch()
+
+        # Validate record attributes have been updated
+        updated = TrelloMember.query.filter_by(
+            username=trello_username
+        ).first()
+        self.assertTrue(updated.name == 'Trello Name_0')
+        self.assertTrue(updated.trello_member_id == 'some_uuid_0')
