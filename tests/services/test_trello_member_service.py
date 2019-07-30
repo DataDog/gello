@@ -78,7 +78,6 @@ class TrelloMemberServiceTestCase(BaseTestCase):
         self.assertTrue(updated.name == 'Trello Name_0')
         self.assertTrue(updated.username == 'trello_member_0')
 
-    # FIXME: change update username to update memberid
     @patch('app.services.TrelloMemberService.__init__', new=PatchClass.__init__)
     def test_fetch_with_updated_member_id(self):
         """
