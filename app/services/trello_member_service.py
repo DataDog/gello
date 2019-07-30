@@ -56,6 +56,7 @@ class TrelloMemberService(APIService):
             None
         """
         fetched_member_ids = list(map(lambda x: x.id, fetched_members))
+        fetched_usernames = list(map(lambda x: x.username, fetched_members))
 
         for record in persisted_members:
             if record.trello_member_id in fetched_member_ids:
@@ -70,6 +71,20 @@ class TrelloMemberService(APIService):
                 # Update the attributes
                 record.name = trello_member.full_name
                 record.username = trello_member.username
+
+            elif record.username in fetched_usernames:
+                # In case `trello_member_id` changed for an existing `username`
+                trello_member = list(
+                    filter(
+                        lambda x: x.username == record.username,
+                        fetched_members
+                    )
+                )[0]
+
+                # Update the attributes
+                record.name = trello_member.full_name
+                record.trello_member_id = trello_member.id
+
             else:
                 db.session.delete(record)
 
