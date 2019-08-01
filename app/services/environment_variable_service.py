@@ -13,13 +13,12 @@
 """EnvironmentVariableService"""
 
 from os import environ
-from . import CRUDService
 from .. import db
 from ..models import ConfigValue
 from ..services import ConfigValueService
 
 
-class EnvironmentVariableService(CRUDService):
+class EnvironmentVariableService(object):
     """Service helpers related to non-sensitive environment variables."""
 
     def __init__(self):
