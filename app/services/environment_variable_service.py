@@ -20,7 +20,7 @@ from ..services import ConfigValueService
 
 
 class EnvironmentVariableService(CRUDService):
-    """Service helpers related to environment variables."""
+    """Service helpers related to non-sensitive environment variables."""
 
     def __init__(self):
         """Instantiates a new `EnvironmentVariableService`."""

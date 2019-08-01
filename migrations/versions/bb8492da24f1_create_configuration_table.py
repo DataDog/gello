@@ -10,22 +10,24 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""Add configuration values table.
+"""create configuration table
 
-Revision ID: a210f184632b
-Revises: bde502a0cc6f
-Create Date: 2018-04-27 13:39:41.433077
+Revision ID: bb8492da24f1
+Revises: 27f4371eff83
+Create Date: 2019-08-01 10:07:33.663740
 """
 
 from alembic import op
 import sqlalchemy as sa
 
 
-revision = 'a210f184632b'
-down_revision = 'bde502a0cc6f'
+revision = 'bb8492da24f1'
+down_revision = '27f4371eff83'
 
 
 def upgrade():
+    """Creates a simple key value table for non-sensitive environment info.
+    """
     op.create_table(
         'config_values',
         sa.Column('key', sa.Text(), nullable=False),
