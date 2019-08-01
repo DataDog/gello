@@ -121,6 +121,16 @@ def create_app(config_name):
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 
+@app.before_first_request
+def load_persisted_config_variables():
+    """
+    Loads the persisted configuration variables from the `config_values` table.
+    """
+    from .services import EnvironmentVariableService
+    environment_variable_service = EnvironmentVariableService()
+    environment_variable_service.export_persisted_variables()
+
+
 @app.before_request
 def before_request():
     """
