@@ -10,13 +10,13 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""api/__init__.py
+"""onboarding/__init__.py
 
-api controller initialization code.
+onboarding module initialization code.
 """
 
 from flask import Blueprint
 
-api = Blueprint('api', __name__)
+onboarding = Blueprint('onboarding', __name__)
 
-from . import boards, lists, repos, trello_members, onboarding
+from . import views

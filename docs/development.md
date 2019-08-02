@@ -5,7 +5,7 @@
 #### Prerequisites
 
 - macOS
-- PostgreSQL 
+- PostgreSQL
     ```bash
     brew install postgresql
     ```
@@ -89,6 +89,12 @@
     python run.py
     ```
 
+12. Open http://localhost:5000/.
+
+13. Log in with your admin credentials `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+
+14. Complete the onboarding form.
+
 ### Testing
 
 #### Unit Tests
@@ -113,7 +119,7 @@ python manage.py test
     ```bash
     Forwarding    http://7e9ea9dc.ngrok.io -> 127.0.0.1:5000
     ```
-    
+
 3. Copy the url `*.ngrok.io`
 
     In [views.py](../app/controllers/subscriptions/views.py), replace the value of `url_root` with this url (temporarily for testing)
@@ -124,7 +130,7 @@ python manage.py test
         repo_id=create_form.get_repo_id()
     )
     ```
-    
+
 4. Now you can create new webhooks (through creating subscriptions) on Gello, and they would link to the ngrok url (which forwards to your localhost)
 
 5. Don't forget to delete the test webhooks and change the line back when you're done!
@@ -147,7 +153,7 @@ Below are errors that you might encounter during local set-up and their solution
 > zipimport.ZipImportError: can't decompress data; zlib not available
 
 Run '`brew info zlib`', and follow output instructions to set corresponding environment variables.
- 
+
 #### pyenv-virtualenv Initialization Error
 > Failed to activate virtualenv. Perhaps pyenv-virtualenv has not been loaded into your shell properly. Please restart current shell and try again.
 
@@ -162,4 +168,3 @@ eval "$(pyenv virtualenv-init -)"
 > github.GithubException.RateLimitExceededException: 403 {'message': "API rate limit exceeded."}
 
 Verify that the *GITHUB_API_TOKEN* and *GITHUB_ORG_LOGIN* are set up correctly in *.env*, and that environment variables are loaded properly.
- 

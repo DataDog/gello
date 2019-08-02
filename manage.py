@@ -20,7 +20,7 @@ import os
 
 from app import create_app, db
 from app.models import User, Repo
-from app.services import api_services
+from app.services import api_services, EnvironmentVariableService
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
@@ -70,6 +70,11 @@ def deploy():
     from app.models import User
     from app import db
 
+    # Configure environment variables
+    environment_variable_service = EnvironmentVariableService()
+    environment_variable_service.update_persisted_variables()
+    environment_variable_service.export_persisted_variables()
+
     record = User.query.filter_by(
         email=os.environ.get('ADMIN_EMAIL')).first()
 
@@ -102,7 +107,8 @@ def deploy():
 
         print("Created admin user.")
 
-    fetch()
+    if 'TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in os.environ:
+        fetch()
 
 
 if __name__ == '__main__':

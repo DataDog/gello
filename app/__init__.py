@@ -16,12 +16,13 @@ Create a modular flask application with database.
 """
 
 import os
-from flask import Flask
+from flask import Flask, url_for, redirect, request
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_pagedown import PageDown
+from flask_dotenv import DotEnv
 from celery import Celery
 
 # load environment variable for local development/ migration
@@ -62,6 +63,12 @@ def create_app(config_name):
     pagedown.init_app(app)
     celery.conf.update(app.config)
 
+    env_file_path = os.path.join(app.root_path, '../', '.env')
+
+    if os.path.exists(env_file_path):
+        env = DotEnv()
+        env.init_app(app)
+
     if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
         from flask_sslify import SSLify
         sslify = SSLify(app)
@@ -74,6 +81,9 @@ def create_app(config_name):
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api')
+
+    from .controllers.onboarding import onboarding as onboarding_blueprint
+    app.register_blueprint(onboarding_blueprint, url_prefix='/onboarding')
 
     from .controllers.repos import repo as repo_blueprint
     app.register_blueprint(repo_blueprint, url_prefix='/repos')
@@ -109,6 +119,38 @@ def create_app(config_name):
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+
+
+@app.before_first_request
+def load_persisted_config_variables():
+    """
+    Loads the persisted configuration variables from the `config_values` table.
+    """
+    from .services import EnvironmentVariableService
+    environment_variable_service = EnvironmentVariableService()
+    environment_variable_service.export_persisted_variables()
+
+
+@app.before_request
+def before_request():
+    """
+    If not all the required environment variables are set, and not viewing an
+    onboarding route redirect to the onboarding view.
+    """
+    if current_user.is_authenticated:
+        # Don't redirect to the `/onboarding` route for these routes
+        if request is None or request.endpoint is None or \
+           request.endpoint.startswith('api') or \
+           request.endpoint.startswith('auth'):
+            return
+
+        if ('TRELLO_ORG_NAME' not in os.environ or 'GITHUB_ORG_LOGIN' not in
+           os.environ) and not request.endpoint.startswith('onboarding'):
+            return redirect(url_for('onboarding.index'))
+        elif ('TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in
+              os.environ) and request.endpoint.startswith('onboarding'):
+            return redirect(url_for('main.index'))
+
 
 # Configure tracing if `APM_ENABLED` is `True`
 if app.config.get('APM_ENABLED'):

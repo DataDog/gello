@@ -25,7 +25,6 @@ class GitHubService(object):
     def __init__(self):
         """Initializes a new GitHubService object."""
         self.client = GitHubAPIClient().client()
-        self.organization = self._get_organization()
 
     def repos(self):
         """Returns an array of the organization's public repos.
@@ -33,7 +32,7 @@ class GitHubService(object):
         Returns:
             list(github.Repo)
         """
-        return self.organization.get_repos(type='public')
+        return self._get_organization().get_repos(type='public')
 
     def members(self):
         """Returns an array of the organization's members.
@@ -41,7 +40,7 @@ class GitHubService(object):
         Returns:
             list(github.Member)
         """
-        return self.organization.get_members()
+        return self._get_organization().get_members()
 
     def create_github_hook(self, url_root, repo_id):
         """Creates a repository webhook for a given repo.
@@ -80,17 +79,26 @@ class GitHubService(object):
         webhook = repo.get_hook(webhook_id)
         webhook.delete()
 
+    def organizations(self):
+        """Returns a list of GitHub organizations associated with the API Token.
+
+        Returns:
+            list(github.Organization)
+        """
+        return self.client.get_user().get_orgs()
+
     def _get_organization(self):
         """Returns a representation of the GitHub organization.
-
-        XXX: handle error case where the organization does not exist for API
-        Token.
 
         Returns:
             github.Organization: The organization object corresponding to the
                 `GITHUB_ORG_LOGIN` environment variable.
         """
-        orgs = self.client.get_user().get_orgs()
+        if 'GITHUB_ORG_LOGIN' not in environ:
+            print('Must supply the `GITHUB_ORG_LOGIN` variable.')
+            return
+
+        orgs = self.organizations()
         return next(
             o for o in orgs if o.login == environ.get('GITHUB_ORG_LOGIN')
         )

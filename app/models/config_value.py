@@ -10,13 +10,17 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""api/__init__.py
+"""config_value.py
 
-api controller initialization code.
+ConfigValue model.
 """
 
-from flask import Blueprint
+from .. import db
 
-api = Blueprint('api', __name__)
 
-from . import boards, lists, repos, trello_members, onboarding
+class ConfigValue(db.Model):
+    __tablename__ = 'config_values'
+
+    # Attributes
+    key = db.Column(db.Text(), unique=True, primary_key=True)
+    value = db.Column(db.Text(), unique=False)
