@@ -137,6 +137,21 @@ def before_request():
     If not all the required environment variables are set, and not viewing an
     onboarding route redirect to the onboarding view.
     """
+    def config_values_exist():
+        """Checks if config_values_exist."""
+        if ('TRELLO_ORG_NAME' in os.environ and
+            'GITHUB_ORG_LOGIN' in os.environ):
+            return True
+
+        # Bug encountered in heroku with env variables not loaded properly
+        # before request.
+        from .services import EnvironmentVariableService
+        environment_variable_service = EnvironmentVariableService()
+        environment_variable_service.export_persisted_variables()
+
+        # Try after exporting persisted variables.
+        return 'TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN'
+
     if current_user.is_authenticated:
         # Don't redirect to the `/onboarding` route for these routes
         if request is None or request.endpoint is None or \
@@ -144,11 +159,9 @@ def before_request():
            request.endpoint.startswith('auth'):
             return
 
-        if ('TRELLO_ORG_NAME' not in os.environ or 'GITHUB_ORG_LOGIN' not in
-           os.environ) and not request.endpoint.startswith('onboarding'):
+        if not config_values_exist() and not request.endpoint.startswith('onboarding'):
             return redirect(url_for('onboarding.index'))
-        elif ('TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in
-              os.environ) and request.endpoint.startswith('onboarding'):
+        elif config_values_exist() and request.endpoint.startswith('onboarding'):
             return redirect(url_for('main.index'))
 
 
