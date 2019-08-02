@@ -36,8 +36,6 @@ def create():
     create_form = NewSubscriptionForm(request.form)
 
     if create_form.validate():
-        ids = create_form.list_ids.data
-        list_ids = re.split("\s*,\s*", ids.strip()) if ids else []
         repo_id = create_form.get_repo_id()
 
         # check if there already exists a webhook with this repository
@@ -53,8 +51,7 @@ def create():
             board_id=create_form.get_board_id(),
             repo_id=repo_id,
             issue_autocard=create_form.issue_autocard.data,
-            pull_request_autocard=create_form.pull_request_autocard.data,
-            list_ids=list_ids
+            pull_request_autocard=create_form.pull_request_autocard.data
         )
         flash('Created subscription')
         return redirect(url_for('main.index'))

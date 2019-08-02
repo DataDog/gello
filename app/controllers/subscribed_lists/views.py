@@ -49,7 +49,7 @@ def index(board_id, repo_id):
             trello_member_id=member_id
         )
 
-        flash('Created subscription')
+        flash('Created subscribed list')
         return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
     elif request.method == 'POST':
         flash(
@@ -106,7 +106,7 @@ def update(board_id, repo_id, list_id):
             trello_member_id=member_id
         )
 
-        flash('Updated subscription')
+        flash('Updated subscribed list')
         return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
     else:
         flash(
@@ -127,5 +127,5 @@ def update(board_id, repo_id, list_id):
 @login_required
 def delete(board_id, repo_id, list_id):
     subscribed_list_service.delete(board_id, repo_id, list_id)
-    flash('Deleted subscription')
+    flash('Deleted subscribed list')
     return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))

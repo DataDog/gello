@@ -31,8 +31,7 @@ class SubscriptionService(CRUDService):
         """Creates a new `subscribed_list_service` for the class."""
         self._subscribed_list_service = SubscribedListService()
 
-    def create(self, board_id, repo_id, issue_autocard, pull_request_autocard,
-               list_ids=[]):
+    def create(self, board_id, repo_id, issue_autocard, pull_request_autocard):
         """Creates and persists a new subscription record to the database.
 
         Args:
@@ -43,8 +42,6 @@ class SubscriptionService(CRUDService):
                 created.
             pull_request_autocard (Boolean): If `autocard` is `true` for Pull
                 Requests created.
-            list_ids (list(str)): An optional list of ids for trello lists to
-                associate to the subscription as `SubscribedList`s.
 
         Returns:
             None
@@ -56,16 +53,6 @@ class SubscriptionService(CRUDService):
             pull_request_autocard=pull_request_autocard
         )
         db.session.add(subscription)
-
-        # Create all the subscribed lists
-        for list_id in list_ids:
-            self._subscribed_list_service.create(
-                board_id=board_id,
-                repo_id=repo_id,
-                list_id=list_id
-            )
-
-        # Persists the subscription
         db.session.commit()
 
     def update(self, board_id, repo_id, issue_autocard, pull_request_autocard):

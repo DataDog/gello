@@ -21,7 +21,7 @@ import textwrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField
 from wtforms.validators import Required, Length
-from ...models import Board, List, Repo, Subscription
+from ...models import Board, Repo, Subscription
 
 
 class NewSubscriptionForm(FlaskForm):
@@ -42,16 +42,6 @@ class NewSubscriptionForm(FlaskForm):
             """
             The name of a GitHub repository you wish to register event webhooks
             for
-            """
-        )
-    )
-    list_ids = StringField(
-        'List IDs',
-        description=textwrap.dedent(
-            """
-            A comma delimited list of <code>List.trello_list_id</code>s
-            belonging to the <code>Board</code> associated with the
-            <code>board_id</code> above
             """
         )
     )
@@ -84,12 +74,9 @@ class NewSubscriptionForm(FlaskForm):
 
         - Validates the `board_id `attribute belongs to a `Board`
         - Validates the `repo_id `attribute belongs to a `Repo`
-        - Validates the `list_ids` attribute is a comma-delimited list of
-          `List.trello_list_id` belonging to the `Board` with `board_id`.
         """
         board_name = self.board_name.data.strip()
         repo_name = self.repo_name.data.strip()
-        ids = self.list_ids.data.strip()
 
         # Perform board-specific validations
         board = Board.query.filter_by(name=board_name).first()
@@ -123,27 +110,6 @@ class NewSubscriptionForm(FlaskForm):
             self._error_message = textwrap.dedent(
                 f"""
                 Subscription exists for {board_name} and {repo_name}
-                """
-            )
-            return False
-
-        # If the field is empty, return `True`
-        if not ids:
-            return True
-
-        ids_list = re.split("\s*,\s*", ids)
-
-        # Validate all list id are valid `List`s associated to the `board_id`
-        valid_list_ids = all(
-            List.query.filter_by(
-                trello_list_id=list_id, board_id=self._board_id
-            ) is not None for list_id in ids_list
-        )
-
-        if not valid_list_ids:
-            self._error_message = textwrap.dedent(
-                f"""
-                The `list_ids` passed in are not valid
                 """
             )
             return False
