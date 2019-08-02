@@ -105,6 +105,12 @@ Unit tests may be run with:
 python manage.py test
 ```
 
+Gello will use the `TEST_DATABASE_URL` as the database when you run tests, so be sure to export it before running `python manage.py test`.
+
+```bash
+export TEST_DATABASE_URL='the_url_for_a_postgresql_database'
+```
+
 #### Integration Tests
 
 1. Follow [instructions](https://ngrok.com/download) to download and setup ngrok
