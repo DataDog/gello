@@ -150,7 +150,7 @@ def before_request():
         environment_variable_service.export_persisted_variables()
 
         # Try after exporting persisted variables.
-        return 'TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN'
+        return 'TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in os.environ
 
     if current_user.is_authenticated:
         # Don't redirect to the `/onboarding` route for these routes
