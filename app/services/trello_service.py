@@ -44,7 +44,7 @@ class TrelloService(object):
         """
         return self._get_organization().get_members()
 
-    def create_card(self, board_id, list_id, name, desc, assignee_id=None):
+    def create_card(self, board_id, list_id, name, desc, labels, assignee_id=None):
         """Creates a card on a board, and a list.
 
         Args:
@@ -52,6 +52,7 @@ class TrelloService(object):
             list_id (str): The id of the list the card will be created on.
             name (str): The name of the card.
             desc (str): The body of the card.
+            labels (list(str)): The labels of the card.
             assignee_id (str): The trello_member_id for the card assignee
 
         Returns:
@@ -62,7 +63,7 @@ class TrelloService(object):
         trello_list = board.get_list(list_id)
         asign = [self.client.get_member(assignee_id)] if assignee_id else None
 
-        return trello_list.add_card(name=name, desc=desc, assign=asign)
+        return trello_list.add_card(name=name, desc=desc, labels=labels, assign=asign)
 
     def organizations(self):
         """Returns a list of Trello organizations associated with the API Token.

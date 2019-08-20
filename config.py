@@ -32,6 +32,16 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SSL_DISABLE = False
 
+    REPO_LABELS = {
+        'dd-trace-go': 'Go',
+        'dd-trace-php': 'PHP',
+        'dd-trace-py': 'Python',
+        'dd-trace-rb': 'Ruby',
+        'dd-trace-java': 'Java',
+        'dd-trace-js': 'Javascript',
+        'dd-trace-dotnet': '.Net'
+    }
+
     @staticmethod
     def init_app(app):
         env_file_path = os.path.join(app.root_path, '../', '.env')

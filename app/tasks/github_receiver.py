@@ -20,6 +20,7 @@ from . import GitHubBaseTask
 from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
     DeleteCardObjectFromDatabase
 from ..models import Subscription, GitHubMember, Repo, Issue, PullRequest
+from config import Config
 
 
 class GitHubReceiver(GitHubBaseTask):
@@ -70,16 +71,22 @@ class GitHubReceiver(GitHubBaseTask):
         # subscription
         for subscription in subscriptions:
             for trello_list in subscription.subscribed_lists:
+
+                # add language label based on APM repo name (hardcoded)
+                labels = [Config.REPO_LABELS[repo.name]] \
+                    if repo.name in Config.REPO_LABELS else None
+
                 self._handle_card(
                     board_id=subscription.board_id,
                     list_id=trello_list.list_id,
                     issue_autocard=subscription.issue_autocard,
                     pull_request_autocard=subscription.issue_autocard,
+                    labels=labels,
                     assignee_id=trello_list.trello_member_id
                 )
 
     def _handle_card(self, board_id, list_id, issue_autocard,
-                     pull_request_autocard, assignee_id):
+                     pull_request_autocard, labels, assignee_id):
         """Determines which task to enqueue based on the payload parameters.
 
         Args:
@@ -89,6 +96,7 @@ class GitHubReceiver(GitHubBaseTask):
                 created.
             pull_request_autocard (Boolean): If `autocard` is `true` for Pull
                 Requests created.
+            labels (list(str)): The labels of the card.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -100,16 +108,16 @@ class GitHubReceiver(GitHubBaseTask):
         if not issue_autocard and scope == 'issue' and \
            'comment' in self.payload and action == 'created' and \
            self._manual_command_string() in self.payload['comment']['body']:
-            self._create_manual_card(board_id, list_id, assignee_id)
+            self._create_manual_card(board_id, list_id, labels, assignee_id)
         elif not pull_request_autocard and scope == 'pull_request' and \
              'comment' in self.payload and action == 'created' and \
              self._manual_command_string() in self.payload['comment']['body']:
-            self._create_manual_card(board_id, list_id, assignee_id)
+            self._create_manual_card(board_id, list_id, labels, assignee_id)
         elif issue_autocard and scope == 'issue' and action == 'opened':
-            self._create_trello_issue_card(board_id, list_id, assignee_id)
+            self._create_trello_issue_card(board_id, list_id, labels, assignee_id)
         elif pull_request_autocard and scope == 'pull_request' and \
              action == 'opened':
-            self._create_trello_pull_request_card(board_id, list_id, assignee_id)
+            self._create_trello_pull_request_card(board_id, list_id, labels, assignee_id)
         elif scope == 'issue' and action == 'closed':
             self._delete_issue_trello_card_objects()
         elif scope == 'pull_request' and action == 'closed':
@@ -117,7 +125,7 @@ class GitHubReceiver(GitHubBaseTask):
         else:
             print('Unsupported event action.')
 
-    def _create_manual_card(self, board_id, list_id, assignee_id):
+    def _create_manual_card(self, board_id, list_id, labels, assignee_id):
         """Creates a task to create a trello card.
 
         NOTE: It does not create a card if the user DOES NOT belong to the
@@ -126,6 +134,7 @@ class GitHubReceiver(GitHubBaseTask):
         Args:
             board_id (str): The id of the board the card will be created on.
             list_id (str): The id of the list the card will be created on.
+            labels (list(str)): The labels of the card.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -140,10 +149,11 @@ class GitHubReceiver(GitHubBaseTask):
             list_id=list_id,
             name=f"Manual card created by {self.payload['sender']['login']}",
             payload=self.payload,
+            labels=labels,
             assignee_id=assignee_id
         )
 
-    def _create_trello_issue_card(self, board_id, list_id, assignee_id):
+    def _create_trello_issue_card(self, board_id, list_id, labels, assignee_id):
         """Creates a task to create a trello card.
 
         NOTE: It does not create a card if the user belongs to the GitHub
@@ -152,6 +162,7 @@ class GitHubReceiver(GitHubBaseTask):
         Args:
             board_id (str): The id of the board the card will be created on.
             list_id (str): The id of the list the card will be created on.
+            labels (list(str)): The labels of the card.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -166,10 +177,11 @@ class GitHubReceiver(GitHubBaseTask):
             list_id=list_id,
             name=self.payload['issue']['title'],
             payload=self.payload,
+            labels=labels,
             assignee_id=assignee_id
         )
 
-    def _create_trello_pull_request_card(self, board_id, list_id, assignee_id):
+    def _create_trello_pull_request_card(self, board_id, list_id, labels, assignee_id):
         """Creates a task to create a trello card.
 
         NOTE: It does not create a card if the user belongs to the GitHub
@@ -178,6 +190,7 @@ class GitHubReceiver(GitHubBaseTask):
         Args:
             board_id (str): The id of the board the card will be created on.
             list_id (str): The id of the list the card will be created on.
+            labels (list(str)): The labels of the card.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -192,6 +205,7 @@ class GitHubReceiver(GitHubBaseTask):
             list_id=list_id,
             name=self.payload['pull_request']['title'],
             payload=self.payload,
+            labels=labels,
             assignee_id=assignee_id
         )
 

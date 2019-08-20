@@ -26,7 +26,7 @@ class CreateTrelloCard(GitHubBaseTask):
         """Initializes a task to create a trello card."""
         self._trello_service = TrelloService()
 
-    def run(self, board_id, list_id, name, payload, assignee_id=None):
+    def run(self, board_id, list_id, name, payload, labels=None, assignee_id=None):
         """Performs validations on the event type and enqueues them.
 
         Validates the event being received is a GitHub Pull Request event or a
@@ -39,6 +39,7 @@ class CreateTrelloCard(GitHubBaseTask):
             name (str): The name of the card.
             payload (dict): The card-specific data, used in the `_card_body`
                 template method.
+            labels (list(str)): The labels of the card.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -54,6 +55,7 @@ class CreateTrelloCard(GitHubBaseTask):
             list_id=list_id,
             name=name,
             desc=self._card_body(),
+            labels=labels,
             assignee_id=assignee_id
         )
         card.attach(self._title, url=self._url)
