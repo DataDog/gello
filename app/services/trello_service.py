@@ -44,7 +44,18 @@ class TrelloService(object):
         """
         return self._get_organization().get_members()
 
-    def create_card(self, board_id, list_id, name, desc, assignee_id=None):
+    def get_label_id(self, board_id, label_name):
+        """Returns id of label with label_name from a specified board.
+
+        Returns:
+            str
+        """
+        labels = self._get_labels_by_board(board_id)
+        return next((x['id'] for x in labels if x['name'] == label_name), None)
+        # TODO (not supported by py-trello):
+        #  create a new label by label_name if it doesn't exist
+
+    def create_card(self, board_id, list_id, name, desc, label_id=None, assignee_id=None):
         """Creates a card on a board, and a list.
 
         Args:
@@ -52,7 +63,8 @@ class TrelloService(object):
             list_id (str): The id of the list the card will be created on.
             name (str): The name of the card.
             desc (str): The body of the card.
-            assignee_id (str): The trello_member_id for the card assignee
+            label_id (str): The id of the repo-specific language label.
+            assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
             trello.Card: A card object representing a card created to a Trello
@@ -60,9 +72,10 @@ class TrelloService(object):
         """
         board = self.client.get_board(board_id)
         trello_list = board.get_list(list_id)
+        labels = [self.client.get_label(label_id, board_id)] if label_id else None
         asign = [self.client.get_member(assignee_id)] if assignee_id else None
 
-        return trello_list.add_card(name=name, desc=desc, assign=asign)
+        return trello_list.add_card(name=name, desc=desc, labels=labels, assign=asign)
 
     def organizations(self):
         """Returns a list of Trello organizations associated with the API Token.
@@ -86,3 +99,11 @@ class TrelloService(object):
         return next(
             o for o in orgs if o.name == environ.get('TRELLO_ORG_NAME')
         )
+
+    def _get_labels_by_board(self, board_id):
+        """Returns a list of labels by board.
+
+        Returns:
+            list(dict)
+        """
+        return self.client.fetch_json('boards/' + board_id + '/labels')
