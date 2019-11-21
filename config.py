@@ -42,7 +42,8 @@ class Config:
         'dd-trace-rb': 'Ruby',
         'dd-trace-java': 'Java',
         'dd-trace-js': 'JavaScript',
-        'dd-trace-dotnet': '.NET'
+        'dd-trace-dotnet': '.NET',
+        'dd-opentracing-cpp': 'CPP',
     }
 
     @staticmethod
