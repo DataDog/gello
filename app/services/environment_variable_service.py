@@ -66,4 +66,4 @@ class EnvironmentVariableService(object):
         Returns:
             list(str)
         """
-        return ['TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN']
+        return ['TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN'] # TODO?: add 'JIRA_SERVER_ADDRESS'

@@ -20,7 +20,7 @@ from .. import db
 from ..models import Issue
 
 
-class IssueService(CRUDService):
+class IssueService(CRUDService):        # TODO?: make it so trello is optional
     """CRUD persistent storage service.
 
     A class with the single responsibility of creating/mutating Issue

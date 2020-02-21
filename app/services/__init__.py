@@ -19,6 +19,7 @@ from .api_service import APIService
 from .crud_service import CRUDService
 from .github_service import GitHubService
 from .trello_service import TrelloService
+from .jira_service import JiraService
 from .board_service import BoardService
 from .subscribed_list_service import SubscribedListService
 from .subscription_service import SubscriptionService

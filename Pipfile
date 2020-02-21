@@ -46,6 +46,7 @@ ddtrace = "*"
 coveralls = "*"
 python-dotenv = "*"
 flask-dotenv = "*"
+jira = "*"
 
 [dev-packages]
 mock = "*"

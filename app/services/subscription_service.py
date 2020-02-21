@@ -20,7 +20,7 @@ from .. import db
 from ..models import Subscription
 
 
-class SubscriptionService(CRUDService):
+class SubscriptionService(CRUDService):     # TODO?: generalize for Gira
     """CRUD persistent storage service.
 
     A class with the single responsibility of creating/mutating Subscription

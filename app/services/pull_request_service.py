@@ -20,7 +20,7 @@ from .. import db
 from ..models import PullRequest
 
 
-class PullRequestService(CRUDService):
+class PullRequestService(CRUDService):      # TODO?: make Trello optional
     """CRUD persistent storage service.
 
     A class with the single responsibility of creating/mutating PullRequest
