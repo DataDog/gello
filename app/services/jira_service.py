@@ -27,7 +27,7 @@ class JiraService(object):
         """
         Initializes a new JiraService object
         """
-        self.client = JiraAPIClient.client()
+        self.client = JiraAPIClient().client()
 
     def projects(self):
         """
@@ -56,6 +56,12 @@ class JiraService(object):
     #     """
     #     pass
 
+    # def get_project_statuses(self, project_key):
+    #     """
+    #     Returns a list of strings representing status ids for a given project
+    #     """
+    #     pass
+
     def create_issue(self, project_key, issue_type, summary, description,
                      parent_issue, assignee_id):
         """
@@ -68,7 +74,9 @@ class JiraService(object):
             summary (str): A summary of the issue
             description (str): A description of the issue
             parent_issue (str): The key of the parent issue for this sub-issue
+                (optional)
             asignee_id (str): id of the user the new issue will be assigned to
+                (optional)
 
         Returns:
             jira.issue: object representing a JIRA issue
@@ -77,7 +85,8 @@ class JiraService(object):
         return self.client.create_issue(
             summary=summary,
             parent=(None, {"key": parent_issue})[bool(parent_issue)],
-            issuetype={"id": "10006"},
+            issuetype={"id": issue_type},
             project={"key": project_key},
-            description=description
+            description=description,
+            assignee=(None, {"accountId":assignee_id})[bool(assignee_id)]
         )

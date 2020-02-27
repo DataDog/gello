@@ -22,6 +22,8 @@ from .delete_trello_card import DeleteCardObjectFromDatabase
 from .create_github_webhook import CreateGitHubWebhook
 from .delete_github_webhook import DeleteGitHubWebhook
 from .create_jira_issue import CreateJIRAIssue
+from .create_issue_issue import CreateIssueIssue
+from .create_pull_request_issue import CreatePullRequestIssue
 from .create_trello_card import CreateTrelloCard
 from .create_issue_card import CreateIssueCard
 from .create_pull_request_card import CreatePullRequestCard
@@ -33,7 +35,9 @@ def _register_tasks():
     """Registers class based celery tasks with celery worker."""
     celery.tasks.register(GitHubBaseTask())
     celery.tasks.register(DeleteCardObjectFromDatabase())
-#   celery.tasks.register(CreateJIRAIssue())
+    celery.tasks.register(CreateJIRAIssue())
+    celery.tasks.register(CreateIssueIssue())
+    celery.tasks.register(CreatePullRequestIssue())
     celery.tasks.register(CreateTrelloCard())
     celery.tasks.register(CreateIssueCard())
     celery.tasks.register(CreateManualCard())

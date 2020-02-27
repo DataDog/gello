@@ -16,7 +16,7 @@ Creates a JIRA issue on a specific project board
 """
 
 from . import GitHubBaseTask
-# from ..services import JiraService
+from ..services import JiraService
 
 
 class CreateJIRAIssue(GitHubBaseTask):
@@ -26,9 +26,7 @@ class CreateJIRAIssue(GitHubBaseTask):
     def __init__(self):
         """Initializes a task to create a JIRA issue"""
 
-        # TODO?
-
-#       self._jira_service = JiraService()
+        self._jira_service = JiraService()
         pass
 
     def run(self, project_key, issue_type, payload, parent_issue=None,
@@ -58,12 +56,12 @@ class CreateJIRAIssue(GitHubBaseTask):
         issue = self.jira_service().create_jira_issue(
             project_key=project_key,
             issue_type=issue_type,
-            summary=self._body,
-            description=self._title,                # TODO?
+            summary=self._title,
+            description=self._issue_body(),                # TODO?
             parent_issue=parent_issue,
             assignee_id=assignee_id
         )
-        issue.attach(self._title, url=self.url)     # TODO?
+        issue.attach(self._title, url=self._url)     # TODO?
 
         # Persist the new JIRA issue to the database # TODO?
         self._persist_issue_to_database(issue=issue)
@@ -76,7 +74,7 @@ class CreateJIRAIssue(GitHubBaseTask):
         """
         return self._jira_service
 
-    def _card_body(self):
+    def _issue_body(self):
         """Abstract helper method.
 
         Internal helper to format the JIRA issue body, based on the data

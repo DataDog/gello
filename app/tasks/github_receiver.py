@@ -130,6 +130,8 @@ class GitHubReceiver(GitHubBaseTask):
         else:
             print('Unsupported event action.')
 
+        # TODO?: support JIRA issue creation
+
     def _create_manual_card(self, board_id, list_id, label_id, assignee_id):
         """Creates a task to create a trello card.
 

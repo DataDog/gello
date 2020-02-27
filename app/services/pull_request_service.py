@@ -28,7 +28,9 @@ class PullRequestService(CRUDService):      # TODO?: make Trello optional
     """
 
     def create(self, name, url, github_pull_request_id, repo_id,
-               trello_board_id, trello_card_id, trello_card_url, trello_list_id):
+               trello_board_id, trello_card_id, trello_card_url,
+               trello_list_id, jira_issue_url, jira_issue_id, jira_project_key,
+               jira_parent_issue_id):
         """Creates and persists a new pull_request record to the database.
 
         Args:
@@ -45,10 +47,20 @@ class PullRequestService(CRUDService):      # TODO?: make Trello optional
                 to the pull request.
             trello_list_id (str): The id for the list the card corresponding
                 to the issue was created on.
+            jira_issue_url (str): The url for the created jira issue
+                corresponding to the pull request
+            jira_issue_id (str): The id (not key) of the created jira issue
+                corresponding to the pull request
+            jira_project_key (str): The key of the project the jira issue
+                corresponding to the pull request was created under
+            jira_parent_issue_id (str): The id (not key) of the issue the
+                sub-issue corresponding to the pull request was created under
+                (if a sub-issue was indeed created)
 
         Returns:
             None
         """
+
         pull_request = PullRequest(
             name=name,
             url=url,
@@ -57,7 +69,11 @@ class PullRequestService(CRUDService):      # TODO?: make Trello optional
             trello_board_id=trello_board_id,
             trello_card_id=trello_card_id,
             trello_card_url=trello_card_url,
-            trello_list_id=trello_list_id
+            trello_list_id=trello_list_id,
+            jira_issue_url=jira_issue_url,
+            jira_issue_id=jira_issue_id,
+            jira_project_key=jira_project_key,
+            jira_parent_issue_id=jira_parent_issue_id
         )
         db.session.add(pull_request)
 
@@ -74,10 +90,12 @@ class PullRequestService(CRUDService):      # TODO?: make Trello optional
         Returns:
             None
         """
-        pull_request = PullRequest.query.filter_by(
+
+        for pr in PullRequest.query.filter_by(
             github_pull_request_id=github_pull_request_id
-        ).first()
-        pull_request.name = name
+        ).first():
+            pr.name = name
+
         db.session.commit()
 
     def delete(self, github_pull_request_id):

@@ -27,13 +27,21 @@ class JiraAPIClient(APIClient):
     """
 
     def __init__(self):
-        self._client = JIRA(
-            options={
-                'server': environ.get('JIRA_SERVER_ADDRESS')
-            },
-            basic_auth=(environ.get('JIRA_USERNAME'),
-                        environ.get('JIRA_API_KEY'))
-        )
+        server = environ.get('JIRA_SERVER_ADDRESS')
+        username = environ.get('JIRA_USERNAME')
+        key = environ.get('JIRA_API_KEY')
+        if not (bool(server) and bool(username) and bool(key)):
+            self._client = None
+        else:
+            self._client = JIRA(
+                options={
+                    'server': environ.get('JIRA_SERVER_ADDRESS')
+                },
+                basic_auth=(environ.get('JIRA_USERNAME'),
+                            environ.get('JIRA_API_KEY'))
+            )
 
     def client(self):
         return self._client
+
+# TODO?: make either JIRA or Trello mandatory, but not necessarily both
