@@ -62,20 +62,23 @@ class JiraService(object):
     #     """
     #     pass
 
-    def create_issue(self, project_key, issue_type, summary, description,
-                     parent_issue, assignee_id):
+    def create_issue(self, project_key, summary, description, issue_type=None,
+                     parent_issue=None, assignee_id=None, label_name=None):
         """
         Creates a new issue of type issue_id under the project with project_key
         populated with the provided fields
 
         Args:
             project_key (str): The key of the project to raise an issue on
-            issue_type (str): The id of the issue type of the project
             summary (str): A summary of the issue
             description (str): A description of the issue
+            issue_type (str): The id of the issue type of the project
+                (optional)
             parent_issue (str): The key of the parent issue for this sub-issue
                 (optional)
-            asignee_id (str): id of the user the new issue will be assigned to
+            assignee_id (str): id of the user the new issue will be assigned to
+                (optional)
+            label_id (str): The id of the repo-specific language label.
                 (optional)
 
         Returns:
@@ -85,8 +88,9 @@ class JiraService(object):
         return self.client.create_issue(
             summary=summary,
             parent=(None, {"key": parent_issue})[bool(parent_issue)],
-            issuetype={"id": issue_type},
+            issuetype=({"name": "Sub-task"}, {"id": issue_type})[bool(issue_type)],
             project={"key": project_key},
             description=description,
-            assignee=(None, {"accountId":assignee_id})[bool(assignee_id)]
+            assignee=(None, {"accountId":assignee_id})[bool(assignee_id)],
+            labels=(None, [label_name])[bool(label_name)]
         )
