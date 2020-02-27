@@ -45,7 +45,8 @@ class JiraService(object):
         """
         Returns a list of issue objects for a given project
         """
-        return self.client.search_issues('project = "' + project_key + '"')
+
+        return self.client.search_issues('project = "' + project_key + '" AND issuetype not in subtaskIssueTypes()')
 
     # TODO?
 

@@ -83,7 +83,13 @@ class SubscriptionService(CRUDService):     # TODO?: generalize for Gira
         Returns:
             None
         """
-        subscription = Subscription.query.get([board_id, repo_id])
+
+        # TODO?: make these queries faster
+
+        subscription = Subscription.query.filter_by(
+            board_id=board_id,
+            repo_id=repo_id
+        ).first()
         subscription.issue_autocard = issue_autocard
         subscription.pull_request_autocard = pull_request_autocard
 

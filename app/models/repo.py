@@ -62,3 +62,5 @@ class Repo(db.Model):
             'label': self.name,
             'value': str(self.github_repo_id)
         }
+
+    # TODO?: add number of issues/pull requests per jira project/issue

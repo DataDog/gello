@@ -118,7 +118,9 @@ class NewSubscriptionForm(FlaskForm):
         self._repo_id = repo.github_repo_id
 
         # Validate the `Subscription` does not already exist
-        subscription = Subscription.query.get([self._board_id, self._repo_id])
+        subscription = Subscription.query.filter_by(board_id=self._board_id,
+                                                    repo_id=self._repo_id
+                                                    ).first()
         if subscription is not None:
             self._error_message = textwrap.dedent(
                 f"""
