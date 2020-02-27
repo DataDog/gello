@@ -31,7 +31,7 @@ from .board import Board
 from .list import List
 from .project import Project
 from .jira_parent_issue import JIRAParentIssue
-from .jira_issue_types import JIRAIssueTypes
+from .jira_issue_type import JIRAIssueType
 from .config_value import ConfigValue
 
 # TODO?: add status field for non-subtask jira issues

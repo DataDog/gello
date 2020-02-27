@@ -10,9 +10,9 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""subscribed_jira_issues.py
+"""subscribed_jira_project.py
 
-Subscribed JIRA Issues model.
+Subscribed JIRA Projects model.
 """
 
 from datetime import datetime
@@ -20,13 +20,17 @@ from .. import db
 
 
 class SubscribedJIRAProject(db.Model):
-    __tablename__ = 'subscribed_jira_project'
+    __tablename__ = 'subscribed_jira_projects'
 
     # Attributes
     subscription_repo_id = db.Column(db.Integer(), primary_key=True)
     subscription_project_key = db.Column(
         db.String(64),
         primary_key=True
+    )
+    issue_type_id = db.Column(
+        db.String(64),
+        db.ForeignKey('jira_issue_types.issue_type_id')
     )
 
     # An optional attribute that will assign the trello card created

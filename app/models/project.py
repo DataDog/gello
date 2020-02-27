@@ -43,7 +43,7 @@ class Project(db.Model):
         lazy='dynamic'
     )
     issue_types = db.relationship(
-        'JIRAIssueTypes',
+        'JIRAIssueType',
         secondary=project_issue_types_helper,
         lazy=True,
         backref=db.backref('projects', lazy=True)

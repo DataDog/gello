@@ -117,7 +117,7 @@ def upgrade():
                     )
     op.create_foreign_key('subscriptions_project_key_fkey', 'subscriptions', 'projects', [
                           'project_key'], ['key'])
-    op.create_table('subscribed_jira_issue',
+    op.create_table('subscribed_jira_issues',
                     sa.Column('subscription_project_key',
                               sa.String(length=64), nullable=False),
                     sa.Column('subscription_repo_id',
@@ -134,9 +134,9 @@ def upgrade():
                     sa.PrimaryKeyConstraint(
                         'subscription_project_key', 'subscription_repo_id', 'jira_issue_id')
                     )
-    op.create_index(op.f('ix_subscribed_jira_issue_timestamp'),
-                    'subscribed_jira_issue', ['timestamp'], unique=False)
-    op.create_table('subscribed_jira_project',
+    op.create_index(op.f('ix_subscribed_jira_issues_timestamp'),
+                    'subscribed_jira_issues', ['timestamp'], unique=False)
+    op.create_table('subscribed_jira_projects',
                     sa.Column('subscription_repo_id',
                               sa.Integer(), nullable=False),
                     sa.Column('subscription_project_key',
@@ -149,8 +149,8 @@ def upgrade():
                     sa.PrimaryKeyConstraint('subscription_repo_id',
                                             'subscription_project_key')
                     )
-    op.create_index(op.f('ix_subscribed_jira_project_timestamp'),
-                    'subscribed_jira_project', ['timestamp'], unique=False)
+    op.create_index(op.f('ix_subscribed_jira_projects_timestamp'),
+                    'subscribed_jira_projects', ['timestamp'], unique=False)
     op.add_column('issues', sa.Column('jira_issue_id',
                                       sa.String(length=64), nullable=True))
     op.add_column('issues', sa.Column(
@@ -212,12 +212,12 @@ def downgrade():
     op.drop_column('issues', 'jira_parent_issue_id')
     op.drop_column('issues', 'jira_issue_url')
     op.drop_column('issues', 'jira_issue_id')
-    op.drop_index(op.f('ix_subscribed_jira_project_timestamp'),
-                  table_name='subscribed_jira_project')
-    op.drop_table('subscribed_jira_project')
-    op.drop_index(op.f('ix_subscribed_jira_issue_timestamp'),
-                  table_name='subscribed_jira_issue')
-    op.drop_table('subscribed_jira_issue')
+    op.drop_index(op.f('ix_subscribed_jira_projects_timestamp'),
+                  table_name='subscribed_jira_projects')
+    op.drop_table('subscribed_jira_projects')
+    op.drop_index(op.f('ix_subscribed_jira_issues_timestamp'),
+                  table_name='subscribed_jira_issues')
+    op.drop_table('subscribed_jira_issues')
     op.drop_constraint('subscriptions_project_key_fkey', 'subscriptions', type_='foreignkey')
     op.drop_table('project_issue_types_helper')
     op.drop_index(op.f('ix_jira_parent_issues_timestamp'),

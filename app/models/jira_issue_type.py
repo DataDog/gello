@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""jira_issue_types.py
+"""jira_issue_type.py
 
 JIRA issue types model.
 """
@@ -20,7 +20,7 @@ from .. import db
 # import project
 
 
-class JIRAIssueTypes(db.Model):
+class JIRAIssueType(db.Model):
     __tablename__ = 'jira_issue_types'
 
     # Attributes

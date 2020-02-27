@@ -10,7 +10,7 @@
 # Copyright 2018 Datadog, Inc.
 #
 
-"""subscribed_jira_issues.py
+"""subscribed_jira_issue.py
 
 Subscribed JIRA Issues model.
 """
@@ -20,7 +20,7 @@ from .. import db
 
 
 class SubscribedJIRAIssue(db.Model):
-    __tablename__ = 'subscribed_jira_issue'
+    __tablename__ = 'subscribed_jira_issues'
 
     # Attributes
     subscription_project_key = db.Column(db.String(64), primary_key=True)
