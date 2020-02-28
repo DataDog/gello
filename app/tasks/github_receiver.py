@@ -19,7 +19,7 @@ celery task, which is enqueued in the receivers task queue.
 from . import GitHubBaseTask
 from . import CreateIssueCard, CreatePullRequestCard, CreateManualCard, \
     DeleteCardObjectFromDatabase, CreateIssueIssue, CreatePullRequestIssue, \
-    DeleteJIRAIssueObjectFromDatabase
+    DeleteJIRAIssueObjectFromDatabase, CreateManualIssue
 from ..models import Subscription, GitHubMember, Repo, Issue, PullRequest
 from config import Config
 from ..services import TrelloService
@@ -134,17 +134,14 @@ class GitHubReceiver(GitHubBaseTask):
         scope = self.get_scope()
         action = self.payload['action']
 
-        # TODO?: support manual JIRA issue creation
-
-        # if not issue_autocard and scope == 'issue' and \
-        #    'comment' in self.payload and action == 'created' and \
-        #    self._manual_command_string() in self.payload['comment']['body']:
-        #    self._create_manual_card(board_id, list_id, label_id, assignee_id)
-        # if not pull_request_autocard and scope == 'pull_request' and \
-        #    'comment' in self.payload and action == 'created' and \
-        #    self._manual_command_string() in self.payload['comment']['body']:
-        #    self._create_manual_card(board_id, list_id, label_id, assignee_id)
-
+        if not issue_autocard and scope == 'issue' and \
+           'comment' in self.payload and action == 'created' and \
+           self._manual_command_string() in self.payload['comment']['body']:
+           self._create_manual_card(board_id, list_id, label_id, assignee_id)
+        if not pull_request_autocard and scope == 'pull_request' and \
+           'comment' in self.payload and action == 'created' and \
+           self._manual_command_string() in self.payload['comment']['body']:
+           self._create_manual_card(board_id, list_id, label_id, assignee_id)
         if issue_autocard and scope == 'issue' and action == 'opened':
             self._create_jira_issue_issue(project_key, label_name,
                                           jira_member_id,
@@ -201,6 +198,38 @@ class GitHubReceiver(GitHubBaseTask):
             self._delete_pull_request_trello_card_objects()
         else:
             print('Unsupported event action.')
+
+    def _create_manual_issue(
+        self, project_key, label_name, jira_member_id, parent_issue, issue_type
+    ):
+        """Creates a task to create a JIRA Issue.
+
+        NOTE: It does not create a card if the user DOES NOT belong to the
+        GitHub organization associated with the `GITHUB_ORG_LOGIN`.
+
+        Args:
+            project_key (str): The key of the project to raise an issue on
+            label_name (str): The name of the auto-generated label
+            jira_member_id (str): The user id for the JIRA Issue assignee.
+            parent_issue (str): The key of the parent issue for this sub-issue
+            (if a sub-issue is to be created)
+            issue_type (str): The id of the issue type of the project
+
+        Returns:
+            None
+        """
+        if not self._user_in_organization():
+            print('The user does not belong to the organization.')
+            return
+
+        CreateManualIssue.delay(
+            project_key=project_key,
+            issue_type=issue_type,
+            payload=self.payload,
+            parent_issue=parent_issue,
+            assignee_id=jira_member_id,
+            label_name=label_name
+        )
 
     def _create_manual_card(self, board_id, list_id, label_id, assignee_id):
         """Creates a task to create a trello card.
@@ -308,7 +337,7 @@ class GitHubReceiver(GitHubBaseTask):
         issues = Issue.query.filter_by(github_issue_id=github_id)
 
         for issue in issues:
-            DeleteCardObjectFromDatabase.delay(
+            DeleteJIRAIssueObjectFromDatabase.delay(
                 scope=scope,
                 github_id=github_id
             )
@@ -325,7 +354,7 @@ class GitHubReceiver(GitHubBaseTask):
             github_pull_request_id=github_id)
 
         for pull_request in pull_requests:
-            DeleteCardObjectFromDatabase.delay(
+            DeleteJIRAIssueObjectFromDatabase.delay(
                 scope=scope,
                 github_id=github_id
             )

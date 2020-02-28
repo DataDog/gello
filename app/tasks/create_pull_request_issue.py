@@ -49,7 +49,7 @@ class CreatePullRequestIssue(CreateJIRAIssue):
             """
         ) + self._body
 
-    def _persist_issue_to_database(self, card):
+    def _persist_issue_to_database(self, issue):
         """Concrete helper method.
 
         Internal helper to save the record created to the database.
