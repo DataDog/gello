@@ -143,11 +143,14 @@ def upgrade():
                               sa.String(length=64), nullable=False),
                     sa.Column('jira_member_id', sa.String(
                         length=64), nullable=True),
+                    sa.Column('issue_type_id', sa.String(64), nullable=True),
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
                     sa.ForeignKeyConstraint(['subscription_project_key', 'subscription_repo_id'], [
                         'subscriptions.project_key', 'subscriptions.repo_id'], ),
                     sa.PrimaryKeyConstraint('subscription_repo_id',
-                                            'subscription_project_key')
+                                            'subscription_project_key'),
+                    sa.ForeignKeyConstraint(
+                        ['issue_type_id'], ['jira_issue_types.issue_type_id'], )
                     )
     op.create_index(op.f('ix_subscribed_jira_projects_timestamp'),
                     'subscribed_jira_projects', ['timestamp'], unique=False)
