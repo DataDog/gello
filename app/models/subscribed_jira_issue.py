@@ -25,11 +25,12 @@ class SubscribedJIRAIssue(db.Model):
     # Attributes
     subscription_project_key = db.Column(db.String(64), primary_key=True)
     subscription_repo_id = db.Column(db.Integer(), primary_key=True)
-    jira_issue_id = db.Column(
+    jira_issue_key = db.Column(
         db.String(64),
-        db.ForeignKey('jira_parent_issues.jira_issue_id'),
+        db.ForeignKey('jira_parent_issues.jira_issue_key'),
         primary_key=True
     )
+    issue_type_name = db.Column(db.String(32), nullable=False)
 
     # An optional attribute that will assign the created jira issues
     jira_member_id = db.Column(db.String(64), unique=False)

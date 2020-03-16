@@ -12,7 +12,7 @@
 
 """__init__.py
 
-repos module initialization code.
+board module initialization code.
 """
 
 from flask import Blueprint

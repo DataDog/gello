@@ -28,7 +28,8 @@ class Subscription(db.Model):
     # Attributes
     id = db.Column(
         db.Integer,
-        primary_key=True
+        primary_key=True,
+        autoincrement=True
     )
     board_id = db.Column(
         db.String(64),

@@ -26,15 +26,15 @@ from ...services import RepoService
 repo_service = RepoService()
 
 
-@repo.route('/', methods=['GET', 'POST'])
+@repo.route('/<string:base>', methods=['GET', 'POST'])
 @login_required
-def index():
+def index(base):
     """Updates the repositories saved on POST request."""
     form = RefreshForm()
     if form.validate_on_submit():
         repo_service.fetch()
         flash('The repos have been updated.')
-        return redirect(url_for('.index'))
+        return redirect(url_for('.index', base=base))
 
     page = request.args.get('page', 1, type=int)
     query = Repo.query
@@ -48,5 +48,6 @@ def index():
         repos=repos,
         form=form,
         pagination=pagination,
-        organization_name=environ.get('GITHUB_ORG_LOGIN')
+        organization_name=environ.get('GITHUB_ORG_LOGIN'),
+        base=base
     )

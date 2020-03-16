@@ -24,13 +24,13 @@ class JIRAMember(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    display_name = db.Column(db.Text(), unique=False)
-    email = db.Column(db.String(100), unique=True)
-    jira_account_id = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String(100), unique=False)
+    name = db.Column(db.String(100), unique=False)
+    jira_member_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def to_json(self):
         return {
-            'label': self.email,
+            'label': self.jira_member_id,
             'value': self.jira_member_id
         }

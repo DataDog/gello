@@ -28,18 +28,16 @@ class JIRAParentIssue(db.Model):
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
     summary = db.Column(db.String(64), unique=False)
-    jira_issue_id = db.Column(db.String(64), unique=True)
+    jira_issue_key = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-    # TODO?: association with subscribed issues
 
     # Associations
 
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'),
-                           unique=False)
-    subscribed_lists = db.relationship(
+    project_key = db.Column(db.String(64), db.ForeignKey('projects.key'),
+                            unique=False)
+    subscribed_issues = db.relationship(
         'SubscribedJIRAIssue',
-        foreign_keys=[SubscribedJIRAIssue.jira_issue_id],
+        foreign_keys=[SubscribedJIRAIssue.jira_issue_key],
         backref=db.backref('issue_subscribed_issue', lazy='joined'),
         lazy='dynamic',
         cascade='all, delete-orphan'
@@ -47,6 +45,6 @@ class JIRAParentIssue(db.Model):
 
     def to_json(self):
         return {
-            'label': self.name,
-            'value': self.jira_issue_id
+            'label': self.jira_issue_key,
+            'value': self.jira_issue_key
         }

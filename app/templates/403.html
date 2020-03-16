@@ -8,7 +8,11 @@
      Copyright 2018 Datadog, Inc.
 -->
 
-{% extends "base.html" %}
+{% if jira_description %}
+  {% extends "jira_base.html" %}
+{% else %}
+  {% extends "trello_base.html" %}
+{% endif %}
 
 {% block title %}403 - Forbidden{% endblock %}
 

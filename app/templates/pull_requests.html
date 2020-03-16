@@ -7,22 +7,35 @@
 
      Copyright 2018 Datadog, Inc.
 -->
-
-{% extends "base.html" %}
+{% if project %}
+  {% extends "jira_base.html" %}
+{% elif board %}
+  {% extends "trello_base.html" %}
+{% endif %}
 {% import "_macros.html" as macros %}
 
 {% block title %}Pull Requests{% endblock %}
 
 {% block page_content %}
   <div class="page-header">
-    <h1>Community Pull Request Cards</h1>
+      {% if board %}
+      <h1>Community Pull Request Cards</h1>
+      {% endif %}
+
+      {% if project %}
+      <h1>Community Pull Request JIRA Issues</h1>
+      {% endif %}
   </div>
   <div class="page-header">
     <h3>
       For repository <b>{{ repo.name }}</b>
 
-      {% if board %}
-      on board <b>{{ board.name }}</b>
+      {% if board and board.trello_board_id %}
+      on Trello board <b>{{ board.name }}</b>
+      {% endif %}
+
+      {% if project and project.name %}
+      and JIRA project <b>{{ project.name }}</b>
       {% endif %}
     </h3>
   </div>
@@ -32,8 +45,13 @@
       <tr>
         <th>Name</th>
         <th>URL</th>
+        {% if board %}
         <th>Trello Card URL</th>
         <th>Trello Card ID</th>
+        {% elif project %}
+        <th>JIRA Issue URL</th>
+        <th>JIRA Issue Key</th>
+        {% endif %}
       </tr>
     </thead>
 
@@ -45,20 +63,33 @@
             {{ pull_request.url }}
           </a>
         </td>
+        {% if board %}
         <td>
           <a href="{{ pull_request.trello_card_url }}">
             {{ pull_request.trello_card_url }}
           </a>
         </td>
         <td>{{ pull_request.trello_card_id }}</td>
+        {% elif project %}
+        <td>
+          <a href="{{ jira_base_url + '/browse/' + pull_request.jira_issue_key }}">
+            {{ jira_base_url + '/browse' + pull_request.jira_issue_key }}
+          </a>
+        </td>
+        <td>{{ pull_request.jira_issue_key }}</td>
+        {% endif %}
       </tr>
     {% endfor %}
   </table>
 
   {% if pagination %}
     <div class="pagination">
-      {% if board %}
+      {% if board and board.trello_board_id %}
         {{ macros.pagination_widget(pagination, '.filtered_by_board', repo_id=repo.id, board_id=board.trello_board_id) }}
+      {% elif project and project.name %}
+        {{ macros.pagination_widget(pagination, '.filtered_by_project', repo_id=repo.id, project_key=project.key) }}
+      {% elif project %}
+        {{ macros.pagination_widget(pagination, '.jira', repo_id=repo.id) }}
       {% else %}
         {{ macros.pagination_widget(pagination, '.index', repo_id=repo.id) }}
       {% endif %}

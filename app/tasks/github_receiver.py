@@ -108,7 +108,8 @@ class GitHubReceiver(GitHubBaseTask):
                     pull_request_autocard=subscription.pull_request_autocard,
                     label_name=label_name,
                     jira_member_id=jira_issue_sub.jira_member_id,
-                    parent_issue=jira_issue_sub.jira_issue_id
+                    parent_issue=jira_issue_sub.jira_issue_key,
+                    issue_type=jira_issue_sub.issue_type_name
                 )
 
     def _handle_jira_issue(self, project_key, issue_autocard,
@@ -135,19 +136,22 @@ class GitHubReceiver(GitHubBaseTask):
         action = self.payload['action']
 
         if not issue_autocard and scope == 'issue' and \
-           'comment' in self.payload and action == 'created' and \
-           self._manual_command_string() in self.payload['comment']['body']:
-           self._create_manual_card(board_id, list_id, label_id, assignee_id)
+            'comment' in self.payload and action == 'created' and \
+            self._manual_command_string() in self.payload['comment']['body']:
+            self._create_manual_issue(project_key, label_name, jira_member_id,
+                                      parent_issue, issue_type)
         if not pull_request_autocard and scope == 'pull_request' and \
-           'comment' in self.payload and action == 'created' and \
-           self._manual_command_string() in self.payload['comment']['body']:
-           self._create_manual_card(board_id, list_id, label_id, assignee_id)
+            'comment' in self.payload and action == 'created' and \
+            self._manual_command_string() in self.payload['comment']['body']:
+            self._create_manual_issue(project_key, label_name, jira_member_id,
+                                      parent_issue, issue_type)
         if issue_autocard and scope == 'issue' and action == 'opened':
             self._create_jira_issue_issue(project_key, label_name,
                                           jira_member_id,
                                           parent_issue, issue_type)
+
         elif pull_request_autocard and scope == 'pull_request' \
-                                   and action == 'opened':
+            and action == 'opened':
             self._create_jira_pull_request_issue(
                 project_key, label_name, jira_member_id, parent_issue,
                 issue_type)

@@ -19,10 +19,14 @@ from .api_service import APIService
 from .crud_service import CRUDService
 from .github_service import GitHubService
 from .trello_service import TrelloService
-from .jira_service import JiraService
+from .jira_service import JIRAService
 from .board_service import BoardService
+from .jira_member_service import JIRAMemberService
+from .project_service import ProjectService
 from .subscribed_list_service import SubscribedListService
-from .subscription_service import SubscriptionService
+from .subscribed_jira_item_service import SubscribedJIRAItemService
+from .trello_subscription_service import TrelloSubscriptionService
+from .jira_subscription_service import JIRASubscriptionService
 from .repo_service import RepoService
 from .github_member_service import GitHubMemberService
 from .trello_member_service import TrelloMemberService
@@ -36,7 +40,5 @@ def api_services():
     """Returns a list of services which implement the APIService interface."""
     return [
         GitHubMemberService(),
-        TrelloMemberService(),
-        RepoService(),
-        BoardService()
+        RepoService()
     ]

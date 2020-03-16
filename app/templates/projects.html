@@ -1,0 +1,74 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "jira_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Projects{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>{{ jira_base_url }}'s Open Projects</h1>
+  </div>
+
+  <table class="table table-hover boards">
+    <thead>
+      <tr>
+        <th>JIRA Key</th>
+        <th>Name</th>
+        <th>Issue Types</th>
+        <th>Project Parent Issues</th>
+      </tr>
+    </thead>
+
+    {% for project in projects %}
+      <tr>
+        <td>{{ project.key }}</td>
+        <td>
+          <a href="{{ jira_base_url + '/browse/' + project.key }}">
+            {{ project.name }}
+          </a>
+        </td>
+        <td>
+          <a href="{{ url_for('jira_issue_type.index', key=project.key) }}">
+            <b>({{ project.issue_types.count() }})</b> issue types
+          </a>
+        </td>
+        <td>
+          <a href="{{ url_for('jira_issue.index', key=project.key) }}">
+            <b>({{ project.parent_issues.count() }})</b> parent issues
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div class="float-container">
+    <div class="float-left">
+      <div>
+        {{ wtf.quick_form(form) }}
+      </div>
+    </div>
+
+    <div class="float-right">
+      {% if pagination %}
+        <div class="pagination">
+          {{ macros.pagination_widget(pagination, '.index') }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}

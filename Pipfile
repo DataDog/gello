@@ -47,6 +47,7 @@ coveralls = "*"
 python-dotenv = "*"
 flask-dotenv = "*"
 jira = "*"
+func-timeout = "*"
 
 [dev-packages]
 mock = "*"

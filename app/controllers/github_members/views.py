@@ -26,15 +26,15 @@ from ...services import GitHubMemberService
 github_member_service = GitHubMemberService()
 
 
-@github_member.route('/', methods=['GET', 'POST'])
+@github_member.route('/<string:base>', methods=['GET', 'POST'])
 @login_required
-def index():
+def index(base):
     """Updates the github_members saved on POST request."""
     form = RefreshForm()
     if form.validate_on_submit():
         github_member_service.fetch()
         flash('The organization\'s GitHub members have been updated.')
-        return redirect(url_for('.index'))
+        return redirect(url_for('.index', base=base))
 
     page = request.args.get('page', 1, type=int)
     query = GitHubMember.query
@@ -50,5 +50,6 @@ def index():
         members=github_members,
         form=form,
         pagination=pagination,
-        organization_name=environ.get('GITHUB_ORG_LOGIN')
+        organization_name=environ.get('GITHUB_ORG_LOGIN'),
+        base=base
     )

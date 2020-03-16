@@ -19,7 +19,7 @@ from datetime import datetime
 from .. import db
 from . import Subscription
 from . import project_issue_types_helper
-from . import SubscribedJIRAProject
+from . import project_jira_members_helper
 
 
 class Project(db.Model):
@@ -28,14 +28,11 @@ class Project(db.Model):
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text(), unique=True)
-    url = db.Column(db.Text(), unique=True)
     key = db.Column(db.String(64), unique=True)
     description = db.Column(db.Text(), unique=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-# TODO?: associations including subscription, issues, and issue types
-
-    # # Associations
+    # Associations
 
     parent_issues = db.relationship(
         'JIRAParentIssue',
@@ -45,8 +42,16 @@ class Project(db.Model):
     issue_types = db.relationship(
         'JIRAIssueType',
         secondary=project_issue_types_helper,
-        lazy=True,
-        backref=db.backref('projects', lazy=True)
+        lazy='dynamic',
+        backref=db.backref('projects', lazy=True),
+        cascade='all'
+    )
+    allowed_members = db.relationship(
+        'JIRAMember',
+        secondary=project_jira_members_helper,
+        lazy='dynamic',
+        backref=db.backref('projects', lazy=True),
+        cascade='all'
     )
     subscription = db.relationship(
         'Subscription',

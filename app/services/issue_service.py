@@ -20,17 +20,17 @@ from .. import db
 from ..models import Issue
 
 
-class IssueService(CRUDService):        # TODO?: make it so trello is optional
+class IssueService(CRUDService):
     """CRUD persistent storage service.
 
     A class with the single responsibility of creating/mutating Issue
     data.
     """
 
-    def create(self, name, url, github_issue_id, repo_id, trello_board_id,
-               trello_card_id, trello_card_url, trello_list_id,
-               jira_issue_url, jira_issue_id, jira_project_key,
-               jira_parent_issue_id):
+    def create(self, name, url, github_issue_id, repo_id, trello_board_id=None,
+               trello_card_id=None, trello_card_url=None, trello_list_id=None,
+               jira_issue_key=None, jira_project_key=None,
+               jira_parent_issue_key=None):
         """Creates and persists a new issue record to the database.
 
         Args:
@@ -47,13 +47,11 @@ class IssueService(CRUDService):        # TODO?: make it so trello is optional
                 to the issue.
             trello_list_id (str): The id for the list the card corresponding
                 to the issue was created on.
-            jira_issue_url (str): The url for the created jira issue
-                corresponding to the github issue
-            jira_issue_id (str): The id (not key) of the created jira issue
+            jira_issue_key (str): The key of the created jira issue
                 corresponding to the github issue
             jira_project_key (str): The key of the project the jira issue
                 corresponding to the github issue was created under
-            jira_parent_issue_id (str): The id (not key) of the jira issue the
+            jira_parent_issue_key (str): The key of the jira issue the
                 sub-issue corresponding to the github issue was created under
                 (if a jira sub-issue was indeed created)
 
@@ -70,10 +68,9 @@ class IssueService(CRUDService):        # TODO?: make it so trello is optional
             trello_card_id=trello_card_id,
             trello_card_url=trello_card_url,
             trello_list_id=trello_list_id,
-            jira_issue_url=jira_issue_url,
-            jira_issue_id=jira_issue_id,
+            jira_issue_key=jira_issue_key,
             jira_project_key=jira_project_key,
-            jira_parent_issue_id=jira_parent_issue_id
+            jira_parent_issue_key=jira_parent_issue_key
         )
         db.session.add(issue)
 
@@ -93,7 +90,7 @@ class IssueService(CRUDService):        # TODO?: make it so trello is optional
 
         for iss in Issue.query.filter_by(
             github_issue_id=github_issue_id
-        ).first():
+        ):
             iss.name = name
         db.session.commit()
 

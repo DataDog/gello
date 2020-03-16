@@ -8,7 +8,11 @@
      Copyright 2018 Datadog, Inc.
 -->
 
-{% extends "base.html" %}
+{% if base == 'trello' %}
+  {% extends "trello_base.html" %}
+{% elif base == 'jira' %}
+  {% extends "jira_base.html" %}
+{% endif %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
@@ -45,7 +49,7 @@
     <div class="float-right">
       {% if pagination %}
       <div class="pagination">
-        {{ macros.pagination_widget(pagination, '.index') }}
+        {{ macros.pagination_widget(pagination, '.index', base=base) }}
       </div>
       {% endif %}
     </div>

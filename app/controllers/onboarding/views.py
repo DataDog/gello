@@ -16,13 +16,15 @@ onboarding-related routes and view-specific logic.
 """
 
 import textwrap
+from os import environ
 
 from flask import redirect, request, url_for, flash, render_template
 from flask_login import login_required
 from . import onboarding
 from .forms import OnboardingForm
 from ...services import ConfigValueService, GitHubService, TrelloService, \
-    api_services
+    api_services, TrelloMemberService, BoardService, ProjectService, \
+    JIRAService
 
 github_service = GitHubService()
 trello_service = TrelloService()
@@ -36,25 +38,51 @@ def index():
 
     if onboarding_form.validate_on_submit():
         name = onboarding_form.get_trello_name()
-        config_value_service.create(key='TRELLO_ORG_NAME', value=name)
+        if name:
+            config_value_service.create(key='TRELLO_ORG_NAME', value=name)
 
         login = onboarding_form.get_github_login()
         config_value_service.create(key='GITHUB_ORG_LOGIN', value=login)
 
-        # Fetch data for the GitHub and Trello organizations
+        # Fetch data for the GitHub organization
         for api_service in api_services():
             api_service.fetch()
+
+        if name:
+            TrelloMemberService().fetch()
+            BoardService().fetch()
+
+        jira_address = environ.get('JIRA_SERVER_ADDRESS')
+
+        if jira_address:
+            p_serv = ProjectService()
+            if p_serv.jira_service.client:
+                p_serv.fetch()
+            else:
+                flash(
+                    textwrap.dedent(
+                        f"""
+                        Could not fetch JIRA information:
+                        {p_serv.jira_service.err}
+                        """
+                    )
+                )
+                return redirect(url_for('.index'))
 
         flash(
             textwrap.dedent(
                 f"""
-                Fetched data for Trello organization {name} and GitHub
-                organization {login}
-                """
+                Fetched data for GitHub organization {login}
+                """ +
+                (', Trello organization ' + name if name else '') +
+                (', JIRA server ' + jira_address if jira_address else '')
             )
         )
+        if (jira_address):
+            return redirect(url_for('jira_subscription.index'))
+        else:
+            return redirect(url_for('main.index'))
 
-        return redirect(url_for('.index'))
     elif request.method == 'POST':
         flash(
             textwrap.dedent(

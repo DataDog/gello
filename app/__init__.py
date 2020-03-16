@@ -115,6 +115,24 @@ def create_app(config_name):
     from .controllers.subscriptions import subscription as subscription_blueprint
     app.register_blueprint(subscription_blueprint, url_prefix='/subscriptions')
 
+    from .controllers.jira_subscriptions import jira_subscription as jira_subscription_blueprint
+    app.register_blueprint(jira_subscription_blueprint, url_prefix='/jira/subscriptions')
+
+    from .controllers.subscribed_jira_items import subscribed_item as subscribed_item_blueprint
+    app.register_blueprint(subscribed_item_blueprint, url_prefix='/jira/subscriptions/items')
+
+    from .controllers.jira_members import jira_member as jira_member_blueprint
+    app.register_blueprint(jira_member_blueprint, url_prefix='/jira/members')
+
+    from .controllers.projects import project as project_blueprint
+    app.register_blueprint(project_blueprint, url_prefix='/jira/projects')
+
+    from .controllers.jira_issues import jira_issue as jira_issue_blueprint
+    app.register_blueprint(jira_issue_blueprint, url_prefix='/jira/issues')
+
+    from .controllers.jira_issue_types import jira_issue_type as jira_issue_type_blueprint
+    app.register_blueprint(jira_issue_type_blueprint, url_prefix='/jira/issue_types')
+
     return app
 
 
@@ -144,8 +162,9 @@ def before_request():
            request.endpoint.startswith('auth'):
             return
 
-        if ('TRELLO_ORG_NAME' not in os.environ or 'GITHUB_ORG_LOGIN' not in
-           os.environ) and not request.endpoint.startswith('onboarding'):
+        if (('TRELLO_ORG_NAME' not in os.environ and 'JIRA_SERVER_ADDRESS' not in os.environ) \
+            or 'GITHUB_ORG_LOGIN' not in os.environ) and \
+           not request.endpoint.startswith('onboarding'):
             return redirect(url_for('onboarding.index'))
         elif ('TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in
               os.environ) and request.endpoint.startswith('onboarding'):

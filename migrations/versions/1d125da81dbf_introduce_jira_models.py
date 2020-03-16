@@ -54,7 +54,6 @@ def upgrade():
     op.create_table('jira_issue_types',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('name', sa.Text(), nullable=True),
-                    sa.Column('url', sa.Text(), nullable=True),
                     sa.Column('description', sa.Text(), nullable=True),
                     sa.Column('issue_type_id', sa.String(
                         length=64), nullable=True),
@@ -62,48 +61,43 @@ def upgrade():
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('issue_type_id'),
-                    sa.UniqueConstraint('name'),
-                    sa.UniqueConstraint('url')
                     )
     op.create_index(op.f('ix_jira_issue_types_timestamp'),
                     'jira_issue_types', ['timestamp'], unique=False)
     op.create_table('jira_members',
                     sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('display_name', sa.Text(), nullable=True),
                     sa.Column('email', sa.String(length=100), nullable=True),
-                    sa.Column('jira_account_id', sa.String(
+                    sa.Column('name', sa.String(length=100), nullable=True),
+                    sa.Column('jira_member_id', sa.String(
                         length=64), nullable=True),
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
                     sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('email'),
-                    sa.UniqueConstraint('jira_account_id')
+                    sa.UniqueConstraint('jira_member_id')
                     )
     op.create_index(op.f('ix_jira_members_timestamp'),
                     'jira_members', ['timestamp'], unique=False)
     op.create_table('projects',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('name', sa.Text(), nullable=True),
-                    sa.Column('url', sa.Text(), nullable=True),
                     sa.Column('key', sa.String(length=64), nullable=True),
                     sa.Column('description', sa.Text(), nullable=True),
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('key'),
                     sa.UniqueConstraint('name'),
-                    sa.UniqueConstraint('url')
                     )
     op.create_index(op.f('ix_projects_timestamp'),
                     'projects', ['timestamp'], unique=False)
     op.create_table('jira_parent_issues',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('summary', sa.String(length=64), nullable=True),
-                    sa.Column('jira_issue_id', sa.String(
+                    sa.Column('jira_issue_key', sa.String(
                         length=64), nullable=True),
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
-                    sa.Column('project_id', sa.Integer(), nullable=True),
-                    sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ),
+                    sa.Column('project_key', sa.String(length=64), nullable=True),
+                    sa.ForeignKeyConstraint(['project_key'], ['projects.key'], ),
                     sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('jira_issue_id')
+                    sa.UniqueConstraint('jira_issue_key')
                     )
     op.create_index(op.f('ix_jira_parent_issues_timestamp'),
                     'jira_parent_issues', ['timestamp'], unique=False)
@@ -115,6 +109,14 @@ def upgrade():
                     sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ),
                     sa.PrimaryKeyConstraint('project_id', 'issue_type_id')
                     )
+    op.create_table('project_jira_members_helper',
+                    sa.Column('project_id', sa.Integer(), nullable=False),
+                    sa.Column('jira_member_id', sa.Integer(), nullable=False),
+                    sa.ForeignKeyConstraint(
+                        ['jira_member_id'], ['jira_members.id'], ),
+                    sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ),
+                    sa.PrimaryKeyConstraint('project_id', 'jira_member_id')
+                    )
     op.create_foreign_key('subscriptions_project_key_fkey', 'subscriptions', 'projects', [
                           'project_key'], ['key'])
     op.create_table('subscribed_jira_issues',
@@ -122,99 +124,91 @@ def upgrade():
                               sa.String(length=64), nullable=False),
                     sa.Column('subscription_repo_id',
                               sa.Integer(), nullable=False),
-                    sa.Column('jira_issue_id', sa.String(
+                    sa.Column('jira_issue_key', sa.String(
                         length=64), nullable=False),
                     sa.Column('jira_member_id', sa.String(
                         length=64), nullable=True),
+                    sa.Column('issue_type_name', sa.String(
+                        length=32), nullable=False),
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
                     sa.ForeignKeyConstraint(
-                        ['jira_issue_id'], ['jira_parent_issues.jira_issue_id'], ),
+                        ['jira_issue_key'], ['jira_parent_issues.jira_issue_key'], ),
                     sa.ForeignKeyConstraint(['subscription_project_key', 'subscription_repo_id'], [
                         'subscriptions.project_key', 'subscriptions.repo_id'], ),
                     sa.PrimaryKeyConstraint(
-                        'subscription_project_key', 'subscription_repo_id', 'jira_issue_id')
+                        'subscription_project_key', 'subscription_repo_id', 'jira_issue_key')
                     )
     op.create_index(op.f('ix_subscribed_jira_issues_timestamp'),
                     'subscribed_jira_issues', ['timestamp'], unique=False)
     op.create_table('subscribed_jira_projects',
-                    sa.Column('subscription_repo_id',
-                              sa.Integer(), nullable=False),
                     sa.Column('subscription_project_key',
                               sa.String(length=64), nullable=False),
+                    sa.Column('subscription_repo_id',
+                              sa.Integer(), nullable=False),
                     sa.Column('jira_member_id', sa.String(
                         length=64), nullable=True),
                     sa.Column('issue_type_id', sa.String(64), nullable=True),
                     sa.Column('timestamp', sa.DateTime(), nullable=True),
                     sa.ForeignKeyConstraint(['subscription_project_key', 'subscription_repo_id'], [
                         'subscriptions.project_key', 'subscriptions.repo_id'], ),
-                    sa.PrimaryKeyConstraint('subscription_repo_id',
-                                            'subscription_project_key'),
+                    sa.PrimaryKeyConstraint('subscription_project_key',
+                                            'subscription_repo_id'),
                     sa.ForeignKeyConstraint(
                         ['issue_type_id'], ['jira_issue_types.issue_type_id'], )
                     )
     op.create_index(op.f('ix_subscribed_jira_projects_timestamp'),
                     'subscribed_jira_projects', ['timestamp'], unique=False)
-    op.add_column('issues', sa.Column('jira_issue_id',
+    op.add_column('issues', sa.Column('jira_issue_key',
                                       sa.String(length=64), nullable=True))
-    op.add_column('issues', sa.Column(
-        'jira_issue_url', sa.Text(), nullable=True))
-    op.add_column('issues', sa.Column('jira_parent_issue_id',
+    op.add_column('issues', sa.Column('jira_parent_issue_key',
                                       sa.String(length=64), nullable=True))
     op.add_column('issues', sa.Column('jira_project_key',
                                       sa.String(length=64), nullable=True))
     op.drop_constraint('uq_issues_list', 'issues', type_='unique')
     op.create_unique_constraint('uq_issues_list', 'issues', [
-                                'trello_list_id', 'jira_project_key', 'jira_parent_issue_id', 'github_issue_id'])
-    op.create_unique_constraint('issues_jira_issue_url_key', 'issues', ['jira_issue_url'])
-    op.create_unique_constraint('issues_jira_issue_id_key', 'issues', ['jira_issue_id'])
-    op.create_foreign_key('issues_jira_parent_issue_id_fkey', 'issues', 'jira_parent_issues', [
-                          'jira_parent_issue_id'], ['jira_issue_id'])
+                                'trello_list_id', 'jira_project_key', 'jira_parent_issue_key', 'github_issue_id'])
+    op.create_unique_constraint('issues_jira_issue_key_key', 'issues', ['jira_issue_key'])
+    op.create_foreign_key('issues_jira_parent_issue_key_fkey', 'issues', 'jira_parent_issues', [
+                          'jira_parent_issue_key'], ['jira_issue_key'])
     op.create_foreign_key('issues_jira_project_key_fkey', 'issues', 'projects', [
                           'jira_project_key'], ['key'])
     op.add_column('pull_requests', sa.Column(
-        'jira_issue_id', sa.String(length=64), nullable=True))
+        'jira_issue_key', sa.String(length=64), nullable=True))
     op.add_column('pull_requests', sa.Column(
-        'jira_issue_url', sa.Text(), nullable=True))
-    op.add_column('pull_requests', sa.Column(
-        'jira_parent_issue_id', sa.String(length=64), nullable=True))
+        'jira_parent_issue_key', sa.String(length=64), nullable=True))
     op.add_column('pull_requests', sa.Column(
         'jira_project_key', sa.String(length=64), nullable=True))
     op.drop_constraint('uq_pull_requests_list',
                        'pull_requests', type_='unique')
     op.create_unique_constraint('uq_pull_requests_list', 'pull_requests', [
-                                'trello_list_id', 'jira_project_key', 'jira_parent_issue_id', 'github_pull_request_id'])
-    op.create_unique_constraint('pull_requests_jira_issue_url_key', 'pull_requests', ['jira_issue_url'])
-    op.create_unique_constraint('pull_requests_jira_issue_id_key', 'pull_requests', ['jira_issue_id'])
-    op.create_foreign_key('pull_requests_jira_parent_issue_id_fkey', 'pull_requests', 'jira_parent_issues', [
-                          'jira_parent_issue_id'], ['jira_issue_id'])
+                                'trello_list_id', 'jira_project_key', 'jira_parent_issue_key', 'github_pull_request_id'])
+    op.create_unique_constraint('pull_requests_jira_issue_key_key', 'pull_requests', ['jira_issue_key'])
+    op.create_foreign_key('pull_requests_jira_parent_issue_key_fkey', 'pull_requests', 'jira_parent_issues', [
+                          'jira_parent_issue_key'], ['jira_issue_key'])
     op.create_foreign_key('pull_requests_jira_project_key_fkey', 'pull_requests', 'projects', [
                           'jira_project_key'], ['key'])
 
 
 def downgrade():
     op.drop_constraint('pull_requests_jira_project_key_fkey', 'pull_requests', type_='foreignkey')
-    op.drop_constraint('pull_requests_jira_parent_issue_id_fkey', 'pull_requests', type_='foreignkey')
-    op.drop_constraint('pull_requests_jira_issue_id_key', 'pull_requests', type_='unique')
-    op.drop_constraint('pull_requests_jira_issue_url_key', 'pull_requests', type_='unique')
+    op.drop_constraint('pull_requests_jira_parent_issue_key_fkey', 'pull_requests', type_='foreignkey')
+    op.drop_constraint('pull_requests_jira_issue_key_key', 'pull_requests', type_='unique')
     op.drop_constraint('uq_pull_requests_list',
                        'pull_requests', type_='unique')
     op.create_unique_constraint('uq_pull_requests_list', 'pull_requests', [
                                 'trello_list_id', 'github_pull_request_id'])
     op.drop_column('pull_requests', 'jira_project_key')
-    op.drop_column('pull_requests', 'jira_parent_issue_id')
-    op.drop_column('pull_requests', 'jira_issue_url')
-    op.drop_column('pull_requests', 'jira_issue_id')
+    op.drop_column('pull_requests', 'jira_parent_issue_key')
+    op.drop_column('pull_requests', 'jira_issue_key')
     op.drop_constraint('issues_jira_project_key_fkey', 'issues', type_='foreignkey')
-    op.drop_constraint('issues_jira_parent_issue_id_fkey', 'issues', type_='foreignkey')
-    op.drop_constraint('issues_jira_issue_id_key', 'issues', type_='unique')
-    op.drop_constraint('issues_jira_issue_url_key', 'issues', type_='unique')
+    op.drop_constraint('issues_jira_parent_issue_key_fkey', 'issues', type_='foreignkey')
+    op.drop_constraint('issues_jira_issue_key_key', 'issues', type_='unique')
     op.drop_constraint('uq_issues_list', 'issues', type_='unique')
     op.create_unique_constraint('uq_issues_list', 'issues', [
                                 'trello_list_id', 'github_issue_id'])
     op.drop_column('issues', 'jira_project_key')
-    op.drop_column('issues', 'jira_parent_issue_id')
-    op.drop_column('issues', 'jira_issue_url')
-    op.drop_column('issues', 'jira_issue_id')
+    op.drop_column('issues', 'jira_parent_issue_key')
+    op.drop_column('issues', 'jira_issue_key')
     op.drop_index(op.f('ix_subscribed_jira_projects_timestamp'),
                   table_name='subscribed_jira_projects')
     op.drop_table('subscribed_jira_projects')
@@ -222,6 +216,7 @@ def downgrade():
                   table_name='subscribed_jira_issues')
     op.drop_table('subscribed_jira_issues')
     op.drop_constraint('subscriptions_project_key_fkey', 'subscriptions', type_='foreignkey')
+    op.drop_table('project_jira_members_helper')
     op.drop_table('project_issue_types_helper')
     op.drop_index(op.f('ix_jira_parent_issues_timestamp'),
                   table_name='jira_parent_issues')

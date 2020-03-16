@@ -17,7 +17,6 @@ JIRA issue types model.
 
 from datetime import datetime
 from .. import db
-# import project
 
 
 class JIRAIssueType(db.Model):
@@ -25,8 +24,7 @@ class JIRAIssueType(db.Model):
 
     # Attributes
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text(), unique=True)
-    url = db.Column(db.Text(), unique=True)
+    name = db.Column(db.Text(), unique=False)
     description = db.Column(db.Text(), unique=False)
     issue_type_id = db.Column(db.String(64), unique=True)
     subtask = db.Column(db.Boolean())

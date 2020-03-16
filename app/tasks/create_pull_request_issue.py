@@ -39,13 +39,16 @@ class CreatePullRequestIssue(CreateJIRAIssue):
         """
         return textwrap.dedent(
             f"""
-            # GitHub Pull Request Opened By Community Member
-            ---
-            - Pull Request link: [{self._title}]({self._url})
-            - Opened by: [{self._user}]({self._user_url})
-            ---
-            ### Pull Request Body
-            ---
+            h1. GitHub Pull Request Opened By Community Member
+            ----
+
+            * Pull Request link: [{self._title}|{self._url}]
+            * Opened by: [{self._user}|{self._user_url}]
+            ----
+
+            h3. Pull Request Body
+            ----
+
             """
         ) + self._body
 
@@ -65,8 +68,8 @@ class CreatePullRequestIssue(CreateJIRAIssue):
             url=self._url,
             github_pull_request_id=self._id,
             repo_id=self._repo_id,
-            jira_project_key=issue.jira_project_key,
-            jira_issue_id=issue.jira_issue_id,
-            jira_issue_url=issue.jira_issue_url,
-            jira_parent_issue_id=issue.jira_parent_issue_id
+            jira_project_key=issue.fields.project.key,
+            jira_issue_key=issue.key,
+            jira_parent_issue_key=issue.fields.parent.key
+            if hasattr(issue.fields, 'parent') else None
         )

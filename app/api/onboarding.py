@@ -27,11 +27,17 @@ github_service = GitHubService()
 @api.route('/trello_names/')
 @login_required
 def get_trello_names():
-    trello_organizations = trello_service.organizations()
+    if trello_service.init_if_needed():
+        trello_organizations = trello_service.organizations()
 
+        return jsonify(
+            {
+                'names': [{'label': o.name} for o in trello_organizations]
+            }
+        )
     return jsonify(
         {
-            'names': [{'label': o.name} for o in trello_organizations]
+            'names': []
         }
     )
 

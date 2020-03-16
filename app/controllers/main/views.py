@@ -17,10 +17,10 @@ repos-related routes and view-specific logic.
 
 import json
 
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from . import main
 from ...tasks import GitHubReceiver
-from ...models import Subscription
+from ...models import Subscription, ConfigValue
 from app.controllers.subscriptions.forms import NewSubscriptionForm, \
     UpdateForm, DeleteForm
 
@@ -33,28 +33,31 @@ def index():
         GitHubReceiver.delay(payload=json.loads(request.get_data()))
         return "GitHub event received."
 
-    create_form = NewSubscriptionForm()
-    page = request.args.get('page', 1, type=int)
-    query = Subscription.query
-    pagination = query.order_by(Subscription.timestamp.desc()).paginate(
-        page, per_page=10,
-        error_out=False
-    )
-    subscriptions = pagination.items
-    subscription_forms_tuples = [
-        (
-            s,
-            UpdateForm(
-                issue_autocard=s.issue_autocard,
-                pull_request_autocard=s.pull_request_autocard
-            ),
-            DeleteForm()
-        ) for s in subscriptions
-    ]
+    if ConfigValue.query.get('TRELLO_ORG_NAME'):
+        create_form = NewSubscriptionForm()
+        page = request.args.get('page', 1, type=int)
+        query = Subscription.query.filter(Subscription.board_id.isnot(None))
+        pagination = query.order_by(Subscription.timestamp.desc()).paginate(
+            page, per_page=10,
+            error_out=False
+        )
+        subscriptions = pagination.items
+        subscription_forms_tuples = [
+            (
+                s,
+                UpdateForm(
+                    issue_autocard=s.issue_autocard,
+                    pull_request_autocard=s.pull_request_autocard
+                ),
+                DeleteForm()
+            ) for s in subscriptions
+        ]
 
-    return render_template(
-        'index.html',
-        create_form=create_form,
-        subscription_forms_tuples=subscription_forms_tuples,
-        pagination=pagination
-    )
+        return render_template(
+            'index.html',
+            create_form=create_form,
+            subscription_forms_tuples=subscription_forms_tuples,
+            pagination=pagination
+        )
+    else:
+        return redirect(url_for('onboarding.index'))

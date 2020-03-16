@@ -8,7 +8,7 @@
      Copyright 2018 Datadog, Inc.
 -->
 
-{% extends "base.html" %}
+{% extends "trello_base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 {% import "partials/_repos.html" as _repos %}
@@ -18,7 +18,7 @@
 {% block page_content %}
   {% if current_user.is_authenticated %}
     <div class="page-header">
-      <h1>Subscriptions</h1>
+      <h1>Trello Subscriptions</h1>
     </div>
 
     <table class="table table-hover subscriptions">
@@ -80,7 +80,7 @@
     <div class="page-header float-container">
       <div class="float-left">
         <h3>
-          <b>Create New Subscription</b>
+          <b>Create New Trello Subscription</b>
         </h3>
       </div>
 

@@ -28,10 +28,19 @@ class TrelloAPIClient(APIClient):
     """
 
     def __init__(self):
-        self._client = TrelloClient(
-            api_key=environ.get('TRELLO_API_KEY'),
-            api_secret=environ.get('TRELLO_API_TOKEN')
-        )
+        self.initialize()
+
+    def initialize(self):
+        api_key = environ.get('TRELLO_API_KEY')
+        api_secret = environ.get('TRELLO_API_TOKEN')
+
+        if not (api_key and api_secret):
+            self._client = None
+        else:
+            self._client = TrelloClient(
+                api_key=api_key,
+                api_secret=api_secret
+            )
 
     def client(self):
         return self._client

@@ -30,25 +30,28 @@ board_service = BoardService()
 @login_required
 def index():
     """Updates the boards and corresponding lists saved on POST request."""
-    form = RefreshForm()
-    if form.validate_on_submit():
-        board_service.fetch()
-        flash('The boards have been updated.')
+    if board_service.trello_service.init_if_needed():
+        form = RefreshForm()
+        if form.validate_on_submit():
+            board_service.fetch()
+            flash('The boards have been updated.')
 
-        return redirect(url_for('.index'))
+            return redirect(url_for('.index'))
 
-    page = request.args.get('page', 1, type=int)
-    query = Board.query
-    pagination = query.order_by(Board.timestamp.desc()).paginate(
-        page, per_page=10,
-        error_out=False
-    )
-    boards = pagination.items
+        page = request.args.get('page', 1, type=int)
+        query = Board.query
+        pagination = query.order_by(Board.timestamp.desc()).paginate(
+            page, per_page=10,
+            error_out=False
+        )
+        boards = pagination.items
 
-    return render_template(
-        'boards.html',
-        boards=boards,
-        form=form,
-        pagination=pagination,
-        organization_name=environ.get('GITHUB_ORG_LOGIN')
-    )
+        return render_template(
+            'boards.html',
+            boards=boards,
+            form=form,
+            pagination=pagination,
+            organization_name=environ.get('GITHUB_ORG_LOGIN')
+        )
+    else:
+        return redirect(url_for('onboarding.index'))

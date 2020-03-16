@@ -11,7 +11,7 @@
 #
 
 from app import db
-from app.services import SubscriptionService
+from app.services import TrelloSubscriptionService
 from app.models import Subscription
 from tests.base_test_case import BaseTestCase
 from tests.utils import create_board, create_repo, default_board_id, \
@@ -24,7 +24,7 @@ class SubscriptionServiceTestCase(BaseTestCase):
     def setUp(self):
         """Sets up testing context."""
         super().setUp()
-        self.subscription_service = SubscriptionService()
+        self.subscription_service = TrelloSubscriptionService()
         create_board()
         create_repo()
         db.session.commit()
@@ -49,9 +49,12 @@ class SubscriptionServiceTestCase(BaseTestCase):
         """Test that a subscription is successfully updated."""
         self.test_create()
 
-        primary_key = [default_board_id, default_repo_id]
+        subscription = Subscription.query.filter_by(board_id=default_board_id,
+                                                    repo_id=default_repo_id
+                                                    ).first()
 
-        subscription = Subscription.query.get(primary_key)
+        primary_key = [subscription.id, default_repo_id]
+
         self.assertTrue(subscription.issue_autocard)
 
         self.subscription_service.update(

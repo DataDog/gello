@@ -15,8 +15,10 @@
 Creates a JIRA issue on a specific project board
 """
 
+from jira import JIRAError
+
 from . import GitHubBaseTask
-from ..services import JiraService
+from ..services import JIRAService
 
 
 class CreateJIRAIssue(GitHubBaseTask):
@@ -26,7 +28,7 @@ class CreateJIRAIssue(GitHubBaseTask):
     def __init__(self):
         """Initializes a task to create a JIRA issue"""
 
-        self._jira_service = JiraService()
+        self._jira_service = JIRAService()
         pass
 
     def run(self, project_key, issue_type, payload, parent_issue=None,
@@ -47,26 +49,28 @@ class CreateJIRAIssue(GitHubBaseTask):
             None
         """
 
-        # TODO?
-
         self.payload = payload
         self.set_scope_data()
         self._repo_id = self.payload['repository']['id']
 
-        # Create a JIRA issue on a given project
-        issue = self.jira_service().create_jira_issue(
-            project_key=project_key,
-            issue_type=issue_type,
-            summary=self._title,
-            description=self._issue_body(),
-            parent_issue=parent_issue,
-            assignee_id=assignee_id,
-            label_name=label_name
-        )
-        issue.attach(self._title, url=self._url)
+        try:
+            # Create a JIRA issue on a given project
+            issue = self.jira_service().create_issue(
+                project_key=project_key,
+                issue_type=issue_type,
+                summary=self._title,
+                description=self._issue_body(),
+                parent_issue=parent_issue,
+                assignee_id=assignee_id,
+                label_name=label_name
+            )
 
-        # Persist the new JIRA issue to the database
-        self._persist_issue_to_database(issue=issue)
+            # Persist the new JIRA issue to the database
+            self._persist_issue_to_database(issue=issue)
+
+        except JIRAError as err:
+            print(err)
+            return err
 
     def jira_service(self):
         """Returns the JiraService instance.

@@ -34,13 +34,12 @@ class PullRequest(db.Model):
     trello_list_id = db.Column(
         db.String(64), db.ForeignKey('lists.trello_list_id'), unique=False
     )
-    jira_issue_url = db.Column(db.Text(), unique=True)
-    jira_issue_id = db.Column(db.String(64), unique=True)
+    jira_issue_key = db.Column(db.String(64), unique=True)
     jira_project_key = db.Column(db.String(64), db.ForeignKey('projects.key'),
                                  unique=False)
-    jira_parent_issue_id = db.Column(
+    jira_parent_issue_key = db.Column(
         db.String(64),
-        db.ForeignKey('jira_parent_issues.jira_issue_id'),
+        db.ForeignKey('jira_parent_issues.jira_issue_key'),
         unique=False
     )
 
@@ -48,6 +47,6 @@ class PullRequest(db.Model):
     repo_id = db.Column(db.Integer, db.ForeignKey('repos.github_repo_id'))
 
     __table_args__ = (db.UniqueConstraint(
-        'trello_list_id', 'jira_project_key', 'jira_parent_issue_id',
+        'trello_list_id', 'jira_project_key', 'jira_parent_issue_key',
         'github_pull_request_id', name='uq_pull_requests_list'),
     )

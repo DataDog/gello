@@ -150,6 +150,8 @@ class NewSubscriptionForm(FlaskForm):
             )
             return False
 
+        self._ids_list = ids_list
+
         # All custom validations passed
         return True
 

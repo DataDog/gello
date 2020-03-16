@@ -15,10 +15,10 @@
 Service-helpers for interacting with the Jira API.
 """
 
-from..api_clients import JiraAPIClient
+from ..api_clients import JIRAAPIClient
 
 
-class JiraService(object):
+class JIRAService(object):
     """
     A class providing an interface with the Jira API client.
     """
@@ -27,46 +27,62 @@ class JiraService(object):
         """
         Initializes a new JiraService object
         """
-        self.client = JiraAPIClient().client()
+        self._client_wrapper = JIRAAPIClient()
+        self.client = self._client_wrapper.client()
+        self.err = self._client_wrapper.err
+
+    def _init_if_needed(self):
+        if not self.client:
+            self._client_wrapper.initialize()
+            self.client = self._client_wrapper.client()
+            self.err = self._client_wrapper.err
+        return bool(self.client)
 
     def projects(self):
         """
         Returns a list of tuples (project key, project name)
         """
-        return self.client.projects()
+        if self._init_if_needed():
+            return self.client.projects()
+
+    def members(self):
+        """
+        Returns a list of members of the organization
+        """
+        if self._init_if_needed():
+            return self.client.search_users('', 0, False)
 
     def get_issue_types(self, project_key):
         """
         Returns a list of issue types for a given project key
         """
-        return self.client.project(project_key).issueTypes
+        if self._init_if_needed():
+            return self.client.project(project_key).issueTypes
 
     def get_project_issues(self, project_key):
         """
         Returns a list of issue objects for a given project
         """
+        if self._init_if_needed():
+            return self.client.search_issues(
+                'project = "' + project_key +
+                '" AND issuetype not in subtaskIssueTypes() AND' +
+                ' resolution = Unresolved'
+            )
 
-        return self.client.search_issues('project = "' + project_key + '" AND issuetype not in subtaskIssueTypes()')
-
-    # TODO?
-
-    # def get_issue_fields(self, issue_id):
-    #     """
-    #     Returns a list of possible fields for a given issue type
-    #     """
-    #     pass
-
-    # def get_project_statuses(self, project_key):
-    #     """
-    #     Returns a list of strings representing status ids for a given project
-    #     """
-    #     pass
+    def get_project_members(self, project_key):
+        """
+        Returns a list of assignable jira member objects for a given project
+        """
+        if self._init_if_needed():
+            return self.client.search_assignable_users_for_projects(
+                '', project_key)
 
     def create_issue(self, project_key, summary, description, issue_type=None,
                      parent_issue=None, assignee_id=None, label_name=None):
         """
-        Creates a new issue of type issue_id under the project with project_key
-        populated with the provided fields
+        Creates a new issue of type issue_type under the project with 
+        project_key populated with the provided fields
 
         Args:
             project_key (str): The key of the project to raise an issue on
@@ -84,13 +100,14 @@ class JiraService(object):
         Returns:
             jira.issue: object representing a JIRA issue
         """
-
-        return self.client.create_issue(
-            summary=summary,
-            parent=(None, {"key": parent_issue})[bool(parent_issue)],
-            issuetype=({"name": "Sub-task"}, {"id": issue_type})[bool(issue_type)],
-            project={"key": project_key},
-            description=description,
-            assignee=(None, {"accountId":assignee_id})[bool(assignee_id)],
-            labels=(None, [label_name])[bool(label_name)]
-        )
+        if self._init_if_needed():
+            return self.client.create_issue(
+                summary=summary,
+                parent=(None, {"key": parent_issue})[bool(parent_issue)],
+                issuetype=({"id": issue_type},
+                           {"name": issue_type})[bool(parent_issue)],
+                project={"key": project_key},
+                description=description,
+                assignee=(None, {"accountId": assignee_id})[bool(assignee_id)],
+                labels=(None, [label_name])[bool(label_name)]
+            )

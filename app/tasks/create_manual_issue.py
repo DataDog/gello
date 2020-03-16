@@ -40,13 +40,16 @@ class CreateManualIssue(CreateJIRAIssue):
         """
         return textwrap.dedent(
             f"""
-            # GitHub JIRA Issue Opened By Organization Member
-            ---
-            - Link: [{self._title}]({self._url})
-            - Opened by: [{self._user}]({self._user_url})
-            ---
-            ### {self.get_scope().capitalize()} Body
-            ---
+            h1. GitHub JIRA Issue Opened By Organization Member
+            ----
+
+            * Link: [{self._title}|{self._url}]
+            * Opened by: [{self._user}|{self._user_url}]
+            ----
+
+            h3. {self.get_scope().capitalize()} Body
+            ----
+
             """
         ) + self._body
 
@@ -56,7 +59,7 @@ class CreateManualIssue(CreateJIRAIssue):
         Internal helper to save the record created to the database.
 
         Args:
-            issue (trello.Issue): an object representing the JIRA issue created
+            issue (jira.Issue): an object representing the JIRA issue created
 
         Returns:
             None
@@ -69,10 +72,10 @@ class CreateManualIssue(CreateJIRAIssue):
                 url=self._url,
                 github_issue_id=self._id,
                 repo_id=self._repo_id,
-                jira_project_key=issue.jira_project_key,
-                jira_issue_id=issue.jira_issue_id,
-                jira_issue_url=issue.jira_issue_url,
-                jira_parent_issue_id=issue.jira_parent_issue_id
+                jira_project_key=issue.fields.project.key,
+                jira_issue_key=issue.key,
+                jira_parent_issue_key=issue.fields.parent.key
+                if hasattr(issue.fields, 'parent') else None
             )
         elif scope == 'pull_request':
             self._pull_request_service.create(
@@ -80,10 +83,10 @@ class CreateManualIssue(CreateJIRAIssue):
                 url=self._url,
                 github_pull_request_id=self._id,
                 repo_id=self._repo_id,
-                jira_project_key=issue.jira_project_key,
-                jira_issue_id=issue.jira_issue_id,
-                jira_issue_url=issue.jira_issue_url,
-                jira_parent_issue_id=issue.jira_parent_issue_id
+                jira_project_key=issue.fields.project.key,
+                jira_issue_key=issue.key,
+                jira_parent_issue_key=issue.fields.parent.key
+                if hasattr(issue.fields, 'parent') else None
             )
         else:
             print('Unsupported GitHub scope')

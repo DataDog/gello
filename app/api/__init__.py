@@ -19,4 +19,4 @@ from flask import Blueprint
 
 api = Blueprint('api', __name__)
 
-from . import boards, lists, repos, trello_members, onboarding
+from . import boards, projects, lists, repos, trello_members, jira_members, jira_issues, jira_issue_types, onboarding

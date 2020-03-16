@@ -26,7 +26,14 @@ class TrelloService(object):
 
     def __init__(self):
         """Initializes a new TrelloService object."""
-        self.client = TrelloAPIClient().client()
+        self._client_wrapper = TrelloAPIClient()
+        self.client = self._client_wrapper.client()
+
+    def init_if_needed(self):
+        if not self.client:
+            self._client_wrapper.initialize()
+            self.client = self._client_wrapper.client()
+        return bool(self.client)
 
     def boards(self):
         """Returns a list of objects representing trello boards.
@@ -34,7 +41,8 @@ class TrelloService(object):
         Returns:
             list(trello.Board)
         """
-        return self.client.list_boards()
+        if self.init_if_needed():
+            return self.client.list_boards()
 
     def members(self):
         """Returns a list of objects representing trello members.
@@ -42,7 +50,8 @@ class TrelloService(object):
         Returns:
             list(trello.Member)
         """
-        return self._get_organization().get_members()
+        if self.init_if_needed():
+            return self._get_organization().get_members()
 
     def get_label_id(self, board_id, label_name):
         """Returns id of label with label_name from a specified board.
@@ -50,8 +59,9 @@ class TrelloService(object):
         Returns:
             str
         """
-        labels = self._get_labels_by_board(board_id)
-        return next((x['id'] for x in labels if x['name'] == label_name), None)
+        if self.init_if_needed():
+            labels = self._get_labels_by_board(board_id)
+            return next((x['id'] for x in labels if x['name'] == label_name), None)
         # TODO (not supported by py-trello):
         #  create a new label by label_name if it doesn't exist
 
@@ -70,12 +80,13 @@ class TrelloService(object):
             trello.Card: A card object representing a card created to a Trello
                 board.
         """
-        board = self.client.get_board(board_id)
-        trello_list = board.get_list(list_id)
-        labels = [self.client.get_label(label_id, board_id)] if label_id else None
-        asign = [self.client.get_member(assignee_id)] if assignee_id else None
+        if self.init_if_needed():
+            board = self.client.get_board(board_id)
+            trello_list = board.get_list(list_id)
+            labels = [self.client.get_label(label_id, board_id)] if label_id else None
+            asign = [self.client.get_member(assignee_id)] if assignee_id else None
 
-        return trello_list.add_card(name=name, desc=desc, labels=labels, assign=asign)
+            return trello_list.add_card(name=name, desc=desc, labels=labels, assign=asign)
 
     def organizations(self):
         """Returns a list of Trello organizations associated with the API Token.
@@ -83,7 +94,8 @@ class TrelloService(object):
         Returns:
             list(trello.Organization)
         """
-        return self.client.list_organizations()
+        if self.init_if_needed():
+            return self.client.list_organizations()
 
     def _get_organization(self):
         """Returns a representation of the Trello organization.

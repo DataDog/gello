@@ -35,6 +35,9 @@ class EnvironmentVariableService(object):
             None
         """
         for key, value in self._environment_variables().items():
+            if key == "JIRA_SERVER_ADDRESS":
+                if value[-1] == '/':
+                    value = value[:-1]
             self.config_value_service.create(key=key, value=value)
 
         db.session.commit()
@@ -66,4 +69,4 @@ class EnvironmentVariableService(object):
         Returns:
             list(str)
         """
-        return ['TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN'] # TODO?: add 'JIRA_SERVER_ADDRESS'
+        return ['TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN', 'JIRA_SERVER_ADDRESS']

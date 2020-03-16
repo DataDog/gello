@@ -31,12 +31,20 @@
       </td>
       <td>
         <a href="{{ url_for('issue.index', repo_id=repo.id) }}">
-          <b>({{ repo.issues.count() }})</b> issue cards
+          <b>({{ repo.number_of_issue_cards() }})</b> Trello cards
+        </a>
+        <br>
+        <a href="{{ url_for('issue.jira', repo_id=repo.id) }}">
+          <b>({{ repo.number_of_issue_jira_issues() }})</b> JIRA issues
         </a>
       </td>
       <td>
         <a href="{{ url_for('pull_request.index', repo_id=repo.id) }}">
-          <b>({{ repo.pull_requests.count() }})</b> pull request cards
+          <b>({{ repo.number_of_pull_request_cards() }})</b> Trello cards
+        </a>
+        <br>
+        <a href="{{ url_for('pull_request.jira', repo_id=repo.id) }}">
+          <b>({{ repo.number_of_pull_request_jira_issues() }})</b> JIRA issues
         </a>
       </td>
     </tr>
