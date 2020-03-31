@@ -3,9 +3,13 @@ _Gello_ is a self-hosted server for managing Trello cards based on GitHub webhoo
 
 It is developed by Datadog to help manage community contributions on our open-source GitHub repositories, and incorporate them into our biweekly sprints.
 
+_Gello_ now has support for managing JIRA issues as well.
+
 ## How it Works
 
 Users can subscribe Trello boards (and lists) to GitHub repositories through a web UI, and Trello cards will be created to the subscribed list following every Issue or Pull Request opened by a community member.
+
+JIRA projects and parent issues can also be subscribed to GitHub repositories.
  
 ### Example Usage:
 
@@ -17,7 +21,7 @@ Users can subscribe Trello boards (and lists) to GitHub repositories through a w
 
     ![Opening an Issue](images/demo/02_new_issue.gif)
 
-3. View Trello card auto-created from this issue:
+3. View Trello card or JIRA Issue auto-created from this issue:
 
     ![Viewing new card](images/demo/03_view_card.gif)
 
