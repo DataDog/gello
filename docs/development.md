@@ -130,17 +130,54 @@ export TEST_DATABASE_URL='the_url_for_a_postgresql_database'
 
     In [views.py](../app/controllers/subscriptions/views.py), replace the value of `url_root` with this url (temporarily for testing)
 
-    ```bash
-    CreateGitHubWebhook.delay(
-        url_root='http://7e9ea9dc.ngrok.io/', # request.url_root,
-        repo_id=create_form.get_repo_id()
-    )
+    ```python
+CreateGitHubWebhook.delay(
+    url_root='http://7e9ea9dc.ngrok.io/', # request.url_root,
+    repo_id=create_form.get_repo_id()
+)
     ```
 
 4. Now you can create new webhooks (through creating subscriptions) on Gello, and they would link to the ngrok url (which forwards to your localhost)
 
 5. Don't forget to delete the test webhooks and change the line back when you're done!
 
+#### Manual Testing
+
+Flask comes with its own command line interface (CLI) which comes in handy for testing and debugging within the application context. To use the flask CLI,
+simply run the following command from _Gello_'s root directory:
+
+```bash
+flask shell
+```
+
+If you're familiar with the IPython interface, you can run the flask CLI using IPython by installing a couple packages, then running the same command as above:
+
+```bash
+pip install ipython
+pip install flask-shell-ipython
+flask shell
+```
+
+From within the shell, you can access defined classes and call functions from within the application context. This is especially useful when you need to test and
+debug parts of the application that require database access. For example, you can check that your database models are working correctly by fetching, creating,
+and updating them from within the flask shell:
+
+```python
+import app.models as models
+from app import db
+# Fetch all boards
+boards = models.Board.query.all()
+# Create a new board
+new_board = Board(name="New Board", url="https://example.com", trello_board_id="EXAMPLE")
+# Add the new board to the session
+db.session.add(new_board)
+# edit an existing board
+boards[0].name = "new name"
+# Persist these changes
+db.session.commit()
+```
+
+Other possible applications of the flask CLI include testing API service calls and celery tasks with custom inputs.
 
 ### Coverage Reports
 
