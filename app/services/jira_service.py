@@ -50,7 +50,7 @@ class JIRAService(object):
         Returns a list of members of the organization
         """
         if self._init_if_needed():
-            return self.client.search_users('', 0, False)
+            return self.client.search_users(query='')
 
     def get_issue_types(self, project_key):
         """

@@ -46,8 +46,9 @@ ddtrace = "*"
 coveralls = "*"
 python-dotenv = "*"
 flask-dotenv = "*"
-jira = "*"
 func-timeout = "*"
+jira = {git = "https://github.com/ursulahuang/jira.git"}
+email-validator = "*"
 
 [dev-packages]
 mock = "*"
