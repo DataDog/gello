@@ -55,8 +55,8 @@ class TrelloMemberService(APIService):
         Returns:
             None
         """
-        fetched_member_ids = list(map(lambda x: x.id, fetched_members))
-        fetched_usernames = list(map(lambda x: x.username, fetched_members))
+        fetched_member_ids = set(map(lambda x: x.id, fetched_members))
+        fetched_usernames = set(map(lambda x: x.username, fetched_members))
 
         for record in persisted_members:
             if record.trello_member_id in fetched_member_ids:

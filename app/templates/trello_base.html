@@ -1,0 +1,61 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "base.html" %}
+
+{% block title %}Gello{% endblock %}
+
+{% block navbar %}
+  <div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <ul class="nav navbar-nav navbar-left">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              Gello <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{{ url_for('jira_subscription.index') }}">Gira</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="{{ url_for('main.index') }}">Subscriptions</a></li>
+          <li><a href="{{ url_for('trello_member.index') }}">Members</a></li>
+          <li><a href="{{ url_for('board.index') }}">Boards</a></li>
+          <li><a href="{{ url_for('github_member.index', base='trello') }}">GitHub Members</a></li>
+          <li><a href="{{ url_for('repo.index', base='trello') }}">Repositories</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          {% if current_user.is_authenticated %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Account <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

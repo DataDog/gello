@@ -16,35 +16,47 @@ Subscription-related forms.
 """
 
 import textwrap
+from os import environ
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, Length
 from app.services import GitHubService, TrelloService
+from jira import JIRA, JIRAError
 
 
 class OnboardingForm(FlaskForm):
     """Form for creating a new subscription."""
-    github_organization_login = StringField(
-        'GitHub Organization Login',
-        validators=[Required(), Length(1, 100)],
-        description=textwrap.dedent(
-            """
-            The login for the GitHub organization you wish to pull repositories
-            and members from
-            """
+    jira_address = environ.get('JIRA_SERVER_ADDRESS')
+    trello_org_name = environ.get('TRELLO_ORG_NAME')
+    github_org_login = environ.get('GITHUB_ORG_LOGIN')
+
+    if not github_org_login:
+        github_organization_login = StringField(
+            'GitHub Organization Login',
+            validators=[Required(), Length(1, 100)],
+            description=textwrap.dedent(
+                """
+                The login for the GitHub organization you wish to pull repositories
+                and members from
+                """
+            )
         )
-    )
-    trello_organization_name = StringField(
-        'Trello Organization Name',
-        validators=[Required(), Length(1, 100)],
-        description=textwrap.dedent(
-            """
-            The name for the Trello organization you wish to pull boards,
-            lists, and members from
-            """
+
+    if not trello_org_name:
+        trello_organization_name = StringField(
+            'Trello Organization Name',
+            validators=[Required(), Length(1, 100)] if not jira_address else
+                       [Length(1, 100)],
+            description=textwrap.dedent(
+                """
+                The name for the Trello organization you wish to pull boards,
+                lists, and members from
+                """ +
+                (' (add JIRA environment variables and reload for JIRA support)'
+                    if not jira_address else ' (optional, for Trello support)')
+            )
         )
-    )
     submit = SubmitField('Done')
 
     def __init__(self):
@@ -63,18 +75,19 @@ class OnboardingForm(FlaskForm):
         trello_organization_name = self.trello_organization_name.data.strip()
         github_organization_login = self.github_organization_login.data.strip()
 
-        # Check that the Trello organization name exists
-        trello_organizations = self.trello_service.organizations()
-        trello_organization_names = [o.name for o in trello_organizations]
+        if trello_organization_name:
+            # Check that the Trello organization name exists
+            trello_organizations = self.trello_service.organizations()
+            trello_organization_names = [o.name for o in trello_organizations]
 
-        if trello_organization_name not in trello_organization_names:
-            self._error_message = textwrap.dedent(
-                f"""
-                The Trello organization is not accessible with the provided
-                TRELLO_API_KEY and TRELLO_API_TOKEN
-                """
-            )
-            return False
+            if trello_organization_name not in trello_organization_names:
+                self._error_message = textwrap.dedent(
+                    f"""
+                    The Trello organization is not accessible with the provided
+                    TRELLO_API_KEY and TRELLO_API_TOKEN
+                    """
+                )
+                return False
 
         self._trello_name = trello_organization_name
 

@@ -20,7 +20,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required
 from . import trello_member
 from .forms import RefreshForm
-from ...models import TrelloMember
+from ...models import TrelloMember, ConfigValue
 from ...services import TrelloMemberService
 
 trello_member_service = TrelloMemberService()
@@ -35,6 +35,9 @@ def index():
         trello_member_service.fetch()
         flash('The organization\'s Trello members have been updated.')
         return redirect(url_for('.index'))
+
+    if not ConfigValue.query.get('TRELLO_ORG_NAME'):
+        return redirect(url_for('onboarding.index'))
 
     page = request.args.get('page', 1, type=int)
     query = TrelloMember.query

@@ -1,0 +1,41 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "jira_base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}JIRA Issue Types{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Issue types for <b>{{ project.name }}</b></h1>
+  </div>
+
+  <table class="table table-hover trello-lists">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+      </tr>
+    </thead>
+
+    {% for jira_issue_type in issue_types %}
+      <tr>
+        <td>{{ jira_issue_type.name }}</td>
+        <td>{{'Subtask Issue Type' if jira_issue_type.subtask else 'Parent Issue Type'}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+{% endblock %}

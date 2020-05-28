@@ -1,0 +1,97 @@
+<!--
+     Unless explicitly stated otherwise all files in this repository are licensed
+     under the Apache 2 License.
+
+     This product includes software developed at Datadog
+     (https://www.datadoghq.com/).
+
+     Copyright 2018 Datadog, Inc.
+-->
+
+{% extends "jira_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Subscribed JIRA Issues{% endblock %}
+
+{% block page_content %}
+  <div class="page-header">
+    <h1>Subscribed JIRA Issues</h1>
+  </div>
+  <div class="page-header">
+    <h3>For repository <b>{{ subscription.repo.name }}</b> on project <b>{{ subscription.project.name }}</b></h3>
+  </div>
+
+  <table class="table table-hover trello-lists">
+    <thead>
+      <tr>
+        <th>Parent Issue Name</th>
+        <th>Issue Type</th>
+        <th>Member Name</th>
+        <th>JIRA Member ID</th>
+        <th>Update</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+
+    {% for subscribed_issue, update_form, delete_form, is_issue, type_name, member in issue_form_pairs %}
+      <tr>
+        <td>{{ subscribed_issue.parent_issue.jira_issue_key if is_issue else 'N/A' }}</td>
+        <td>{{ type_name if not is_issue else subscribed_issue.issue_type_name }}</td>
+        <td>{{ member if member else 'N/A' }}</td>
+        {% if is_issue %}
+
+        <form method="POST" action="{{ url_for('.update', project_key=subscription.project_key, repo_id=subscription.repo_id, issue_key=subscribed_issue.jira_issue_key ) }}">
+          <td>{{ update_form.jira_update_id(class="form-control input_id_field") }}</td>
+          <td>{{ update_form.submit(class="btn btn-primary") }}</td>
+        </form>
+
+        <form method="POST" action="{{ url_for('.delete', project_key=subscription.project_key, repo_id=subscription.repo_id, issue_key=subscribed_issue.jira_issue_key) }}">
+          <td>{{ delete_form.submit(class="btn btn-danger") }}</td>
+        </form>
+
+        {% else %}
+
+        <form method="POST" action="{{ url_for('.update', project_key=subscription.project_key, repo_id=subscription.repo_id, issue_key='0') }}">
+          <td>{{ update_form.jira_update_id(class="form-control input_id_field") }}</td>
+          <td>{{ update_form.submit(class="btn btn-primary") }}</td>
+        </form>
+
+        <form method="POST" action="{{ url_for('.delete', project_key=subscription.project_key, repo_id=subscription.repo_id, issue_key='0') }}">
+          <td>{{ delete_form.submit(class="btn btn-danger") }}</td>
+        </form>
+
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div class="page-header float-container">
+    <div class="float-left">
+      <h3><b>Create New Subscribed JIRA Issue</b></h3>
+    </div>
+
+    <div class="float-right">
+      {% if pagination %}
+      <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.index') }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {{ wtf.quick_form(create_form) }}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ pagedown.include_pagedown() }}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      loadAutocompleteData('/api/jira_issues/{{ subscription.project_key }}', 'jira_issues', '#issue_key');
+      loadAutocompleteData('/api/jira_members/{{ subscription.project_key }}', 'jira_members', '#jira_id');
+      loadAutocompleteData('/api/jira_issue_types/{{ subscription.project_key }}', 'jira_issue_types', '#issue_type_name');
+      loadAutocompleteData('/api/jira_members/{{ subscription.project_key }}', 'jira_members', '.input_id_field');
+    });
+  </script>
+{% endblock %}

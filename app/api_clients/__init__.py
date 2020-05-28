@@ -18,3 +18,4 @@ API Clients for APIs called.
 from .api_client import APIClient
 from .github_api_client import GitHubAPIClient
 from .trello_api_client import TrelloAPIClient
+from .jira_api_client import JIRAAPIClient

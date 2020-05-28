@@ -8,12 +8,19 @@
      Copyright 2018 Datadog, Inc.
 -->
 
-{% extends "base.html" %}
+{% if jira_description %}
+  {% extends "jira_base.html" %}
+{% else %}
+  {% extends "trello_base.html" %}
+{% endif %}
 
 {% block title %}500 - Internal Server Error{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
   <h1>Internal Server Error</h1>
+  {% if jira_description %}
+  	<h2>{{ jira_description }}</h2>
+  {% endif %}
 </div>
 {% endblock %}

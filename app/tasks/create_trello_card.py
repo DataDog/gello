@@ -64,7 +64,7 @@ class CreateTrelloCard(GitHubBaseTask):
         self._persist_card_to_database(card=card)
 
     def trello_service(self):
-        """Reutrns the TrelloService instance.
+        """Returns the TrelloService instance.
 
         Returns:
             TrelloService

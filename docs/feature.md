@@ -1,6 +1,6 @@
 ## Feature Overview
 
-### Creating a Subscription
+### Creating a Trello Subscription
 
 When you login to _Gello_, you will be prompted to create a new subscription.
 
@@ -42,9 +42,52 @@ Steps to create a Subscribed List:
 
     ![Create a Subscribed List](../images/create_subscribed_list.png)
 
+
+### Creating a JIRA Subscription
+
+Creating a JIRA subscription can be done in a very similar manner to Trello subscriptions. To start, switch over to the Gira view by using the dropdown menu at the left side of the navigation bar:
+
+![Switch to Gira view](../images/switch_to_jira_view.png)
+
+Then fill in the required subscription information:
+
+1. Type in the project that you would like to create issues for. The input field will autocomplete with data pulled from JIRA:
+
+	![Project Autocomplete](../images/project_autocomplete.png)
+
+2. Type in the repository name you wish to create cards from. The input field will autocomplete with your organization's public repositories, pulled from GitHub:
+
+    ![Repository Autocomplete](../images/repo_autocomplete.png)
+
+3. Optionally, issue types can be assigned to all created JIRA issues, and issues can be created as subtasks to pre-existing JIRA issues here. This can also be done after creating the subscription from the subscribed issues screen.
+
+    ![Optional Subscription Fields](../images/optional_subscription_fields.png)
+
+4. Select if you would like `autocard` functionality for Issues, Pull Requests, or both. These settings work as described in the previous section.
+
+#### Selecting Parent Issues and Issue Types
+
+You can opt to choose what type of issue is created by _Gello_, as well as create JIRA issues as subtasks to a pre-existing issue:
+
+1. After creating a _subscription_ between a GitHub repository and a JIRA project, click on a link under the "Subscribed Issues" column in the subscriptions table:
+
+    ![Subscribed Issues](../images/subscribed_issues_link.png)
+
+2. Fill out the form to create a new subscribed issue:
+
+    ![Create a Subscribed Issue](../images/create_subscribed_issue.png)
+
+
+3. You can also manage existing subscribed issues from the same screen:
+
+![Manage Subscribed Issues](../images/edit_subscribed_issues.png)
+
+
 ### Aggregating Community Contributions
 
-In addition to creating cards on the lists of Trello boards subscribed, Gello keeps track of open community contributions, which are aggregated by GitHub repository, and can be filtered down by Trello board.
+In addition to creating cards on the lists of Trello boards subscribed, Gello keeps track of open community contributions, which are aggregated by GitHub repository, and can be filtered down by Trello board or JIRA project.
+
+The following steps depict how to view these aggregations for Trello boards. The process for filtering by JIRA project is quite similar, albeit starting from the JIRA subscriptions page instead.
 
 #### Aggregating Community Issues
 
@@ -73,18 +116,18 @@ This will allow the server to receive webhook events whenever an issue or pull r
 ### GitHub Events
 #### Pull Request Event
 
-For the _autocard_ setting, if a pull request is created by a person outside of the members of a GitHub organization on a subscribing repository, a Trello card will be submitted to a board list (or a number of lists), configurable in the _Gello_ web-UI.
+For the _autocard_ setting, if a pull request is created by a person outside of the members of a GitHub organization on a subscribing repository, a Trello card or JIRA issue will be added to the respective Trello board lists or JIRA project, configurable in the _Gello_ web-UI.
 
 #### Issue Event
 
-Likewise, for the _autocard_ setting, if an issue is created by a person outside of the members of a GitHub organization on a subscribed repository, a Trello card will be submitted to a board list (or a number of lists), configurable in the _Gello_ web-UI.
+Likewise, for the _autocard_ setting, if an issue is created by a person outside of the members of a GitHub organization on a subscribed repository, a Trello card or JIRA issue will be added to the respective Trello board lists or JIRA project, configurable in the _Gello_ web-UI.
 
 #### Pull Request Comment Event
 
-For the _manual_ setting, if a pull request has been created, and a member of the GitHub organization comments `gello create_card` on the pull request, a Trello card will be submitted to a board list (or a number of lists), configurable in the _Gello_ web-UI.
+For the _manual_ setting, if a pull request has been created, and a member of the GitHub organization comments `gello create_card` on the pull request, a Trello card or JIRA issue will be added to the respective Trello board lists or JIRA project, configurable in the _Gello_ web-UI.
 
 #### Issue Comment Event
 
-For the _manual_ setting, if an issue has been created, and a member of the GitHub organization comments `gello create_card` on the issue, a Trello card will be submitted to a board list (or a number of lists), configurable in the _Gello_ web-UI.
+For the _manual_ setting, if an issue has been created, and a member of the GitHub organization comments `gello create_card` on the issue, a Trello card or JIRA issue will be added to the respective Trello board lists or JIRA project, configurable in the _Gello_ web-UI.
 
 

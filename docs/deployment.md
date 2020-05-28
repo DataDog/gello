@@ -38,7 +38,7 @@
 
     ![Addons](../images/heroku_addons.png)
 
-7. Run the line below for each variable (except `DATABASE_URL` and `REDIS_URL`) in [configuration guide](configuration.md)
+7. Run the line below for each desired variable (except `DATABASE_URL` and `REDIS_URL`) in [configuration guide](configuration.md)
     
     ```bash
     heroku config:set VARIABLE_NAME=variable_value

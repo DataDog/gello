@@ -22,12 +22,12 @@ from flask import redirect, url_for, flash, request
 from flask_login import login_required
 from . import subscription
 from .forms import NewSubscriptionForm, UpdateForm
-from ...services import SubscriptionService
+from ...services import TrelloSubscriptionService
 from ...tasks import CreateGitHubWebhook, DeleteGitHubWebhook
 from ...models import Repo
 from ...models import Subscription
 
-subscription_service = SubscriptionService()
+subscription_service = TrelloSubscriptionService()
 
 
 @subscription.route('/create', methods=['POST'])

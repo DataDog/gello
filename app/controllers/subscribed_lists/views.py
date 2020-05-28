@@ -22,7 +22,7 @@ from flask_login import login_required
 from . import subscribed_list
 from .forms import NewForm, UpdateForm, DeleteForm
 from ...services import SubscribedListService
-from ...models import Subscription, SubscribedList, TrelloMember
+from ...models import Subscription, SubscribedList, TrelloMember, ConfigValue
 
 subscribed_list_service = SubscribedListService()
 
@@ -62,7 +62,15 @@ def index(board_id, repo_id):
         )
         return redirect(url_for('.index', board_id=board_id, repo_id=repo_id))
 
-    subscription = Subscription.query.get_or_404([board_id, repo_id])
+    if not ConfigValue.query.get('TRELLO_ORG_NAME'):
+        return redirect(url_for('onboarding.index'))
+
+    sub_id = Subscription.query.filter_by(
+        board_id=board_id, repo_id=repo_id
+    ).first()
+    sub_id = 0 if not bool(sub_id) else sub_id.id
+
+    subscription = Subscription.query.get_or_404([sub_id, repo_id])
     lists = subscription.subscribed_lists.order_by(
         SubscribedList.timestamp.asc()
     )

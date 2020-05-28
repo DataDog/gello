@@ -15,42 +15,44 @@
 Service-helpers for creating and mutating subscription data.
 """
 
-from . import CRUDService, SubscribedListService
+from . import CRUDService, SubscribedJIRAItemService
 from .. import db
 from ..models import Subscription
 
 
-class SubscriptionService(CRUDService):
+class JIRASubscriptionService(CRUDService):
     """CRUD persistent storage service.
 
-    A class with the single responsibility of creating/mutating Subscription
-    data.
+    Abstract base class for creating/mutating Subscription data.
     """
 
     def __init__(self):
         """Creates a new `subscribed_list_service` for the class."""
-        self._subscribed_list_service = SubscribedListService()
+        self._subscribed_jira_item_service = SubscribedJIRAItemService()
 
-    def create(self, board_id, repo_id, issue_autocard, pull_request_autocard,
-               list_ids=[]):
+    def create(self, project_key, repo_id, issue_autocard, pull_request_autocard,
+               issue_type, issue_keys):
         """Creates and persists a new subscription record to the database.
 
         Args:
-            board_id (str): The id of the `Board` the `Subscription` belongs
-                to.
+            project_key (str): The key of the `Project` the `Subscription`
+                belongs to
             repo_id (int): The id of the `Repo` the `Subscription` belongs to.
             issue_autocard (Boolean): If `autocard` is `true` for Issues
                 created.
             pull_request_autocard (Boolean): If `autocard` is `true` for Pull
                 Requests created.
-            list_ids (list(str)): An optional list of ids for trello lists to
-                associate to the subscription as `SubscribedList`s.
+            issue_type (JIRAIssueType): An object representing the issue type
+                associated with the `Subscription`
+            issue_keys (list(str)): An optional list of keys for JIRA issues to
+                associate to the subscription as subscribed JIRA issues (or
+                projects if an empy string exists in the list)
 
         Returns:
             None
         """
         subscription = Subscription(
-            board_id=board_id,
+            project_key=project_key,
             repo_id=repo_id,
             issue_autocard=issue_autocard,
             pull_request_autocard=pull_request_autocard
@@ -58,22 +60,23 @@ class SubscriptionService(CRUDService):
         db.session.add(subscription)
 
         # Create all the subscribed lists
-        for list_id in list_ids:
-            self._subscribed_list_service.create(
-                board_id=board_id,
+        for issue_key in issue_keys:
+            self._subscribed_jira_item_service.create(
+                project_key=project_key,
                 repo_id=repo_id,
-                list_id=list_id
+                issue_type_id=issue_type,
+                jira_issue_key=issue_key
             )
 
         # Persists the subscription
         db.session.commit()
 
-    def update(self, board_id, repo_id, issue_autocard, pull_request_autocard):
+    def update(self, project_key, repo_id, issue_autocard, pull_request_autocard):
         """Updates a persisted subscription's autocard value.
 
         Args:
-            board_id (str): The id of the `Board` the `Subscription` belongs
-                to.
+            project_key (str): The key of the `Project` the `Subscription`
+                belongs to
             repo_id (int): The id of the `Repo` the `Subscription` belongs to.
             issue_autocard (Boolean): If `autocard` is `true` for Issues
                 created.
@@ -83,26 +86,31 @@ class SubscriptionService(CRUDService):
         Returns:
             None
         """
-        subscription = Subscription.query.get([board_id, repo_id])
+
+        subscription = Subscription.query.filter_by(
+            project_key=project_key,
+            repo_id=repo_id
+        ).first()
         subscription.issue_autocard = issue_autocard
         subscription.pull_request_autocard = pull_request_autocard
 
         # Persist the changes
         db.session.commit()
 
-    def delete(self, board_id, repo_id):
+    def delete(self, project_key, repo_id):
         """Deletes an old, persisted subscription.
 
         Args:
-            board_id (str): The id of the `Board` the `Subscription` belongs
-                to.
+            project_key (str): The key of the `Project` the `Subscription`
+                belongs to
             repo_id (int): The id of the `Repo` the `Subscription` belongs to.
 
         Returns:
             None
         """
         subscription = Subscription.query.filter_by(
-            board_id=board_id, repo_id=repo_id).first()
+            project_key=project_key, repo_id=repo_id).first()
 
         # Delete the record
         db.session.delete(subscription)
+        db.session.commit()

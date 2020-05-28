@@ -16,13 +16,21 @@ Models-related logic.
 """
 
 from .user import User, load_user
+from .project_issue_types_helper import project_issue_types_helper
+from .project_jira_members_helper import project_jira_members_helper
 from .subscribed_list import SubscribedList
+from .subscribed_jira_issue import SubscribedJIRAIssue
+from .subscribed_jira_project import SubscribedJIRAProject
 from .subscription import Subscription
 from .repo import Repo
 from .issue import Issue
 from .pull_request import PullRequest
 from .github_member import GitHubMember
 from .trello_member import TrelloMember
+from .jira_member import JIRAMember
 from .board import Board
 from .list import List
+from .project import Project
+from .jira_parent_issue import JIRAParentIssue
+from .jira_issue_type import JIRAIssueType
 from .config_value import ConfigValue
