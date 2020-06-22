@@ -78,8 +78,11 @@ class JIRAService(object):
             return self.client.search_assignable_users_for_projects(
                 '', project_key)
 
+    def _convert_into_snake_case(self, words):
+        return "_".join(words.split(" "))
+
     def create_issue(self, project_key, summary, description, issue_type=None,
-                     parent_issue=None, assignee_id=None, label_name=None):
+                     parent_issue=None, assignee_id=None, label_names=[]):
         """
         Creates a new issue of type issue_type under the project with 
         project_key populated with the provided fields
@@ -94,20 +97,34 @@ class JIRAService(object):
                 (optional)
             assignee_id (str): id of the user the new issue will be assigned to
                 (optional)
-            label_id (str): The id of the repo-specific language label.
+            label_names (List[str]): A list of label names
                 (optional)
 
         Returns:
             jira.issue: object representing a JIRA issue
         """
+
+        parent_issue = {"key": parent_issue} if parent_issue else None
+        issue_type = {"name": issue_type} if parent_issue else {"id": issue_type}
+
+        assignee_id = {"accountId": assignee_id} if assignee_id else None
+
         if self._init_if_needed():
             return self.client.create_issue(
                 summary=summary,
-                parent=(None, {"key": parent_issue})[bool(parent_issue)],
-                issuetype=({"id": issue_type},
-                           {"name": issue_type})[bool(parent_issue)],
+                parent=parent_issue,
+                issuetype=issue_type,
                 project={"key": project_key},
                 description=description,
-                assignee=(None, {"accountId": assignee_id})[bool(assignee_id)],
-                labels=(None, [label_name])[bool(label_name)]
+                assignee=assignee_id,
+                labels=[self._convert_into_snake_case(label_name) for label_name in label_names]
             )
+
+    def update_issue_labels(self, project_key, issue_key, label_names):
+        label_names = [self._convert_into_snake_case(label_name) for label_name in label_names]
+        issues = self.client.search_issues(
+            'project = "' + project_key +
+            '" AND issuekey = "' + issue_key +
+            '"')
+        issue = issues[0]
+        issue.update(fields={"labels": label_names})

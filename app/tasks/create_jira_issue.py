@@ -32,7 +32,7 @@ class CreateJIRAIssue(GitHubBaseTask):
         pass
 
     def run(self, project_key, issue_type, payload, parent_issue=None,
-            assignee_id=None, label_name=None):
+            assignee_id=None, label_names=[]):
         """Enqueues a JIRA creation event
 
         Args:
@@ -42,7 +42,7 @@ class CreateJIRAIssue(GitHubBaseTask):
                 summary (str): A summary of the issue
                 description (str): A description of the issue
             parent_issue (str): The key of the parent issue for this sub-issue
-            label_name (str): The name of the auto-generated label
+            label_names (List[str]): A list of label names.
             asignee_id (str): id of the user the new issue will be assigned to
 
         Returns:
@@ -62,7 +62,7 @@ class CreateJIRAIssue(GitHubBaseTask):
                 description=self._issue_body(),
                 parent_issue=parent_issue,
                 assignee_id=assignee_id,
-                label_name=label_name
+                label_names=label_names
             )
 
             # Persist the new JIRA issue to the database

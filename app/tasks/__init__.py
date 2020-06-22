@@ -30,6 +30,10 @@ from .create_issue_card import CreateIssueCard
 from .create_pull_request_card import CreatePullRequestCard
 from .create_manual_card import CreateManualCard
 from .create_manual_issue import CreateManualIssue
+from .update_issue_card_labels import UpdateIssueCardLabels
+from .update_jira_issue_labels import UpdateJiraIssueLabels
+from .update_pull_request_card_labels import UpdatePullRequestCardLabels
+from .update_jira_pull_request_issue_labels import UpdateJiraPullRequestIssueLabels
 from .github_receiver import GitHubReceiver
 
 
@@ -48,6 +52,10 @@ def _register_tasks():
     celery.tasks.register(CreatePullRequestCard())
     celery.tasks.register(CreateGitHubWebhook())
     celery.tasks.register(DeleteGitHubWebhook())
+    celery.tasks.register(UpdateIssueCardLabels())
+    celery.tasks.register(UpdateJiraIssueLabels())
+    celery.tasks.register(UpdatePullRequestCardLabels())
+    celery.tasks.register(UpdateJiraPullRequestIssueLabels())
     celery.tasks.register(GitHubReceiver())
 
 
