@@ -29,11 +29,14 @@ from . import UpdateIssueCardLabels
 from . import UpdateJiraIssueLabels
 from . import UpdateJiraPullRequestIssueLabels
 from . import UpdatePullRequestCardLabels
+from ..models import ConfigValue
+from ..models import GitHubMember
 from ..models import Issue
 from ..models import PullRequest
 from ..models import Repo
 from ..models import Subscription
 from config import Config
+from ..services import GitHubMemberService
 from ..services import TrelloService
 
 
@@ -67,6 +70,18 @@ class GitHubReceiver(GitHubBaseTask):
         Returns:
             None
         """
+        # Ignore all hook payloads
+        if "hook" in self.payload:
+            return
+
+        # Auto-refresh Github members
+        if ((self.payload['action'] == 'member_added' or self.payload['action'] == 'member_removed') and
+                self.payload['organization']['login'] == ConfigValue.query.get('GITHUB_ORG_LOGIN').value):
+            GitHubMemberService().fetch()
+            return
+        elif self.payload['action'] == 'member_invited':
+            return
+
         repo = Repo.query.filter_by(
             github_repo_id=self.payload['repository']['id']
         ).first()

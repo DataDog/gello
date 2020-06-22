@@ -27,6 +27,7 @@ class GitHubAPIClient(APIClient):
     """
 
     def __init__(self):
+        assert 'GITHUB_API_TOKEN' in environ
         self._client = Github(environ.get('GITHUB_API_TOKEN'))
 
     def client(self):

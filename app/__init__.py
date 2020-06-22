@@ -162,14 +162,13 @@ def before_request():
            request.endpoint.startswith('auth'):
             return
 
-        if (('TRELLO_ORG_NAME' not in os.environ and 'JIRA_SERVER_ADDRESS' not in os.environ) \
-            or 'GITHUB_ORG_LOGIN' not in os.environ) and \
-           not request.endpoint.startswith('onboarding'):
+        if ((all(x not in os.environ for x in ('TRELLO_ORG_NAME', 'JIRA_SERVER_ADDRESS')) or
+                all(x not in os.environ for x in ('GITHUB_ORG_LOGIN', 'GITHUB_ORG_WEBHOOK_ID'))) and
+                not request.endpoint.startswith('onboarding')):
             return redirect(url_for('onboarding.index'))
-        elif ('TRELLO_ORG_NAME' in os.environ and 'GITHUB_ORG_LOGIN' in
-              os.environ) and request.endpoint.startswith('onboarding'):
+        elif (all(x not in os.environ for x in ('TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN', 'GITHUB_ORG_WEBHOOK_ID')) and
+                request.endpoint.startswith('onboarding')):
             return redirect(url_for('main.index'))
-
 
 # Configure tracing if `APM_ENABLED` is `True`
 if app.config.get('APM_ENABLED'):

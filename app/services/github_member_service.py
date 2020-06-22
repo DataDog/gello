@@ -15,8 +15,9 @@
 Service-helpers for creating and mutating github_member data.
 """
 
-from . import APIService
-from . import GitHubService
+from .api_service import APIService
+from .github_service import GitHubService
+from .config_value_service import ConfigValueService
 from .. import db
 from ..models import GitHubMember
 
@@ -31,6 +32,7 @@ class GitHubMemberService(APIService):
     def __init__(self):
         """Initializes a new GitHubMemberService object."""
         self.github_service = GitHubService()
+        self._config_value_service = ConfigValueService()
 
     def fetch(self):
         """Add all the github_members to the database for the organization.
@@ -98,3 +100,15 @@ class GitHubMemberService(APIService):
                 member_id=github_member.id
             )
             db.session.add(github_member_model)
+
+    def add_webhook(self, webhook_id):
+        """Updates `Repo` records by filling the github_webhook_id field.
+
+        Args:
+            webhook_id (int): The GitHub-issued id for org webhook.
+
+        Returns:
+            None
+        """
+
+        self._config_value_service.create(key='GITHUB_ORG_WEBHOOK_ID', value=str(webhook_id))

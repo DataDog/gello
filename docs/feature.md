@@ -107,11 +107,11 @@ Likewise, to see open community pull requests on a repository aggregated by a Tr
 
 
 ### GitHub Webhooks
-_Gello_ uses [GitHub webhooks](https://developer.github.com/webhooks/) to get event updates from the repositories subscribed.
+_Gello_ uses [GitHub webhooks](https://developer.github.com/webhooks/) to get event updates from the organizations and repositories subscribed.
 
-When a subscription is made, _Gello_ will create a GitHub webhook on the corresponding repository with the following permissions: `Issues`, `Issue comments`, `Pull requests`, and `Pull request review comments`.
+When a subscription is made, _Gello_ will create a GitHub repo webhook on the corresponding repository with the following permissions: `Issues`, `Issue comments`, `Pull requests`, and `Pull request review comments`. This will allow the server to receive webhook events whenever an issue or pull request is created, commented upon, or labeled. They are necessary for both the _autocard_ and _manual_ settings.
 
-This will allow the server to receive webhook events whenever an issue or pull request is created or commented upon. They are necessary for both the _autocard_ and _manual_ settings.
+_Gello_ will also create a GitHub organization webhook on the corresponding organization with the `organization` event. This will allow the server to receive webhook events whenever a member is added or removed from the subscribed organization.
 
 ### GitHub Events
 #### Pull Request Event

@@ -67,5 +67,6 @@ class ConfigValueService(CRUDService):
         Returns:
             None
         """
+        environ.pop(key, None)
         ConfigValue.query.filter_by(key=key).delete()
         db.session.commit()
