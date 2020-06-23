@@ -53,19 +53,27 @@ class TrelloService(object):
         if self.init_if_needed():
             return self._get_organization().get_members()
 
-    def get_label_id(self, board_id, label_name):
-        """Returns id of label with label_name from a specified board.
+    def get_label_by_label_name(self, board_id, label_name):
+        """Returns Trello Label with label_name from a specified board.
 
         Returns:
-            str
+            Label
         """
         if self.init_if_needed():
-            labels = self._get_labels_by_board(board_id)
-            return next((x['id'] for x in labels if x['name'] == label_name), None)
-        # TODO (not supported by py-trello):
-        #  create a new label by label_name if it doesn't exist
+            board = self.client.get_board(board_id)
+            labels = board.get_labels()
 
-    def create_card(self, board_id, list_id, name, desc, label_id=None, assignee_id=None):
+            for label in labels:
+                if label.name == label_name:
+                    return label
+
+            # label doesn't exist, create new label by label_name
+            label_color = "red"
+            new_label = board.add_label(label_name, label_color)
+            assert new_label is not None
+            return new_label
+
+    def create_card(self, board_id, list_id, name, desc, label_names=[], assignee_id=None):
         """Creates a card on a board, and a list.
 
         Args:
@@ -73,7 +81,7 @@ class TrelloService(object):
             list_id (str): The id of the list the card will be created on.
             name (str): The name of the card.
             desc (str): The body of the card.
-            label_id (str): The id of the repo-specific language label.
+            label_names (List[str]): A list of label names.
             assignee_id (str): The trello_member_id for the card assignee.
 
         Returns:
@@ -83,10 +91,34 @@ class TrelloService(object):
         if self.init_if_needed():
             board = self.client.get_board(board_id)
             trello_list = board.get_list(list_id)
-            labels = [self.client.get_label(label_id, board_id)] if label_id else None
-            asign = [self.client.get_member(assignee_id)] if assignee_id else None
 
-            return trello_list.add_card(name=name, desc=desc, labels=labels, assign=asign)
+            labels = [self.get_label_by_label_name(board_id, label_name) for label_name in label_names]
+            assign = [self.client.get_member(assignee_id)] if assignee_id else None
+
+            return trello_list.add_card(name=name, desc=desc, labels=labels, assign=assign)
+
+    def update_card_labels(self, card_id, board_id, label_names):
+        new_label_names = set(label_names)
+
+        card = self.client.get_card(card_id)
+        old_labels = card.labels or []
+        old_label_names = {l.name for l in old_labels}
+
+        # Remove old labels from diff
+        for label_name in old_label_names:
+            if label_name not in new_label_names:
+                label_to_be_removed = self.get_label_by_label_name(board_id=board_id, label_name=label_name)
+                card.remove_label(label_to_be_removed)
+
+        # Add new labels from diff
+        for label_name in new_label_names:
+            if label_name not in old_label_names:
+                label_to_be_added = self.get_label_by_label_name(board_id=board_id, label_name=label_name)
+                try:
+                    # The label may have already been attached due to bulk updating to avoid concurrent update label tasks.
+                    card.add_label(label_to_be_added)
+                except Exception as e:
+                    print("Could not add label to card", e)
 
     def organizations(self):
         """Returns a list of Trello organizations associated with the API Token.

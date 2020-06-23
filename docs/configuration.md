@@ -36,6 +36,7 @@ The GitHub API token you provide should have the following permissions set:
 * `public_repo`
 * `read:org`
 * `write:repo_hook`
+* `admin:org_hook`
 
 ![GitHub API Token Permissions](../images/permissions.png)
 

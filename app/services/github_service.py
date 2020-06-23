@@ -17,6 +17,7 @@ Service-helpers for interacting with the GitHub API.
 
 from os import environ
 from ..api_clients import GitHubAPIClient
+from ..models import ConfigValue
 
 
 class GitHubService(object):
@@ -65,6 +66,27 @@ class GitHubService(object):
         )
         return hook.id
 
+    def create_github_org_hook(self, url_root):
+        """Creates a repository webhook for a given repo.
+
+        Args:
+            url_root (str): The webhook url for this Gello server.
+
+        Returns:
+            int: the id of the newly-created webhook (unique per org)
+        """
+        config = {'url': url_root, 'content_type': 'json'}
+        events = ['organization']
+
+        org = self._get_organization()
+        hook = org.create_hook(
+            name='web',
+            config=config,
+            events=events,
+            active=True
+        )
+        return hook.id
+
     def delete_github_hook(self, webhook_id, repo_id):
         """Deletes a repository webhook from a given repo.
 
@@ -92,13 +114,13 @@ class GitHubService(object):
 
         Returns:
             github.Organization: The organization object corresponding to the
-                `GITHUB_ORG_LOGIN` environment variable.
+                `GITHUB_ORG_LOGIN` config value.
         """
-        if 'GITHUB_ORG_LOGIN' not in environ:
-            print('Must supply the `GITHUB_ORG_LOGIN` variable.')
+        if not ConfigValue.query.get('GITHUB_ORG_LOGIN'):
+            print('Must supply the `GITHUB_ORG_LOGIN` config value.')
             return
 
         orgs = self.organizations()
         return next(
-            o for o in orgs if o.login == environ.get('GITHUB_ORG_LOGIN')
+            o for o in orgs if o.login == ConfigValue.query.get('GITHUB_ORG_LOGIN').value
         )

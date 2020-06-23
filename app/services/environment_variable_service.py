@@ -69,4 +69,4 @@ class EnvironmentVariableService(object):
         Returns:
             list(str)
         """
-        return ['TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN', 'JIRA_SERVER_ADDRESS']
+        return ['TRELLO_ORG_NAME', 'GITHUB_ORG_LOGIN', 'GITHUB_ORG_WEBHOOK_ID', 'JIRA_SERVER_ADDRESS']
