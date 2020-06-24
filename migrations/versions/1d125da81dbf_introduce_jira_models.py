@@ -37,7 +37,7 @@ def upgrade():
             autoincrement=True
         )
     )
-    op.drop_constraint('subscribed_lists_subscription_board_id_subscription_repo_id_fkey',
+    op.drop_constraint('subscribed_lists_subscription_board_id_fkey',
                        'subscribed_lists', type_='foreignkey')
     op.add_column('subscriptions', sa.Column(
         'project_key', sa.String(length=64), nullable=True))
@@ -49,7 +49,7 @@ def upgrade():
     op.create_unique_constraint('subscriptions_board_id_key', 'subscriptions', ['board_id', 'repo_id'])
     op.create_unique_constraint('subscriptions_project_key_key', 'subscriptions', ['project_key', 'repo_id'])
 
-    op.create_foreign_key('subscribed_lists_subscription_board_id_subscription_repo_id_fkey', 'subscribed_lists', 'subscriptions', [
+    op.create_foreign_key('subscribed_lists_subscription_board_id_fkey', 'subscribed_lists', 'subscriptions', [
                           'subscription_board_id', 'subscription_repo_id'], ['board_id', 'repo_id'])
     op.create_table('jira_issue_types',
                     sa.Column('id', sa.Integer(), nullable=False),
@@ -228,7 +228,7 @@ def downgrade():
     op.drop_index(op.f('ix_jira_issue_types_timestamp'),
                   table_name='jira_issue_types')
     op.drop_table('jira_issue_types')
-    op.drop_constraint('subscribed_lists_subscription_board_id_subscription_repo_id_fkey',
+    op.drop_constraint('subscribed_lists_subscription_board_id_fkey',
                        'subscribed_lists', type_='foreignkey')
     op.drop_constraint('subscriptions_project_key_key', 'subscriptions', type_='unique')
     op.drop_constraint('subscriptions_board_id_key', 'subscriptions', type_='unique')
@@ -238,7 +238,7 @@ def downgrade():
     op.drop_constraint('subscriptions_pkey', 'subscriptions', 'primary')
     op.create_primary_key('subscriptions_pkey', 'subscriptions', ["board_id", "repo_id", ])
     op.drop_column('subscriptions', 'project_key')
-    op.create_foreign_key('subscribed_lists_subscription_board_id_subscription_repo_id_fkey', 'subscribed_lists', 'subscriptions', [
+    op.create_foreign_key('subscribed_lists_subscription_board_id_fkey', 'subscribed_lists', 'subscriptions', [
                           'subscription_board_id', 'subscription_repo_id'], ['board_id', 'repo_id'])
     op.drop_column('subscriptions', 'id')
     op.execute(sa.schema.DropSequence(sa.Sequence("subscriptions_id_seq")))

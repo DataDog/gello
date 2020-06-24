@@ -34,7 +34,8 @@ def upgrade():
         sa.Column('timestamp', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
             ['subscription_board_id', 'subscription_repo_id'],
-            ['subscriptions.board_id', 'subscriptions.repo_id']
+            ['subscriptions.board_id', 'subscriptions.repo_id'],
+            name='subscribed_lists_subscription_board_id_fkey'
         ),
         sa.ForeignKeyConstraint(['list_id'], ['lists.trello_list_id']),
         sa.PrimaryKeyConstraint(
