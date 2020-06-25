@@ -18,6 +18,7 @@ Service-helpers for interacting with the GitHub API.
 from os import environ
 from ..api_clients import GitHubAPIClient
 from ..models import ConfigValue
+from .config_value_service import ConfigValueService
 
 
 class GitHubService(object):
@@ -26,6 +27,7 @@ class GitHubService(object):
     def __init__(self):
         """Initializes a new GitHubService object."""
         self.client = GitHubAPIClient().client()
+        self._config_value_service = ConfigValueService()
 
     def repos(self):
         """Returns an array of the organization's public repos.
@@ -86,6 +88,50 @@ class GitHubService(object):
             active=True
         )
         return hook.id
+
+    def get_org_webhook(self, url_root):
+        """Gets a organization webhook.
+
+        Args:
+            url_root (str): The webhook url for this Gello server.
+
+        Returns:
+            github.Hook.Hook: The Github organization webhook object with `url_root` as the url.
+        """
+        for hook in self._get_organization().get_hooks():
+            if (hook.config['url'] == url_root or
+                    (hook.config['url'][-1] != '/' and hook.config['url'] + "/" == url_root)):
+                return hook
+        return None
+
+    def update_webhook_events(self, existing_hook, list_of_events):
+        """Updates the organization webhook with a list of events.
+
+        Args:
+            existing_hook (github.Hook.Hook): The Github organization webhook object.
+            list_of_events (List[str]): A list of events to be added to the webhook triggers.
+
+        Returns:
+            None
+        """
+        hook = self._get_organization().get_hook(existing_hook.id)
+        hook.edit(
+            name='web',
+            config=existing_hook.config,
+            events=existing_hook.events + list_of_events,
+            active=True
+        )
+
+    def upsert_webhook(self, webhook_id):
+        """Adds or updates `GITHUB_ORG_WEBHOOK_ID` as a Config Value.
+
+        Args:
+            webhook_id (int): The GitHub-issued id for org webhook.
+
+        Returns:
+            None
+        """
+        self._config_value_service.create(key='GITHUB_ORG_WEBHOOK_ID', value=str(webhook_id))
 
     def delete_github_hook(self, webhook_id, repo_id):
         """Deletes a repository webhook from a given repo.

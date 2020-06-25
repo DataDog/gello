@@ -22,7 +22,7 @@ from .delete_trello_card import DeleteCardObjectFromDatabase
 from .delete_jira_issue import DeleteJIRAIssueObjectFromDatabase
 from .create_github_webhook import CreateGitHubWebhook
 from .delete_github_webhook import DeleteGitHubWebhook
-from .create_github_org_webhook import CreateGitHubOrgWebhook
+from .upsert_github_org_webhook import UpsertGitHubOrgWebhook
 from .create_jira_issue import CreateJIRAIssue
 from .create_issue_issue import CreateIssueIssue
 from .create_pull_request_issue import CreatePullRequestIssue
@@ -53,7 +53,7 @@ def _register_tasks():
     celery.tasks.register(CreatePullRequestCard())
     celery.tasks.register(CreateGitHubWebhook())
     celery.tasks.register(DeleteGitHubWebhook())
-    celery.tasks.register(CreateGitHubOrgWebhook())
+    celery.tasks.register(UpsertGitHubOrgWebhook())
     celery.tasks.register(UpdateIssueCardLabels())
     celery.tasks.register(UpdateJiraIssueLabels())
     celery.tasks.register(UpdatePullRequestCardLabels())
