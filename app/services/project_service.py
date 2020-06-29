@@ -210,8 +210,9 @@ class ProjectService(APIService):
         )
 
         for jira_issue in jira_issues_to_create:
+            issue_summary = jira_issue.fields.summary if len(jira_issue.fields.summary) <= 64 else jira_issue.fields.summary[:61] + "..."
             jira_issue_model = JIRAParentIssue(
-                summary=jira_issue.fields.summary,
+                summary=issue_summary,
                 jira_issue_key=jira_issue.key,
                 project_key=project_key
             )
@@ -248,7 +249,7 @@ class ProjectService(APIService):
         Args:
             fetched_issues (list(JIRA.IssueType)): JIRA Issue Type objects to
                 be inserted into the database.
-            project_key (str): The key of the `Project` the issues types will
+            project (Project): The `Project` object where the issues types will
                 be associated to.
 
         Returns:

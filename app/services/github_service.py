@@ -98,7 +98,17 @@ class GitHubService(object):
         Returns:
             github.Hook.Hook: The Github organization webhook object with `url_root` as the url.
         """
-        for hook in self._get_organization().get_hooks():
+        # TODO(URSULA): Clean this up once Github Pagination API totalCount does not throw an exception
+        # (https://pygithub.readthedocs.io/en/latest/utilities.html#github.PaginatedList.PaginatedList)
+        try:
+            total_count = self._get_organization().get_hooks().totalCount
+        except UnknownObjectException as e:
+            print("github.GithubException.UnknownObjectException:", e)
+            total_count = 0
+        
+        hooks = self._get_organization().get_hooks() if total_count > 0 else []
+
+        for hook in hooks:
             if (hook.config['url'] == url_root or
                     (hook.config['url'][-1] != '/' and hook.config['url'] + "/" == url_root)):
                 return hook
