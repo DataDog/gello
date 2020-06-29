@@ -22,6 +22,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, Length
 from app.services import GitHubService, TrelloService
+from app.models.config_value import ConfigValue
 from jira import JIRA, JIRAError
 
 
@@ -30,8 +31,9 @@ class OnboardingForm(FlaskForm):
     jira_address = environ.get('JIRA_SERVER_ADDRESS')
     trello_org_name = environ.get('TRELLO_ORG_NAME')
     github_org_login = environ.get('GITHUB_ORG_LOGIN')
+    github_org_webhook_id = environ.get('GITHUB_ORG_WEBHOOK_ID')
 
-    if not github_org_login:
+    if not github_org_login or not github_org_webhook_id:
         github_organization_login = StringField(
             'GitHub Organization Login',
             validators=[Required(), Length(1, 100)],
@@ -72,39 +74,49 @@ class OnboardingForm(FlaskForm):
         - Validates the `github_organization_login` attribute corresponds to a
           GitHub organization accessible with the api token
         """
-        trello_organization_name = self.trello_organization_name.data.strip()
-        github_organization_login = self.github_organization_login.data.strip()
+        trello_org_name = environ.get('TRELLO_ORG_NAME')
+        github_org_login = environ.get('GITHUB_ORG_LOGIN')
+        github_org_webhook_id = environ.get('GITHUB_ORG_WEBHOOK_ID')
 
-        if trello_organization_name:
-            # Check that the Trello organization name exists
-            trello_organizations = self.trello_service.organizations()
-            trello_organization_names = [o.name for o in trello_organizations]
+        if not github_org_login or not github_org_webhook_id:
+            github_organization_login = self.github_organization_login.data.strip() if self.github_organization_login else None
 
-            if trello_organization_name not in trello_organization_names:
+            # Check that the GitHub organization login exists
+            github_organizations = self.github_service.organizations()
+            github_organization_logins = [o.login for o in github_organizations]
+
+            if github_organization_login not in github_organization_logins:
                 self._error_message = textwrap.dedent(
                     f"""
-                    The Trello organization is not accessible with the provided
-                    TRELLO_API_KEY and TRELLO_API_TOKEN
+                    The GitHub organization is not accessible with the provided
+                    GITHUB_API_TOKEN
                     """
                 )
                 return False
 
-        self._trello_name = trello_organization_name
+            self._github_login = github_organization_login
+        else:
+            self._github_login = environ.get('GITHUB_ORG_LOGIN')
 
-        # Check that the GitHub organization login exists
-        github_organizations = self.github_service.organizations()
-        github_organization_logins = [o.login for o in github_organizations]
+        if not trello_org_name:
+            trello_organization_name = self.trello_organization_name.data.strip() if self.trello_organization_name else None
+            if trello_organization_name:
+                # Check that the Trello organization name exists
+                trello_organizations = self.trello_service.organizations()
+                trello_organization_names = [o.name for o in trello_organizations]
 
-        if github_organization_login not in github_organization_logins:
-            self._error_message = textwrap.dedent(
-                f"""
-                The GitHub organization is not accessible with the provided
-                GITHUB_API_TOKEN
-                """
-            )
-            return False
+                if trello_organization_name not in trello_organization_names:
+                    self._error_message = textwrap.dedent(
+                        f"""
+                        The Trello organization is not accessible with the provided
+                        TRELLO_API_KEY and TRELLO_API_TOKEN
+                        """
+                    )
+                    return False
 
-        self._github_login = github_organization_login
+            self._trello_name = trello_organization_name
+        else:
+            self._trello_name = environ.get('TRELLO_ORG_NAME')
 
         # All custom validations passed
         return True

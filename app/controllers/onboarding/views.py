@@ -22,11 +22,10 @@ from flask import redirect, request, url_for, flash, render_template
 from flask_login import login_required
 from . import onboarding
 from .forms import OnboardingForm
-from ...models import ConfigValue
 from ...services import ConfigValueService, GitHubService, TrelloService, \
     api_services, TrelloMemberService, BoardService, ProjectService, \
     JIRAService
-from ...tasks.create_github_org_webhook import CreateGitHubOrgWebhook
+from ...tasks.upsert_github_org_webhook import UpsertGitHubOrgWebhook
 
 
 github_service = GitHubService()
@@ -51,12 +50,8 @@ def index():
         for api_service in api_services():
             api_service.fetch()
 
-        # check if there already exists a webhook with this organization
-        print("ConfigValue.query.get('GITHUB_ORG_WEBHOOK_ID'):", ConfigValue.query.get('GITHUB_ORG_WEBHOOK_ID'))
-        print("environ.get('GITHUB_ORG_LOGIN'):", environ.get('GITHUB_ORG_LOGIN'))
-        if not ConfigValue.query.get('GITHUB_ORG_WEBHOOK_ID'):
-            # Enqueue a task to create a webhook for the org (and persist webhook_id)
-            CreateGitHubOrgWebhook.delay(url_root='https://agile-depths-40937.herokuapp.com/')
+        # Enqueue a task to create or update a webhook for the org (and persist webhook_id)
+        UpsertGitHubOrgWebhook.delay(url_root=request.url_root)
 
         if name:
             TrelloMemberService().fetch()
