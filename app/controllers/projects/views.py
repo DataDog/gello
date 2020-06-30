@@ -21,9 +21,7 @@ from flask_login import login_required
 from . import project
 from .forms import RefreshForm
 from ...models import Project, ConfigValue
-from ...services import ProjectService
-
-project_service = ProjectService()
+from ...tasks.fetch_jira_projects import FetchJIRAProjects
 
 
 @project.route('/', methods=['GET', 'POST'])
@@ -38,8 +36,8 @@ def index():
 
     form = RefreshForm()
     if form.validate_on_submit():
-        project_service.fetch()
-        flash('The projects have been updated.')
+        FetchJIRAProjects.delay()
+        flash('The projects are being updated. This may take a couple of minutes. Please refresh page regularly. No need to click the refresh button.')
 
         return redirect(url_for('.index'))
 
