@@ -16,6 +16,8 @@ Service-helpers for interacting with the GitHub API.
 """
 
 from os import environ
+import time
+
 from ..api_clients import GitHubAPIClient
 from ..models import ConfigValue
 from .config_value_service import ConfigValueService
@@ -44,6 +46,17 @@ class GitHubService(object):
             list(github.Member)
         """
         return self._get_organization().get_members()
+
+    def rate_limit_sleep(self):
+        """Sleep after making a request to Github API.
+        Adhering to Github's rate limit of 5000 requests per hour: https://developer.github.com/v3/#rate-limiting
+        Delay calculation: 5000 requests / 3600 seconds (in an hour) = 1.39.
+        Rounded up to 1.5 for buffer. Specifically, 5000*1.5-5000*1.39 = 550 more requests.
+
+        Returns:
+            None
+        """
+        time.sleep(1.5)
 
     def create_github_hook(self, url_root, repo_id):
         """Creates a repository webhook for a given repo.
