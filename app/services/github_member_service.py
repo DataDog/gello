@@ -47,6 +47,20 @@ class GitHubMemberService(APIService):
         # Persist the changes
         db.session.commit()
 
+    def _get_member_ids(self, fetched_members):
+        page_index = 0
+        fetched_member_ids = []
+        while True:
+            current_page = fetched_members.get_page(page_index)
+            self.github_service.rate_limit_sleep()
+
+            if not current_page:
+                break
+            fetched_member_ids += [repo.id for repo in current_page]
+            page_index += 1
+
+        return fetched_member_ids
+
     def _update_or_delete_records(self, fetched_members, persisted_members):
         """Updates or deletes `GitHubMember` records in the database.
 
@@ -59,7 +73,7 @@ class GitHubMemberService(APIService):
         Returns:
             None
         """
-        fetched_member_ids = list(map(lambda x: x.id, fetched_members))
+        fetched_member_ids = self._get_member_ids(fetched_members)
 
         for record in persisted_members:
             if record.member_id in fetched_member_ids:

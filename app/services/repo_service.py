@@ -47,6 +47,20 @@ class RepoService(APIService):
         # Persist the changes
         db.session.commit()
 
+    def _get_repo_ids(self, fetched_repos):
+        page_index = 0
+        fetched_repo_ids = []
+        while True:
+            current_page = fetched_repos.get_page(page_index)
+            self.github_service.rate_limit_sleep()
+
+            if not current_page:
+                break
+            fetched_repo_ids += [repo.id for repo in current_page]
+            page_index += 1
+
+        return fetched_repo_ids
+
     def _update_or_delete_records(self, fetched_repos, persisted_repos):
         """Updates or deletes `Repo` records in the database.
 
@@ -59,7 +73,7 @@ class RepoService(APIService):
         Returns:
             None
         """
-        fetched_repo_ids = list(map(lambda x: x.id, fetched_repos))
+        fetched_repo_ids = self._get_repo_ids(fetched_repos)
 
         for record in persisted_repos:
             if record.github_repo_id in fetched_repo_ids:
