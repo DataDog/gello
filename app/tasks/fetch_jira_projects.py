@@ -36,3 +36,4 @@ class FetchJIRAProjects(Task):
             None
         """
         ProjectService().fetch()
+        print("Finished fetching JIRA projects")
