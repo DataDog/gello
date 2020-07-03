@@ -15,11 +15,11 @@
 Fetches JIRA projects.
 """
 
-from celery.task import Task
+from .db_task import DBTask
 from ..services.project_service import ProjectService
 
 
-class FetchJIRAProjects(Task):
+class FetchJIRAProjects(DBTask):
     """A task to fetches JIRA projects."""
 
     def __init__(self):

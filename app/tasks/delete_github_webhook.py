@@ -15,12 +15,12 @@
 Deletes a webhook from a repository.
 """
 
-from celery.task import Task
+from .db_task import DBTask
 from ..services import GitHubService
 from ..services import RepoService
 
 
-class DeleteGitHubWebhook(Task):
+class DeleteGitHubWebhook(DBTask):
     """A task to delete an existing GitHub Webhook."""
 
     def __init__(self):
@@ -38,25 +38,7 @@ class DeleteGitHubWebhook(Task):
         Returns:
             None
         """
-
-        # Delete a GitHub webhook on given repo
-        self._github_service.delete_github_hook(
-            webhook_id=webhook_id,
-            repo_id=repo_id
-        )
+        self._github_service.delete_github_hook(webhook_id=webhook_id, repo_id=repo_id)
 
         # Reset the webhook_id field to None in repo record in database
-        self._delete_webhook_from_database(repo_id=repo_id)
-
-    def _delete_webhook_from_database(self, repo_id):
-        """Concrete helper method.
-
-        Internal helper to remove the github_webhook_id field from specified record.
-
-        Args:
-            repo_id (int): The id for the repo record to remove webhook id from.
-
-        Returns:
-            None
-        """
         self._repo_service.remove_webhook(repo_id=repo_id)

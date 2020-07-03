@@ -15,10 +15,10 @@
 Abstract base class for tasks.
 """
 
-from celery.task import Task
+from .db_task import DBTask
 
 
-class GitHubBaseTask(Task):
+class GitHubBaseTask(DBTask):
     """An abstract base class for GitHub-related tasks."""
 
     def run(self):
