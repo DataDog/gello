@@ -181,7 +181,8 @@ class ProjectService(APIService):
                 jira_issue = fetched_issue_dict[record.jira_issue_key]
 
                 # Update the attributes
-                record.summary = jira_issue.fields.summary
+                issue_summary = jira_issue.fields.summary if len(jira_issue.fields.summary) <= 64 else jira_issue.fields.summary[:61] + "..."  # Truncate issue due to table constraint
+                record.summary = issue_summary
                 record.jira_issue_key = jira_issue.key
             else:
                 db.session.delete(record)
