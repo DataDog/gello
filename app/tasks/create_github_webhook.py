@@ -15,12 +15,12 @@
 Creates a webhook for a repository.
 """
 
-from celery.task import Task
+from .db_task import DBTask
 from ..services import GitHubService
 from ..services import RepoService
 
 
-class CreateGitHubWebhook(Task):
+class CreateGitHubWebhook(DBTask):
     """A task to create a GitHub Repo Webhook."""
 
     def __init__(self):

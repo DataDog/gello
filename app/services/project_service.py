@@ -249,7 +249,7 @@ class ProjectService(APIService):
         Args:
             fetched_issues (list(JIRA.IssueType)): JIRA Issue Type objects to
                 be inserted into the database.
-            project (Project): The `Project` object where the issues types will
+            project_key (str): The key of the `Project` the issues types will
                 be associated to.
 
         Returns:

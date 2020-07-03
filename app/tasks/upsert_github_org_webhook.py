@@ -17,13 +17,13 @@ Updates or creates a webhook for an organization.
 
 from os import environ
 
-from celery.task import Task
+from .db_task import DBTask
 from ..models import ConfigValue
 from ..services.github_service import GitHubService
 from ..services.environment_variable_service import EnvironmentVariableService
 
 
-class UpsertGitHubOrgWebhook(Task):
+class UpsertGitHubOrgWebhook(DBTask):
     """A task to update or create a GitHub Organization Webhook."""
 
     def __init__(self):
