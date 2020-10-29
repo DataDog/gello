@@ -173,7 +173,7 @@ class GitHubReceiver(GitHubBaseTask):
             elif action == 'closed':
                 self._delete_issue_jira_issue_objects()
             else:
-                print('Unsupported event action.')
+                print('Unsupported event action: {0}'.format(action))
 
         elif scope == "pull_request":
             if 'issue' in self.payload
