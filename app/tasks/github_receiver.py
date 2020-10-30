@@ -176,7 +176,7 @@ class GitHubReceiver(GitHubBaseTask):
                 print('Unsupported event action: {0}'.format(action))
 
         elif scope == "pull_request":
-            if 'issue' in self.payload
+            if 'issue' in self.payload:
                 label_names += [label['name'] for label in self.payload['issue']['labels']]
 
             if not pull_request_autocard and 'comment' in self.payload and action == 'created' and \
