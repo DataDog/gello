@@ -47,4 +47,5 @@ class UpdateIssueCardLabels(GitHubBaseTask):
         self.payload = payload
         self.set_scope_data()
         issue = Issue.query.filter_by(trello_board_id=board_id, github_issue_id=issue_id).first()
-        self._trello_service.update_card_labels(issue.trello_card_id, board_id, label_names)
+        if hasattr(issue, 'trello_card_id'):
+            self._trello_service.update_card_labels(issue.trello_card_id, board_id, label_names)
