@@ -69,8 +69,7 @@ class CreateJIRAIssue(GitHubBaseTask):
             self._persist_issue_to_database(issue=issue)
 
         except JIRAError as err:
-            print(err)
-            return err
+            print('JIRAError Returned: {0}'.format(err))
 
     def jira_service(self):
         """Returns the JiraService instance.
