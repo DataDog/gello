@@ -76,7 +76,7 @@ class JIRAService(object):
         """
         if self._init_if_needed():
             return self.client.search_assignable_users_for_projects(
-                '', project_key)
+                '', project_key, 0, 5000)
 
     def _convert_into_snake_case(self, words):
         return "_".join(words.split(" "))
