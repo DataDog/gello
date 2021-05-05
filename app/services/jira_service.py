@@ -50,7 +50,15 @@ class JIRAService(object):
         Returns a list of members of the organization
         """
         if self._init_if_needed():
-            return self.client.search_users('', 0, 5000)
+            pagination_size = 1000
+            current_page = 0
+            result_page = self.client.search_users('', current_page, pagination_size)
+            result_total = []
+            while len(result_page) > 0:
+                result_total += result_page
+                current_page += 1
+                result_page = self.client.search_users('', current_page * pagination_size, pagination_size)
+            return result_total
 
     def get_issue_types(self, project_key):
         """
@@ -75,8 +83,15 @@ class JIRAService(object):
         Returns a list of assignable jira member objects for a given project
         """
         if self._init_if_needed():
-            return self.client.search_assignable_users_for_projects(
-                '', project_key, 0, 5000)
+            pagination_size = 1000
+            current_page = 0
+            result_page = self.client.search_assignable_users_for_projects('', project_key, current_page, pagination_size)
+            result_total = []
+            while len(result_page) > 0:
+                result_total += result_page
+                current_page += 1
+                result_page = self.client.search_assignable_users_for_projects('', project_key, current_page * pagination_size, pagination_size)
+            return result_total
 
     def _convert_into_snake_case(self, words):
         return "_".join(words.split(" "))
