@@ -89,9 +89,9 @@ class ProjectService(APIService):
                     else:
                         persisted_users.pop(user)
 
-                for user in persisted_users:
-                    if user.jira_member_id not in fetched_user_ids:
-                        record.allowed_members.remove(user)
+                for user_id, user_object in persisted_users.items():
+                    if user_id not in fetched_user_ids:
+                        record.allowed_members.remove(user_object)
 
                 # Update the attributes
                 record.name = jira_proj.name
