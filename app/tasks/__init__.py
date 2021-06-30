@@ -37,6 +37,8 @@ from .update_pull_request_card_labels import UpdatePullRequestCardLabels
 from .update_jira_pull_request_issue_labels import UpdateJiraPullRequestIssueLabels
 from .github_receiver import GitHubReceiver
 from .fetch_jira_projects import FetchJIRAProjects
+from .append_jira_issue_labels import AppendJiraIssueLabels
+from .append_jira_pull_request_issue_labels import AppendJiraPullRequestIssueLabels
 
 
 def _register_tasks():
@@ -61,5 +63,7 @@ def _register_tasks():
     celery.tasks.register(UpdateJiraPullRequestIssueLabels())
     celery.tasks.register(GitHubReceiver())
     celery.tasks.register(FetchJIRAProjects())
+    celery.tasks.register(AppendJiraIssueLabels())
+    celery.tasks.register(AppendJiraPullRequestIssueLabels())
 
 _register_tasks()
