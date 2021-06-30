@@ -29,6 +29,8 @@ from . import UpdateIssueCardLabels
 from . import UpdateJiraIssueLabels
 from . import UpdateJiraPullRequestIssueLabels
 from . import UpdatePullRequestCardLabels
+from . import AppendJiraIssueLabels
+from . import AppendJiraPullRequestIssueLabels
 from ..models import ConfigValue
 from ..models import GitHubMember
 from ..models import Issue
@@ -171,6 +173,12 @@ class GitHubReceiver(GitHubBaseTask):
             elif action == "labeled" or action == "unlabeled":
                 self._update_issue_jira_issue_labels(self.payload['issue']['id'], project_key, label_names)
             elif action == 'closed':
+                AppendJiraIssueLabels.delay(
+                    self.payload["issue"]["id"],
+                    project_key,
+                    ["github_closed"],
+                    self.payload,
+                )
                 self._delete_issue_jira_issue_objects()
             else:
                 print('Unsupported event action: {0}'.format(action))
@@ -190,6 +198,12 @@ class GitHubReceiver(GitHubBaseTask):
             elif action == "labeled" or action == "unlabeled":
                 self._update_pull_request_jira_issue_labels(self.payload['pull_request']['id'], project_key, label_names)
             elif action == 'closed':
+                AppendJiraPullRequestIssueLabels.delay(
+                    self.payload["issue"]["id"],
+                    project_key,
+                    ["github_closed"],
+                    self.payload,
+                )
                 self._delete_pull_request_jira_issue_objects()
             else:
                 print('Unsupported event action.')
