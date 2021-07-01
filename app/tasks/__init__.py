@@ -35,11 +35,10 @@ from .update_issue_card_labels import UpdateIssueCardLabels
 from .update_jira_issue_labels import UpdateJiraIssueLabels
 from .update_pull_request_card_labels import UpdatePullRequestCardLabels
 from .update_jira_pull_request_issue_labels import UpdateJiraPullRequestIssueLabels
-from .github_receiver import GitHubReceiver
-from .fetch_jira_projects import FetchJIRAProjects
 from .append_jira_issue_labels import AppendJiraIssueLabels
 from .append_jira_pull_request_issue_labels import AppendJiraPullRequestIssueLabels
-
+from .github_receiver import GitHubReceiver
+from .fetch_jira_projects import FetchJIRAProjects
 
 def _register_tasks():
     """Registers class based celery tasks with celery worker."""
