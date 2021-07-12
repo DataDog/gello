@@ -143,3 +143,11 @@ class JIRAService(object):
             '"')
         issue = issues[0]
         issue.update(fields={"labels": label_names})
+
+    def append_issue_labels(self, project_key, issue_key, label_names):
+        issues = self.client.search_issues(
+            'project = "' + project_key +
+            '" AND issuekey = "' + issue_key +
+            '"')
+        issue = issues[0]
+        issue.update(labels=[{"add": self._convert_into_snake_case(label)} for label in label_names])
