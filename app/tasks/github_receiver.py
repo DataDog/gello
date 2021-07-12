@@ -199,7 +199,7 @@ class GitHubReceiver(GitHubBaseTask):
                 self._update_pull_request_jira_issue_labels(self.payload['pull_request']['id'], project_key, label_names)
             elif action == 'closed':
                 AppendJiraPullRequestIssueLabels.delay(
-                    self.payload["issue"]["id"],
+                    self.payload["pull_request"]["id"],
                     project_key,
                     ["github_closed"],
                     self.payload,
