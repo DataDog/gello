@@ -52,12 +52,12 @@ class JIRAService(object):
         if self._init_if_needed():
             pagination_size = 1000
             current_page = 0
-            result_page = self.client.search_users('', current_page, pagination_size)
+            result_page = self.client.search_users(None, current_page, pagination_size, True, False, "*")
             result_total = []
             while len(result_page) > 0:
                 result_total += result_page
                 current_page += 1
-                result_page = self.client.search_users('', current_page * pagination_size, pagination_size)
+                result_page = self.client.search_users(None, current_page * pagination_size, pagination_size, True, False, "*")
             return result_total
 
     def get_issue_types(self, project_key):
