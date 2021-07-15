@@ -175,8 +175,10 @@ class GitHubReceiver(GitHubBaseTask):
             elif action == "labeled" or action == "unlabeled":
                 self._update_issue_jira_issue_labels(self.payload['issue']['id'], project_key, label_names)
             elif action == 'closed':
+                issue = Issue.query.filter_by(jira_project_key=project_key, github_issue_id=self.payload['issue']['id']).first()
+                jira_issue_key = issue.jira_issue_key
                 AppendJiraIssueLabels.delay(
-                    self.payload["issue"]["id"],
+                    jira_issue_key,
                     project_key,
                     ["github_closed"],
                     self.payload,
