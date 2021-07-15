@@ -27,11 +27,11 @@ class AppendJiraPullRequestIssueLabels(GitHubBaseTask):
         """Initializes a task to update the labels of a jira issue."""
         self._jira_service = JIRAService()
 
-    def run(self, pull_request_id, project_key, label_names, payload):
+    def run(self, jira_issue_key, project_key, label_names, payload):
         """Call the JIRA client to append lables to the issue
 
         Args:
-            pull_request_id (str): The id of the Github pull request.
+            jira_issue_key (str): The key of the JIRA issue to update.
             project_key (str): The key of the project to raise an issue on.
             label_names (List[str]): A list of label names.
             payload (dict): Github data specific to the JIRA issue to be updated.
@@ -41,5 +41,4 @@ class AppendJiraPullRequestIssueLabels(GitHubBaseTask):
         """
         self.payload = payload
         self.set_scope_data()
-        pull_request = PullRequest.query.filter_by(jira_project_key=project_key, github_pull_request_id=pull_request_id).first()
-        self._jira_service.append_issue_labels(project_key=project_key, issue_key=pull_request.jira_issue_key, label_names=label_names)
+        self._jira_service.append_issue_labels(project_key=project_key, issue_key=jira_issue_key, label_names=label_names)
