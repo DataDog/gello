@@ -166,7 +166,9 @@ class GitHubReceiver(GitHubBaseTask):
                     self._manual_command_string() in self.payload['comment']['body']:
                 self._create_manual_issue(project_key, label_names, jira_member_id,
                                         parent_issue, issue_type)
-            elif issue_autocard and action == 'opened':
+            elif not issue_autocard:
+                print('Repo not subscribed to Issues.')
+            elif action == 'opened':
                 self._create_jira_issue_issue(project_key, label_names,
                                             jira_member_id,
                                             parent_issue, issue_type)
@@ -190,15 +192,19 @@ class GitHubReceiver(GitHubBaseTask):
                     self._manual_command_string() in self.payload['comment']['body']:
                 self._create_manual_issue(project_key, label_names, jira_member_id,
                                         parent_issue, issue_type)
-            elif pull_request_autocard and action == 'opened':
+            elif not pull_request_autocard:
+                print('Repo not subscribed to PRs.')
+            elif action == 'opened':
                 self._create_jira_pull_request_issue(
                     project_key, label_names, jira_member_id, parent_issue,
                     issue_type)
             elif action == "labeled" or action == "unlabeled":
                 self._update_pull_request_jira_issue_labels(self.payload['pull_request']['id'], project_key, label_names)
             elif action == 'closed':
+                pull_request = PullRequest.query.filter_by(jira_project_key=project_key, github_pull_request_id=self.payload["pull_request"]["id"]).first()
+                jira_issue_key = pull_request.jira_issue_key
                 AppendJiraPullRequestIssueLabels.delay(
-                    self.payload["pull_request"]["id"],
+                    jira_issue_key,
                     project_key,
                     ["github_closed"],
                     self.payload,
