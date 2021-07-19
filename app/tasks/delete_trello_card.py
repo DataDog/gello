@@ -27,7 +27,7 @@ class DeleteCardObjectFromDatabase(GitHubBaseTask):
         self._issue_service = IssueService()
         self._pull_request_service = PullRequestService()
 
-    def run(self, scope, github_id):
+    def run(self, scope, github_id, pull_request_id=None):
         """Deletes the record of the trello card in Gello.
 
         NOTE: this does not delete the card on the Trello board, only removes
@@ -44,6 +44,9 @@ class DeleteCardObjectFromDatabase(GitHubBaseTask):
         if scope == 'issue':
             self._issue_service.delete(github_issue_id=github_id)
         elif scope == 'pull_request':
-            self._pull_request_service.delete(github_pull_request_id=github_id)
+            if pull_request_id:
+                self._pull_request_service.delete_by_id(pull_request_id=pull_request_id)
+            else:
+                self._pull_request_service.delete(github_pull_request_id=github_id)
         else:
             print('Unsupported GitHub scope')
