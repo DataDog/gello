@@ -585,10 +585,12 @@ class GitHubReceiver(GitHubBaseTask):
             github_pull_request_id=github_id)
 
         for pull_request in pull_requests:
-            DeleteCardObjectFromDatabase.delay(
-                scope=scope,
-                github_id=github_id
-            )
+            # Don't delete PR from database if there is still JIRA work to do
+            if pull_request.jira_issue_key is None:
+                DeleteCardObjectFromDatabase.delay(
+                    scope=scope,
+                    github_id=github_id
+                )
 
     def _user_in_organization(self):
         """Checks if the person is in the organization.
