@@ -107,3 +107,16 @@ class PullRequestService(CRUDService):
         PullRequest.query.filter_by(
                github_pull_request_id=github_pull_request_id).delete()
         db.session.commit()
+
+    def delete_by_id(self, pull_request_id):
+        """Deletes an old, persisted pull_request by id.
+
+        Args:
+            pull_request_id (int): The db id of the pull request.
+
+        Returns:
+            None
+        """
+        PullRequest.query.filter_by(
+               id=pull_request_id).delete()
+        db.session.commit()
