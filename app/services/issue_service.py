@@ -105,3 +105,15 @@ class IssueService(CRUDService):
         """
         Issue.query.filter_by(github_issue_id=github_issue_id).delete()
         db.session.commit()
+
+    def delete_by_id(self, issue_id):
+        """Deletes an old, persisted issue by id.
+
+        Args:
+            issue_id (int): The db id of the issue.
+
+        Returns:
+            None
+        """
+        Issue.query.filter_by(id=issue_id).delete()
+        db.session.commit()

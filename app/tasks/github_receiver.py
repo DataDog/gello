@@ -568,10 +568,13 @@ class GitHubReceiver(GitHubBaseTask):
         issues = Issue.query.filter_by(github_issue_id=github_id)
 
         for issue in issues:
-            DeleteCardObjectFromDatabase.delay(
-                scope=scope,
-                github_id=github_id
-            )
+            # Don't delete issue from database if there is still JIRA work to do
+            if issue.jira_issue_key is None:
+                DeleteCardObjectFromDatabase.delay(
+                    scope=scope,
+                    github_id=None,
+                    db_id=issue.id
+                )
 
     def _delete_pull_request_trello_card_objects(self):
         """Deletes all trello cards associated with a pull request.
@@ -590,7 +593,7 @@ class GitHubReceiver(GitHubBaseTask):
                 DeleteCardObjectFromDatabase.delay(
                     scope=scope,
                     github_id=None,
-                    pull_request_id=pull_request.id
+                    db_id=pull_request.id
                 )
 
     def _user_in_organization(self):
