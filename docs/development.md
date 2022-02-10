@@ -2,66 +2,35 @@
 
 ### Development Setup
 
-#### Prerequisites
-
-- macOS
-- PostgreSQL
-    ```bash
-    brew install postgresql
-    ```
-- Redis (make sure the server runs on default port - 6379)
-    ```bash
-    brew install redis
-    redis-server
-    ```
+- Docker
+- ngrok
 
 #### Installing
 
-1. Install the pip package manager
+1. Building the python image and install dependencies.
 
     ```bash
-    sudo easy_install pip
+    docker-compose build
     ```
 
-2. Install [Pyenv with brew](https://github.com/pyenv/pyenv#homebrew-on-mac-os-x)
-
-    ```bash
-    brew update
-    brew install pyenv pyenv-virtualenv
-    ```
-
-3. Install Python 3.6.4 with Pyenv
-
-    ```bash
-    pyenv install 3.6.4
-    ```
-
-4. Create and activate `virtualenv` with Python 3.6.4
-
-    ```bash
-    pyenv virtualenv 3.6.4 v-3.6.4
-    pyenv activate v-3.6.4
-    ```
-
-5. Install the dependencies
-
-    ```bash
-    pip install pipenv
-    pipenv install
-    ```
-
-6. Create a PostgreSQL database
-
-    ```bash
-    createdb your_postgresql_database_name
-    ```
-
-7. In root directory of gello, create a .env file following the same format as .env.sample
+2. In root directory of gello, create a .env file following the same format as .env.sample
 
     ```bash
     cp .env.sample .env
     ```
     Follow [configuration guide](configuration.md) to configure environment variables in .env
+
+3. Running the containers
+
+    ```bash
+    docker-compose up
+    ```
+
+4. Connect to the gello docker instance
+
+    ```bash
+    docker-compose exec app bash
+    ```
 
 8. Run the database migrations
 
@@ -78,22 +47,34 @@
 10. In one terminal, start the worker
 
     ```bash
-    pyenv activate v-3.6.4
+    docker-compose exec app bash
     celery worker -A celery_worker.celery --loglevel=info
     ```
 
 11. In another terminal, run the server
 
     ```bash
-    pyenv activate v-3.6.4
+    docker-compose exec app bash
     python run.py
     ```
 
-12. Open http://localhost:5000/.
+12. Start a ngrok instance
+    ```bash
+    ngrok http 5000
+    ```
 
-13. Log in with your admin credentials `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+13. Copy the https url of the ngrok instance and paste it in the Payload URL of
+    your webhooks
 
-14. Complete the onboarding form.
+13. Open your ngrok URL
+
+14. Log in with your admin credentials `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+
+### Miscalenous
+
+If you want to take a look at the database schema, the docker-compose contains
+an administrator. You can navigate to http://localhost:8080, select the PostgreSQL database
+database and enter the credentials present in the docker-compose file.
 
 ### Testing
 
