@@ -70,7 +70,7 @@
 
 14. Log in with your admin credentials `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
 
-### Miscalenous
+### Miscellaneous
 
 If you want to take a look at the database schema, the docker-compose contains
 an administrator. You can navigate to http://localhost:8080, select the PostgreSQL database
