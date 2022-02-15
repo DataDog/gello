@@ -40,7 +40,7 @@ class JIRAAPIClient(APIClient):
 
     def initialize(self):
         server = environ.get('JIRA_SERVER_ADDRESS')
-        username = environ.get('ADMIN_EMAIL')
+        username = environ.get('JIRA_USERNAME')
         key = environ.get('JIRA_API_KEY')
 
         self._client = None
