@@ -9,66 +9,68 @@
 
 1. Building the python image and install dependencies.
 
-    ```bash
-    docker-compose build
-    ```
+   ```bash
+   docker-compose build
+   ```
 
 2. In root directory of gello, create a .env file following the same format as .env.sample
 
-    ```bash
-    cp .env.sample .env
-    ```
-    Follow [configuration guide](configuration.md) to configure environment variables in .env
+   ```bash
+   cp .env.sample .env
+   ```
+
+   Follow [configuration guide](configuration.md) to configure environment variables in .env
 
 3. Running the containers
 
-    ```bash
-    docker-compose up
-    ```
+   ```bash
+   docker-compose up
+   ```
 
 4. Connect to the gello docker instance
 
-    ```bash
-    docker-compose exec app bash
-    ```
+   ```bash
+   docker-compose exec app bash
+   ```
 
-8. Run the database migrations
+5. Run the database migrations
 
-    ```bash
-    python manage.py db upgrade
-    ```
+   ```bash
+   python manage.py db upgrade
+   ```
 
-9. Run the deployment command to fetch API Data and create the admin user
+6. Run the deployment command to fetch API Data and create the admin user
 
-    ```bash
-    python manage.py deploy
-    ```
+   ```bash
+   python manage.py deploy
+   ```
 
-10. In one terminal, start the worker
+7. In one terminal, start the worker
 
-    ```bash
-    docker-compose exec app bash
-    celery worker -A celery_worker.celery --loglevel=info
-    ```
+   ```bash
+   docker-compose exec app bash
+   celery worker -A celery_worker.celery --loglevel=info
+   ```
 
-11. In another terminal, run the server
+8. In another terminal, run the server
 
-    ```bash
-    docker-compose exec app bash
-    python run.py
-    ```
+   ```bash
+   docker-compose exec app bash
+   python run.py
+   ```
 
-12. Start a ngrok instance
-    ```bash
-    ngrok http 5000
-    ```
+9. Start a ngrok instance
 
-13. Copy the https url of the ngrok instance and paste it in the Payload URL of
+   ```bash
+   ngrok http 5000
+   ```
+
+10. Copy the https url of the ngrok instance and paste it in the Payload URL of
     your webhooks
 
-13. Open your ngrok URL
+11. Open your ngrok URL
 
-14. Log in with your admin credentials `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+12. Log in with your admin credentials `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
 
 ### Miscellaneous
 
@@ -98,25 +100,27 @@ export TEST_DATABASE_URL='the_url_for_a_postgresql_database'
 
 2. Expose localhost (usually port 5000)
 
-    ```bash
-    ./ngrok http 5000
-    ```
-    You should see a line that looks similar to this:
+   ```bash
+   ./ngrok http 5000
+   ```
 
-    ```bash
-    Forwarding    http://7e9ea9dc.ngrok.io -> 127.0.0.1:5000
-    ```
+   You should see a line that looks similar to this:
+
+   ```bash
+   Forwarding    http://7e9ea9dc.ngrok.io -> 127.0.0.1:5000
+   ```
 
 3. Copy the url `*.ngrok.io`
 
-    In [views.py](../app/controllers/subscriptions/views.py), replace the value of `url_root` with this url (temporarily for testing)
+   In [views.py](../app/controllers/subscriptions/views.py), replace the value of `url_root` with this url (temporarily for testing)
 
-    ```python
-CreateGitHubWebhook.delay(
-    url_root='http://7e9ea9dc.ngrok.io/', # request.url_root,
-    repo_id=create_form.get_repo_id()
-)
-    ```
+   ```python
+    CreateGitHubWebhook.delay(
+      # request.url_root
+      url_root='http://7e9ea9dc.ngrok.io/',
+      repo_id=create_form.get_repo_id()
+    )
+   ```
 
 4. Now you can create new webhooks (through creating subscriptions) on Gello, and they would link to the ngrok url (which forwards to your localhost)
 
@@ -146,14 +150,19 @@ and updating them from within the flask shell:
 ```python
 import app.models as models
 from app import db
+
 # Fetch all boards
 boards = models.Board.query.all()
+
 # Create a new board
 new_board = Board(name="New Board", url="https://example.com", trello_board_id="EXAMPLE")
+
 # Add the new board to the session
 db.session.add(new_board)
+
 # edit an existing board
 boards[0].name = "new name"
+
 # Persist these changes
 db.session.commit()
 ```
@@ -174,11 +183,13 @@ coverage report
 Below are errors that you might encounter during local set-up and their solutions:
 
 #### ZipImportError
+
 > zipimport.ZipImportError: can't decompress data; zlib not available
 
 Run '`brew info zlib`', and follow output instructions to set corresponding environment variables.
 
 #### pyenv-virtualenv Initialization Error
+
 > Failed to activate virtualenv. Perhaps pyenv-virtualenv has not been loaded into your shell properly. Please restart current shell and try again.
 
 Add the following to your bashrc file ( ~/.bashrc):
@@ -189,6 +200,7 @@ eval "$(pyenv virtualenv-init -)"
 ```
 
 #### GithubException
+
 > github.GithubException.RateLimitExceededException: 403 {'message': "API rate limit exceeded."}
 
-Verify that the *GITHUB_API_TOKEN* and *GITHUB_ORG_LOGIN* are set up correctly in *.env*, and that environment variables are loaded properly.
+Verify that the `GITHUB_API_TOKEN` and `GITHUB_ORG_LOGIN` are set up correctly in `.env`, and that environment variables are loaded properly.
