@@ -20,8 +20,8 @@ from wtforms import SubmitField
 
 
 class RefreshForm(FlaskForm):
-    """Refreshes projects and Users from the JIRA API when submitted."""
+    """Refreshes projects and from the JIRA API when submitted."""
     submit = SubmitField(
-        'Refresh projects and JIRA members',
-        description='Inserts or updates JIRA projects and members from the JIRA API'
+        'Refresh projects',
+        description='Inserts or updates JIRA projects from the JIRA API'
     )

@@ -72,11 +72,17 @@ class JIRAService(object):
         Returns a list of issue objects for a given project
         """
         if self._init_if_needed():
-            return self.client.search_issues(
-                'project = "' + project_key +
-                '" AND issuetype not in subtaskIssueTypes() AND' +
-                ' resolution = Unresolved'
-            )
+            try:
+                issues = self.client.search_issues(
+                    'project = "' + project_key +
+                    '" AND issuetype not in subtaskIssueTypes() AND' +
+                    ' resolution = Unresolved'
+                )
+            except Exception as error:
+                issues = []
+                print(error)
+
+            return issues
 
     def get_project_members(self, project_key):
         """
@@ -99,7 +105,7 @@ class JIRAService(object):
     def create_issue(self, project_key, summary, description, issue_type=None,
                      parent_issue=None, assignee_id=None, label_names=[]):
         """
-        Creates a new issue of type issue_type under the project with 
+        Creates a new issue of type issue_type under the project with
         project_key populated with the provided fields
 
         Args:
@@ -136,18 +142,24 @@ class JIRAService(object):
             )
 
     def update_issue_labels(self, project_key, issue_key, label_names):
-        label_names = [self._convert_into_snake_case(label_name) for label_name in label_names]
-        issues = self.client.search_issues(
-            'project = "' + project_key +
-            '" AND issuekey = "' + issue_key +
-            '"')
-        issue = issues[0]
-        issue.update(fields={"labels": label_names})
+        try:
+            label_names = [self._convert_into_snake_case(label_name) for label_name in label_names]
+            issues = self.client.search_issues(
+                'project = "' + project_key +
+                '" AND issuekey = "' + issue_key +
+                '"')
+            issue = issues[0]
+            issue.update(fields={"labels": label_names})
+        except Exception as error:
+            print(error)
 
     def append_issue_labels(self, project_key, issue_key, label_names):
-        issues = self.client.search_issues(
-            'project = "' + project_key +
-            '" AND issuekey = "' + issue_key +
-            '"')
-        issue = issues[0]
-        issue.update(labels=[{"add": self._convert_into_snake_case(label)} for label in label_names])
+        try:
+            issues = self.client.search_issues(
+                'project = "' + project_key +
+                '" AND issuekey = "' + issue_key +
+                '"')
+            issue = issues[0]
+            issue.update(labels=[{"add": self._convert_into_snake_case(label)} for label in label_names])
+        except Exception as error:
+            print(error)

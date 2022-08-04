@@ -35,7 +35,7 @@ class JIRAAPIClient(APIClient):
         return JIRA(
             server=server,
             basic_auth=(username, key),
-            max_retries=2
+            max_retries=2,
         )
 
     def initialize(self):
