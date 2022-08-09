@@ -18,7 +18,9 @@ Fetches JIRA projects.
 from .db_task import DBTask
 from ..services.project_service import ProjectService
 
-
+# TODO: convert this into a nightly cron job and remove it from the UI; it takes
+# far too long to execute and shouldn't be something that can just be clicked by
+# whoever is logged in
 class FetchJIRAProjects(DBTask):
     """A task to fetches JIRA projects."""
 
@@ -35,5 +37,8 @@ class FetchJIRAProjects(DBTask):
         Returns:
             None
         """
-        ProjectService().fetch()
-        print("Finished fetching JIRA projects")
+        try:
+            ProjectService().fetch()
+            print("Finished fetching JIRA projects")
+        except Exception as error:
+            print(error)

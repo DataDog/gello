@@ -3,7 +3,7 @@ amqp==2.6.1
 anyjson==0.3.3
 asn1crypto==1.4.0
 attrs==21.4.0
-backports.zoneinfo==0.2.1
+backports.zoneinfo==0.2.1;python_version<"3.9"
 billiard==3.6.4.0
 bleach==4.1.0
 blinker==1.4
@@ -66,7 +66,7 @@ pipenv==2022.1.8
 platformdirs==2.4.0
 prompt-toolkit==3.0.27
 protobuf==3.19.4
-psycopg==3.0.8
+psycopg2==2.9.3
 py-trello==0.18.0
 pycparser==2.21
 PyGithub==1.55

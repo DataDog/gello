@@ -45,14 +45,34 @@ class ProjectService(APIService):
         """
         fetched_projects = self.jira_service.projects()
         persisted_projects = Project.query.all()
+        live_projects = []
+        archived_projects = []
 
-        self.jira_member_service.fetch()
+        # TODO: is there a more "Pythonic approach" to this?
+        # TODO: eventually we should probably update to using the REST API more
+        # directly and leverage the experimental status filter so we can exclude
+        # archived projects from the initial request from Jira instead of filtering
+        # manually here
+        try:
+            for project in fetched_projects:
+                if project:
+                    if hasattr(project, "archived"):
+                        if getattr(project, "archived"):
+                            archived_projects.append(project)
+                        else:
+                            live_projects.append(project)
+                    else:
+                        live_projects.append(project)
+        except Exception as error:
+            print(error)
 
-        self._update_or_delete_projects(fetched_projects, persisted_projects)
-        self._create_projects(fetched_projects, persisted_projects)
+        try:
+            self._update_or_delete_projects(live_projects, persisted_projects)
+            self._create_projects(live_projects, persisted_projects)
+        except Exception as error:
+            print(error)
 
-        # Persist the changes to the projects and issue types
-        db.session.commit()
+        # TODO: figure out if we need to manually delete archived projects, too
 
     def _update_or_delete_projects(self, fetched_projects, persisted_projects):
         """Updates or deletes `Project` records in the database.
@@ -68,7 +88,7 @@ class ProjectService(APIService):
         """
         fetched_project_dict = {proj.key: proj for proj in fetched_projects}
 
-        for record in persisted_projects:
+        for record in (persisted_projects or []):
             if record.key in fetched_project_dict:
                 # Find the JIRA project by unique string `key`
                 jira_proj = fetched_project_dict[record.key]
@@ -120,6 +140,9 @@ class ProjectService(APIService):
                 # Then delete this project
                 db.session.delete(record)
 
+            # Persist the changes to the projects and issue types
+            db.session.commit()
+
     def _create_projects(self, fetched_projects, persisted_projects):
         """Creates records that do not exist in the database.
 
@@ -135,30 +158,36 @@ class ProjectService(APIService):
         persisted_project_ids = set(
             map(lambda x: x.key, persisted_projects)
         )
+
         projects_to_create = set(
             filter(lambda x: x.key not in persisted_project_ids, fetched_projects)
         )
 
-        for jira_project in projects_to_create:
+        # TODO: make this async so we don't have to wait for each project's issues
+        for jira_project in (projects_to_create or []):
             jira_project_model = Project(
                 name=jira_project.name,
                 key=jira_project.key,
             )
+
             db.session.add(jira_project_model)
 
-            fetched_ids = [x.accountId for x in
-                           self.jira_service.get_project_members(jira_project.key)]
+            # fetched_ids = [x.accountId for x in
+            #                (self.jira_service.get_project_members(jira_project.key) or [])]
 
-            for jid in fetched_ids:
-                jira_member = JIRAMember.query.filter_by(jira_member_id=jid).first()
-                if jira_member:
-                    jira_project_model.allowed_members.append(jira_member)
+            # for jid in (fetched_ids or []):
+            #     jira_member = JIRAMember.query.filter_by(jira_member_id=jid).first()
+            #     if jira_member:
+            #         jira_project_model.allowed_members.append(jira_member)
 
             # Create all the associated parent issues and issue types for the newly created project
             jira_issues = self.jira_service.get_project_issues(jira_project.key)
             jira_issue_types = self.jira_service.get_issue_types(jira_project.key)
             self._create_issues(jira_issues, jira_project.key)
             self._create_issue_types(jira_issue_types, jira_project_model)
+
+            # Persist the changes to the projects and issue types
+            db.session.commit()
 
     def _update_or_delete_issues(self, fetched_issues, project_key):
         """Updates or deletes existing `JIRAParentIssue`s in the database.
@@ -175,7 +204,7 @@ class ProjectService(APIService):
         fetched_issue_dict = {iss.key: iss for iss in fetched_issues}
         persisted_issues = JIRAParentIssue.query.filter_by(project_key=project_key)
 
-        for record in persisted_issues:
+        for record in (persisted_issues or []):
             if record.jira_issue_key in fetched_issue_dict:
                 # Find the jira issue by unique string `jira_issue_key`
                 jira_issue = fetched_issue_dict[record.jira_issue_key]
@@ -200,17 +229,23 @@ class ProjectService(APIService):
             None
         """
         persisted_issues = JIRAParentIssue.query.filter_by(project_key=project_key)
-        persisted_issue_keys = set(
-            map(lambda x: x.jira_issue_key, persisted_issues)
-        )
-        jira_issues_to_create = list(
-            filter(
-                lambda x: x.key not in persisted_issue_keys,
-                fetched_issues
-            )
-        )
 
-        for jira_issue in jira_issues_to_create:
+        try:
+            persisted_issue_keys = set(
+                map(lambda x: x.jira_issue_key, (persisted_issues or []))
+            )
+
+            jira_issues_to_create = list(
+                filter(
+                    lambda x: x.key not in persisted_issue_keys,
+                    (fetched_issues or [])
+                )
+            )
+        except Exception as error:
+            jira_issues_to_create = []
+            print (error)
+
+        for jira_issue in (jira_issues_to_create or []):
             issue_summary = jira_issue.fields.summary if len(jira_issue.fields.summary) <= 64 else jira_issue.fields.summary[:61] + "..."
             jira_issue_model = JIRAParentIssue(
                 summary=issue_summary,
@@ -234,7 +269,7 @@ class ProjectService(APIService):
         persisted_issue_types = project.issue_types
         fetched_type_dict = {issue_type.id: issue_type for issue_type in fetched_issue_types}
 
-        for issue_type in persisted_issue_types:
+        for issue_type in (persisted_issue_types or []):
             if issue_type.issue_type_id in fetched_type_dict:
                 fetched_issue_type = fetched_type_dict[issue_type.issue_type_id]
                 issue_type.name = fetched_issue_type.name
@@ -256,17 +291,21 @@ class ProjectService(APIService):
         Returns:
             None
         """
-        persisted_issue_types = set(map(lambda x: x.issue_type_id,
-                                        project.issue_types))
+        try:
+            persisted_issue_types = set(map(lambda x: x.issue_type_id,
+                                            project.issue_types))
 
-        issue_types_to_create = list(
-            filter(
-                lambda x: x.id not in persisted_issue_types,
-                fetched_issue_types
+            issue_types_to_create = list(
+                filter(
+                    lambda x: x.id not in persisted_issue_types,
+                    fetched_issue_types
+                )
             )
-        )
+        except Exception as error:
+            issue_types_to_create = []
+            print(error)
 
-        for issue_type in issue_types_to_create:
+        for issue_type in (issue_types_to_create or []):
             persisted_issue_type = JIRAIssueType.query.filter_by(
                 issue_type_id=issue_type.id
             ).first()

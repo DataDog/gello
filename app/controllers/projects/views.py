@@ -37,7 +37,7 @@ def index():
     form = RefreshForm()
     if form.validate_on_submit():
         FetchJIRAProjects.delay()
-        flash('The projects are being updated. This may take a couple of minutes. Please refresh page regularly. No need to click the refresh button.')
+        flash('The projects are being updated. Please do not click the Refresh projects button again. This may take a several minutes...')
 
         return redirect(url_for('.index'))
 
