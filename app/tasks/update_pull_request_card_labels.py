@@ -46,5 +46,8 @@ class UpdatePullRequestCardLabels(GitHubBaseTask):
         """
         self.payload = payload
         self.set_scope_data()
+
         pull_request = PullRequest.query.filter_by(trello_board_id=board_id, github_pull_request_id=pull_request_id).first()
-        self._trello_service.update_card_labels(pull_request.trello_card_id, board_id, label_names)
+
+        if (pull_request.trello_card_id):
+            self._trello_service.update_card_labels(pull_request.trello_card_id, board_id, label_names)
