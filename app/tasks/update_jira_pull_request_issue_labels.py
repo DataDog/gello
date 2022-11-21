@@ -47,4 +47,6 @@ class UpdateJiraPullRequestIssueLabels(GitHubBaseTask):
         self.payload = payload
         self.set_scope_data()
         pull_request = PullRequest.query.filter_by(jira_project_key=project_key, github_pull_request_id=pull_request_id).first()
-        self._jira_service.update_issue_labels(project_key=project_key, issue_key=pull_request.jira_issue_key, label_names=label_names)
+
+        if (pull_request.jira_issue_key):
+            self._jira_service.update_issue_labels(project_key=project_key, issue_key=pull_request.jira_issue_key, label_names=label_names)
