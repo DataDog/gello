@@ -24,8 +24,6 @@ revision = 'f830b2fcf2bf'
 down_revision = '7b85146aad79'
 
 
-# TODO: Edit this to use the proper foreign key constraints
-
 def upgrade():
     op.drop_constraint(constraint_name="issues_jira_parent_issue_key_fkey", table_name="issues", type_="foreignkey")
     op.drop_constraint(constraint_name="fk_issues_repo_id_repos", table_name="issues", type_="foreignkey")
