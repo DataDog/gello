@@ -53,7 +53,7 @@ def upgrade():
     op.create_foreign_key(
         constraint_name="pull_requests_jira_parent_issue_key_fkey",
         source_table="pull_requests",
-        referent_table="projects",
+        referent_table="jira_parent_issues",
         local_cols=["jira_parent_issue_key"],
         remote_cols=["jira_issue_key"],
         ondelete="CASCADE",
@@ -98,7 +98,7 @@ def downgrade():
     op.create_foreign_key(
         constraint_name="pull_requests_jira_parent_issue_key_fkey",
         source_table="pull_requests",
-        referent_table="projects",
+        referent_table="jira_parent_issues",
         local_cols=["jira_parent_issue_key"],
         remote_cols=["jira_issue_key"]
     )

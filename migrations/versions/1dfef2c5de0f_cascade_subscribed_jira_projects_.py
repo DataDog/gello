@@ -26,6 +26,8 @@ down_revision = '3094b59c423b'
 
 def upgrade():
     op.drop_constraint(constraint_name="subscribed_jira_projects_issue_type_id_fkey", table_name="subscribed_jira_projects", type_="foreignkey")
+    # this constraint name might not exist locally because the originally created constraint was not named
+    # but this constraint name was taken from the live DB
     op.drop_constraint(constraint_name="subscribed_jira_projects_subscription_project_key_fkey", table_name="subscribed_jira_projects", type_="foreignkey")
 
     op.create_foreign_key(
