@@ -44,31 +44,32 @@ class SubscribedJIRAItemService(CRUDService):
         Returns:
             None
         """
-        if bool(jira_issue_key):
-            project = Project.query.filter_by(key=project_key).first()
-            if any(x.name == 'Sub-task' for x in project.issue_types):
-                name = 'Sub-task'
+        if project_key:
+            if bool(jira_issue_key):
+                project = Project.query.filter_by(key=project_key).first()
+                if any(x.name == 'Sub-task' for x in project.issue_types):
+                    name = 'Sub-task'
+                else:
+                    name = 'Subtask'
+                subscribed_item = SubscribedJIRAIssue(
+                    subscription_project_key=project_key,
+                    subscription_repo_id=repo_id,
+                    jira_issue_key=jira_issue_key,
+                    issue_type_name=name,
+                    jira_member_id=jira_member_id
+                )
             else:
-                name = 'Subtask'
-            subscribed_item = SubscribedJIRAIssue(
-                subscription_project_key=project_key,
-                subscription_repo_id=repo_id,
-                jira_issue_key=jira_issue_key,
-                issue_type_name=name,
-                jira_member_id=jira_member_id
-            )
-        else:
-            subscribed_item = SubscribedJIRAProject(
-                subscription_project_key=project_key,
-                subscription_repo_id=repo_id,
-                issue_type_id=issue_type_id,
-                jira_member_id=jira_member_id
-            )
+                subscribed_item = SubscribedJIRAProject(
+                    subscription_project_key=project_key,
+                    subscription_repo_id=repo_id,
+                    issue_type_id=issue_type_id,
+                    jira_member_id=jira_member_id
+                )
 
-        db.session.add(subscribed_item)
+            db.session.add(subscribed_item)
 
-        # Persists the subscribed_item
-        db.session.commit()
+            # Persists the subscribed_item
+            db.session.commit()
 
     def update(self, project_key, repo_id, jira_issue_key=None, jira_member_id=None):
         """Updates a persisted subscribed_jira_issue/project's autocard value.
@@ -85,19 +86,20 @@ class SubscribedJIRAItemService(CRUDService):
         Returns:
             None
         """
-        if bool(jira_issue_key):
-            subscribed_item = SubscribedJIRAIssue.query.get(
-                [project_key, repo_id, jira_issue_key]
-            )
-        else:
-            subscribed_item = SubscribedJIRAProject.query.get(
-                [project_key, repo_id]
-            )
+        if project_key:
+            if bool(jira_issue_key):
+                subscribed_item = SubscribedJIRAIssue.query.get(
+                    [project_key, repo_id, jira_issue_key]
+                )
+            else:
+                subscribed_item = SubscribedJIRAProject.query.get(
+                    [project_key, repo_id]
+                )
 
-        subscribed_item.jira_member_id = jira_member_id
+            subscribed_item.jira_member_id = jira_member_id
 
-        # Persist the changes
-        db.session.commit()
+            # Persist the changes
+            db.session.commit()
 
     def delete(self, project_key, repo_id, jira_issue_key=None):
         """Deletes an old, persisted subscribed_jira_issue/project.
@@ -112,17 +114,17 @@ class SubscribedJIRAItemService(CRUDService):
         Returns:
             None
         """
+        if project_key:
+            if bool(jira_issue_key):
+                db.session.delete(
+                    SubscribedJIRAIssue.query.get(
+                        [project_key, repo_id, jira_issue_key])
+                )
+            else:
+                db.session.delete(
+                    SubscribedJIRAProject.query.get(
+                        [project_key, repo_id])
+                )
 
-        if bool(jira_issue_key):
-            db.session.delete(
-                SubscribedJIRAIssue.query.get(
-                    [project_key, repo_id, jira_issue_key])
-            )
-        else:
-            db.session.delete(
-                SubscribedJIRAProject.query.get(
-                    [project_key, repo_id])
-            )
-
-        # Persist the changes
-        db.session.commit()
+            # Persist the changes
+            db.session.commit()
