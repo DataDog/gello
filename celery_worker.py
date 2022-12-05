@@ -15,7 +15,7 @@
 
 A celery worker to be run in a separate process by:
 
-    `celery worker -A celery_worker.celery --loglevel=info`
+    `celery worker -A celery_worker.celery --loglevel=info --without-gossip`
 """
 
 import os
