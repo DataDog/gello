@@ -51,25 +51,26 @@ class JIRASubscriptionService(CRUDService):
         Returns:
             None
         """
-        subscription = Subscription(
-            project_key=project_key,
-            repo_id=repo_id,
-            issue_autocard=issue_autocard,
-            pull_request_autocard=pull_request_autocard
-        )
-        db.session.add(subscription)
-
-        # Create all the subscribed lists
-        for issue_key in issue_keys:
-            self._subscribed_jira_item_service.create(
+        if project_key:
+            subscription = Subscription(
                 project_key=project_key,
                 repo_id=repo_id,
-                issue_type_id=issue_type,
-                jira_issue_key=issue_key
+                issue_autocard=issue_autocard,
+                pull_request_autocard=pull_request_autocard
             )
+            db.session.add(subscription)
 
-        # Persists the subscription
-        db.session.commit()
+            # Create all the subscribed lists
+            for issue_key in issue_keys:
+                self._subscribed_jira_item_service.create(
+                    project_key=project_key,
+                    repo_id=repo_id,
+                    issue_type_id=issue_type,
+                    jira_issue_key=issue_key
+                )
+
+            # Persists the subscription
+            db.session.commit()
 
     def update(self, project_key, repo_id, issue_autocard, pull_request_autocard):
         """Updates a persisted subscription's autocard value.
@@ -86,16 +87,16 @@ class JIRASubscriptionService(CRUDService):
         Returns:
             None
         """
+        if project_key:
+            subscription = Subscription.query.filter_by(
+                project_key=project_key,
+                repo_id=repo_id
+            ).first()
+            subscription.issue_autocard = issue_autocard
+            subscription.pull_request_autocard = pull_request_autocard
 
-        subscription = Subscription.query.filter_by(
-            project_key=project_key,
-            repo_id=repo_id
-        ).first()
-        subscription.issue_autocard = issue_autocard
-        subscription.pull_request_autocard = pull_request_autocard
-
-        # Persist the changes
-        db.session.commit()
+            # Persist the changes
+            db.session.commit()
 
     def delete(self, project_key, repo_id):
         """Deletes an old, persisted subscription.
@@ -108,9 +109,10 @@ class JIRASubscriptionService(CRUDService):
         Returns:
             None
         """
-        subscription = Subscription.query.filter_by(
-            project_key=project_key, repo_id=repo_id).first()
+        if project_key:
+            subscription = Subscription.query.filter_by(
+                project_key=project_key, repo_id=repo_id).first()
 
-        # Delete the record
-        db.session.delete(subscription)
-        db.session.commit()
+            # Delete the record
+            db.session.delete(subscription)
+            db.session.commit()
