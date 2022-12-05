@@ -39,6 +39,7 @@ from .environment_variable_service import EnvironmentVariableService
 def api_services():
     """Returns a list of services which implement the APIService interface."""
     return [
+        ProjectService(),
         GitHubMemberService(),
         RepoService()
     ]
