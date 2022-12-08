@@ -46,27 +46,14 @@ class ProjectService(APIService):
         fetched_projects = self.jira_service.projects()
         persisted_projects = Project.query.all()
         live_projects = []
-        archived_projects = []
 
-        # TODO: is there a more "Pythonic approach" to this?
         # TODO: eventually we should probably update to using the REST API more
         # directly and leverage the experimental status filter so we can exclude
         # archived projects from the initial request from Jira instead of filtering
         # manually here
         try:
-            for project in fetched_projects:
-                if project:
-                    if hasattr(project, "archived"):
-                        if getattr(project, "archived"):
-                            archived_projects.append(project)
-                        else:
-                            live_projects.append(project)
-                    else:
-                        live_projects.append(project)
-        except Exception as error:
-            print(error)
+            live_projects = filter(lambda x: (hasattr(project, "archived") and not getattr(project, "archived")) or not hasattr(project, "archived"), fetched_projects)
 
-        try:
             self._update_or_delete_projects(live_projects, persisted_projects)
             self._create_projects(live_projects, persisted_projects)
         except Exception as error:
