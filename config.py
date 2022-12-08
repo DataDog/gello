@@ -32,6 +32,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SSL_DISABLE = False
 
+    # Extra arguments to celeryd
+    # borrowed from: https://stackoverflow.com/a/12217897/656011
+    CELERYD_OPTS="--concurrency=2"
+
     # Note:
     #   Before adding repo-label pair, please make sure label
     #   (eg. 'Go') exists on respective Trello board
