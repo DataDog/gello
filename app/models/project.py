@@ -61,6 +61,16 @@ class Project(db.Model):
         cascade='all, delete-orphan'
     )
 
+    # The jquery UI autocomplete is weird and seems to filter on
+    # the label and not the value, so we need to put project keys
+    # in as both values here to allow someone to use the project name
+    # or project key when searching
+    def to_autocomplete(self):
+        return {
+            'label': self.key,
+            'value': self.key
+        }
+
     def to_json(self):
         return {
             'label': self.name,

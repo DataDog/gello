@@ -40,7 +40,7 @@ def index():
     create_form = NewSubscriptionForm()
     page = request.args.get('page', 1, type=int)
     query = Subscription.query.filter(Subscription.project_key.isnot(None))
-    pagination = query.order_by(Subscription.timestamp.desc()).paginate(
+    pagination = query.order_by(Subscription.project_key).paginate(
         page, per_page=10,
         error_out=False
     )

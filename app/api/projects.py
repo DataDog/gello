@@ -20,28 +20,32 @@ from flask_login import login_required
 from ..models import Project
 from . import api
 
+def swap_value_and_label(project):
+    value = project.value
+
+    return {
+        label: value,
+        value: value,
+    }
+
 
 @api.route('/projects/')
 @login_required
 def get_projects():
-    project = request.args.get('project', 1, type=int)
+    project_string = request.args.get('project')
 
-    pagination = Project.query.paginate(project, per_page=100, error_out=False)
-    projects = pagination.items
+    projects_by_key = Project.query.filter(Project.key.like('%%{0}%%'.format(project_string))).all()
 
-    prev = None
-    if pagination.has_prev:
-        prev = url_for('api.get_projects', project=project-1, _external=True)
+    projects_by_name = Project.query.filter(Project.name.ilike('%%{0}%%'.format(project_string))).all()
 
-    next = None
-    if pagination.has_next:
-        next = url_for('api.get_projects', project=project+1, _external=True)
+    projects_by_key_formatted = [project.to_autocomplete() for project in projects_by_key]
+
+    projects_by_name_formatted = [project.to_json() for project in projects_by_name]
+
+    projects = projects_by_key_formatted + projects_by_name_formatted
 
     return jsonify(
         {
-            'projects': [project.to_json() for project in projects],
-            'prev': prev,
-            'next': next,
-            'count': pagination.total
+            'projects': projects
         }
     )

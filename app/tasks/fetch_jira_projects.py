@@ -39,6 +39,7 @@ class FetchJIRAProjects(DBTask):
         """
         try:
             ProjectService().fetch()
+
             print("Finished fetching JIRA projects")
         except Exception as error:
             print(error)
