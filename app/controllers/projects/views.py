@@ -35,16 +35,18 @@ def index():
         ), 500
 
     form = RefreshForm()
+
     if form.validate_on_submit():
         FetchJIRAProjects.delay()
+
         flash('The projects are being updated. Please do not click the Refresh projects button again. This may take a several minutes...')
 
         return redirect(url_for('.index'))
 
     page = request.args.get('page', 1, type=int)
     query = Project.query
-    pagination = query.order_by(Project.timestamp.desc()).paginate(
-        page, per_page=10,
+    pagination = query.order_by(Project.key).paginate(
+        page, per_page=25,
         error_out=False
     )
     projects = pagination.items

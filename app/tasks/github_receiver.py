@@ -176,14 +176,18 @@ class GitHubReceiver(GitHubBaseTask):
                 self._update_issue_jira_issue_labels(self.payload['issue']['id'], project_key, label_names)
             elif action == 'closed':
                 issue = Issue.query.filter_by(jira_project_key=project_key, github_issue_id=self.payload['issue']['id']).first()
-                jira_issue_key = issue.jira_issue_key
-                AppendJiraIssueLabels.delay(
-                    jira_issue_key,
-                    project_key,
-                    ["github_closed"],
-                    self.payload,
-                )
-                self._delete_issue_jira_issue_objects()
+
+                if hasattr(issue, "jira_issue_key"):
+                    jira_issue_key = issue.jira_issue_key
+
+                    AppendJiraIssueLabels.delay(
+                        jira_issue_key,
+                        project_key,
+                        ["github_closed"],
+                        self.payload,
+                    )
+
+                    self._delete_issue_jira_issue_objects()
             else:
                 print('Unsupported event action: {0}'.format(action))
 

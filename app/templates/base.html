@@ -85,11 +85,11 @@
   <!-- Autocomplete helper function -->
   <script type="text/javascript">
     function loadAutocompleteData(endpoint, scope, input_id) {
-      $.getJSON(endpoint, function(data, status, xhr) {
+      $.getJSON(`${endpoint}?${scope.slice(0, -1)}=${$(input_id).val()}`, function(data, status, xhr) {
         var records = $.map(data[scope], function(record) { return record['label'] });
 
         $(input_id).autocomplete({
-          minLength: 0,
+          minLength: 3,
           source: records
         });
       });
