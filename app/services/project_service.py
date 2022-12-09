@@ -150,13 +150,13 @@ class ProjectService(APIService):
                 key=jira_project.key,
             )
 
-            fetched_ids = [x.accountId for x in
-                           (self.jira_service.get_project_members(jira_project.key) or [])]
+            # fetched_ids = [x.accountId for x in
+            #                (self.jira_service.get_project_members(jira_project.key) or [])]
 
-            for jid in (fetched_ids or []):
-                jira_member = JIRAMember.query.filter_by(jira_member_id=jid).first()
-                if jira_member:
-                    jira_project_model.allowed_members.append(jira_member)
+            # for jid in (fetched_ids or []):
+            #     jira_member = JIRAMember.query.filter_by(jira_member_id=jid).first()
+            #     if jira_member:
+            #         jira_project_model.allowed_members.append(jira_member)
 
             db.session.add(jira_project_model)
 
