@@ -77,9 +77,10 @@ class ProjectService(APIService):
             None
         """
         fetched_project_dict = {proj.key: proj for proj in fetched_projects}
+        fetched_project_names = [proj.name for proj in fetched_projects]
 
         for record in (persisted_projects or []):
-            if record.key in fetched_project_dict:
+            if record.key in fetched_project_dict or record.name in fetched_project_names:
                 # Find the JIRA project by unique string `key`
                 jira_proj = fetched_project_dict[record.key]
 
@@ -105,6 +106,11 @@ class ProjectService(APIService):
 
                 # Update the attributes
                 record.name = jira_proj.name
+
+                # some Jira projects have changed their IDs since being
+                # added into Gira; we want to update the keys where necessary
+                if (record.key != jira_proj.key):
+                    record.key = jira_proj.key
 
                 # jira_issues = self.jira_service.get_project_issues(jira_proj.key)
                 # jira_issue_types = self.jira_service.get_issue_types(jira_proj.key)
